@@ -1,0 +1,1 @@
+Sample error page "Mailer application"

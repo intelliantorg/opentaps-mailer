@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/site-conf.xsd">
+	<include location="component://common/webcommon/WEB-INF/common-controller.xml" />
+	<description>First Hello World Site Configuration File</description>
+	<owner>Open For Business Project (c) 2005 </owner>
+	<errorpage>/view/error/error.jsp</errorpage>
+
+	<!--
+	<handler name="java" type="request" class="org.ofbiz.webapp.event.JavaEventHandler" />
+	<handler name="soap" type="request" class="org.ofbiz.webapp.event.SOAPEventHandler" />
+	<handler name="service" type="request" class="org.ofbiz.webapp.event.ServiceEventHandler" />
+	<handler name="service-multi" type="request" class="org.ofbiz.webapp.event.ServiceMultiEventHandler" />
+	<handler name="simple" type="request" class="org.ofbiz.webapp.event.SimpleEventHandler" />
+	<handler name="ftl" type="view" class="org.ofbiz.webapp.ftl.FreeMarkerViewHandler" />
+	<handler name="jsp" type="view" class="org.ofbiz.webapp.view.JspViewHandler" />
+	<handler name="http" type="view" class="org.ofbiz.webapp.view.HttpViewHandler" />
+	-->
+
+	<handler name="screen" type="view" class="org.ofbiz.widget.screen.ScreenWidgetViewHandler" />
+
+	<preprocessor>
+		<!-- Events to run on every request before security (chains exempt) -->
+		<!-- <event type="java" path="org.ofbiz.webapp.event.TestEvent" invoke="test"/> -->
+		<!-- <event type="java" path="org.ofbiz.securityext.login.LoginEvents" invoke="checkExternalLoginKey" /> -->
+	</preprocessor>
+	<postprocessor>
+		<!-- Events to run on every request after all other processing (chains exempt) -->
+		<!-- <event type="java" path="org.ofbiz.webapp.event.TestEvent" invoke="test"/> -->
+	</postprocessor>
+
+	<!-- Request Mappings [START] -->
+	<request-map uri="main">
+		<!-- <security https="true" auth="true" /> -->
+		<response name="success" type="view" value="home" />
+	</request-map>
+	<!-- Request Mappings [END] -->
+	
+	
+	<view-map name="error" page="/view/error/defaultError.jsp" />
+	<view-map name="home" type="screen" page="component://mailer/widget/MailerScreens.xml#home" />	
+	<!-- end of view mappings -->
+</site-conf>
