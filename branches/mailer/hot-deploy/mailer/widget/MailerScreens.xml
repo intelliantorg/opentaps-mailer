@@ -8,7 +8,7 @@
             	<property-map resource="UILabels" map-name="uiLabelMapExt" global="true"/>
                 <set field="sectionName" value="marketing" global="true"/>
                 <set field="sectionStyle" value="twoColumn"/>
-                <set field="leftBarScreen" value="component://crmsfa/widget/crmsfa/screens/marketing/MarketingScreens.xml#leftBarScreen"/>
+                <set field="leftBarScreen" value="component://mailer/widget/CommonScreens.xml#leftBarScreen"/>
             </actions>
             <widgets>
                 <include-screen name="main-section-template" location="component://opentaps-common/widget/screens/common/CommonScreens.xml"/>

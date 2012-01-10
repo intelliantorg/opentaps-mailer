@@ -17,4 +17,14 @@
             </widgets>
         </section>
     </screen>
+    
+    <screen name="leftBarScreen">
+        <section>
+            <widgets>
+                <platform-specific>
+                    <html><html-template location="component://mailer/webapp/mailer/shortcuts.ftl"/></html>
+                </platform-specific>
+            </widgets>
+        </section>
+    </screen>
 </screens>
