@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- This component should serve as a sample for setting up your own company and deploying your
-        own images and applications into opentaps.  Use it as a template and modify as you need to. -->
-
 <ofbiz-component name="mailer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/ofbiz-component.xsd">
     <!-- always required -->
     <resource-loader name="main" type="component"/>
@@ -18,10 +15,11 @@
     <entity-resource type="group" reader-name="main" loader="main" location="entitydef/entitygroup.xml"/>
     -->
     <test-suite loader="main" location="testdef/tests.xml"/>
-    <webapp name="mailer"
-          title="Mailer application"
-          server="default-server"
-          location="webapp/mailer"
-          mount-point="/mailer"
-          app-bar-display="false"/>    
+    <webapp 
+    	name="mailer"
+        title="Mailer application"
+        server="default-server"
+        location="webapp/mailer"
+        mount-point="/mailer"
+        app-bar-display="false"/>    
 </ofbiz-component>
