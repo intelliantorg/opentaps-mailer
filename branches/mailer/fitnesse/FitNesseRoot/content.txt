@@ -1,0 +1,3 @@
+!path build
+!path ./lib/*.jar
+!path fitnesse*.jar

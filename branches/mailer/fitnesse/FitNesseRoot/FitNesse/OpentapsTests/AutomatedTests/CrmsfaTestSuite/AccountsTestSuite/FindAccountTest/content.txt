@@ -1,0 +1,26 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Click on a CRMSFA ui element, they are defined in the CrmsfaElements class
+| click button | main tab accounts |
+
+Find the created party
+| click button | accounts shortcut find accounts |
+
+Select the ID tab of the find widget
+| click on | find accounts id tab |
+| wait for element | find accounts by id | to be visible |
+| type text in | find accounts by id | value | 10010 |
+| click on | find accounts submit button |
+
+Wait for the list to load the data
+| sleep for | 2 | seconds |
+
+Check the found values, should only find one record
+| check element | found account id | with index | 1 | present |
+| check element | found account id | with index | 2 | absent |
+Value should be what we entered in the form
+| check element | found account id | with index | 1 | has text | 10010 |
+| check element | found account name | with index | 1 | has text | Test Account Selenium |

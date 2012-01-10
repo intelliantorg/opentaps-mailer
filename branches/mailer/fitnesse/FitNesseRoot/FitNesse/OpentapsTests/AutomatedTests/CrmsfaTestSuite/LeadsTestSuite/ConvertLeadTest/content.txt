@@ -1,0 +1,32 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Creates a lead, this uses methods defined in the CRMSFA fixture
+| create lead | !-#lead-! | with company name | Lead To Be Qualified CN | with first name | Another Lead FN | with last name | Another Lead LN | with to name | someone | with address | salt lake | with city | Kolkata | with zip code | 700091 | with country | IND |
+
+Go to the view page (even if we already are there after lead creation)
+| view lead | !-#lead-! |
+
+Check the values we just entered
+| check element | view lead company name | has text | Lead To Be Qualified CN |
+| check element | view lead first name | has text | Another Lead FN |
+| check element | view lead last name | has text | Another Lead LN |
+| check element | view lead contact information section | contains text | salt lake |
+| check element | view lead contact information section | contains text | Kolkata |
+| check element | view lead contact information section | contains text | 700091 |
+| check element | view lead contact information section | contains text | someone |
+| check element | view lead contact information section | contains text | India |
+
+Qualify the lead we just created
+| click button | view lead qualify lead link |
+
+Wait for the list to load the data
+| sleep for | 2 | seconds |
+
+Convert the lead we just created
+| click button | view lead qualify lead link |
+
+Submit the form
+| click button | convert lead submit button |

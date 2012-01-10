@@ -1,0 +1,27 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Click on a CRMSFA ui element, they are defined in the CrmsfaElements class
+| click button | main tab activities |
+
+Find the created party
+| click button | activities shortcut find activities |
+
+Select the ID tab of the find widget
+| click on | find activities id tab |
+| wait for element | find activities by id | to be visible |
+| type text in | find activities by id | value | 10004 |
+| click on | find activities submit button |
+
+Wait for the list to load the data
+| sleep for | 2 | seconds |
+
+Check the found values, should only find one record
+| check element | found activity id | with index | 1 | present |
+| check element | found activity id | with index | 2 | absent |
+Value should be what we entered in the form
+| check element | found activity id | with index | 1 | has text | 10004 |
+| check element | found activity name | with index | 1 | has text | Demo Sales Rep 1 |
+

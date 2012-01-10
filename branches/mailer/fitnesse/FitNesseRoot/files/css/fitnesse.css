@@ -1,0 +1,5 @@
+@import url( "/files/css/fitnesse_base.css" );
+
+body, table {
+  font-size: 10pt;
+}

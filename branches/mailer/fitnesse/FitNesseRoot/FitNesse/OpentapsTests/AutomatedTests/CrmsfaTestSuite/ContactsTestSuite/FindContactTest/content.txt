@@ -1,0 +1,27 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Click on a CRMSFA ui element, they are defined in the CrmsfaElements class
+| click button | main tab contacts |
+
+Find the created party
+| click button | contacts shortcut find contacts |
+
+Select the ID tab of the find widget
+| click on | find contacts id tab |
+| wait for element | find contacts by id | to be visible |
+| type text in | find contacts by id | value | 10020 |
+| click on | find contacts submit button |
+
+Wait for the list to load the data
+| sleep for | 2 | seconds |
+
+Check the found values, should only find one record
+| check element | found contact id | with index | 1 | present |
+| check element | found contact id | with index | 2 | absent |
+Value should be what we entered in the form
+| check element | found contact id | with index | 1 | has text | 10020 |
+| check element | found contact first name | with index | 1 | has text | testPrimaryContactIDFields |
+| check element | found contact last name | with index | 1 | has text | testPrimaryContactIDFields |

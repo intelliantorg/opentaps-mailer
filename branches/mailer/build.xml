@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2006 - 2007 Open Source Strategies, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the Honest Public License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Honest Public License for more details.
+ *
+ * You should have received a copy of the Honest Public License
+ * along with this program; if not, write to Funambol,
+ * 643 Bair Island Road, Suite 305 - Redwood City, CA 94063, USA
+-->        
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<!-- This file has been modified by Open Source Strategies, Inc. -->
+
+
+<project name="OFBiz Main Build" default="build" basedir=".">
+    <property name="site.dir" value="../site"/>
+    <property name="memory.max.param" value="-Xmx1024M"/>
+    <property name="permmemory.max.param" value="-XX:MaxPermSize=256m"/>
+
+    <!-- ================================================================== -->
+    <!-- Initialization of all property settings                            -->
+    <!-- ================================================================== -->
+
+    <target name="ofbiz-init">
+        <property environment="env"/>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Removes all created files and directories                          -->
+    <!-- ================================================================== -->
+
+    <target name="refresh">
+        <antcall target="clean-all"/>
+        <antcall target="build"/>
+    </target>
+
+    <target name="refresh-server">
+        <antcall target="clean"/>
+        <antcall target="server"/>
+    </target>
+
+    <target name="clean-all">
+        <antcall target="clean-data"/>
+        <antcall target="clean-logs"/>
+        <antcall target="clean-xtra"/>
+        <antcall target="clean-catalina"/>
+        <antcall target="clean-gwt"/>
+        <antcall target="clean"/>
+    </target>
+
+    <target name="clean-wo-gwt">
+        <antcall target="clean-data"/>
+        <antcall target="clean-logs"/>
+        <antcall target="clean-xtra"/>
+        <antcall target="clean-catalina"/>
+        <antcall target="clean"/>
+    </target>
+
+    <target name="clean-data">
+        <subant target="clean-data">
+            <filelist dir="." files="framework/build.xml"/>
+        </subant>
+    </target>
+
+    <target name="clean-logs">
+        <subant target="clean-logs">
+            <filelist dir="." files="framework/build.xml"/>
+        </subant>
+    </target>
+
+    <target name="clean-xtra" depends="">
+        <delete verbose="on">
+            <fileset dir="." includes="**/.nbattrs,**/*~,**/.#*,**/.DS_Store,**/*.rej,**/*.orig"/>
+        </delete>
+    </target>
+
+    <target name="clean-catalina" depends="">
+        <subant target="clean-catalina">
+            <filelist dir="." files="framework/build.xml"/>
+        </subant>
+    </target>
+
+    <target name="tests">
+        <subant target="tests">
+            <filelist dir="." files="framework/build.xml"/>
+        </subant>
+    </target>
+
+    <target name="clean">
+        <subant target="clean">
+            <fileset dir="${basedir}/hot-deploy" casesensitive="no">
+                <include name="**/build.xml"/>
+            </fileset>
+        </subant>
+        <subant target="clean" failonerror="false"> <!-- use failonerror=false in case the specialpurpose directory is not there -->
+            <filelist dir="." files="specialpurpose/build.xml"/>
+        </subant>
+        <subant target="clean" failonerror="false"> <!-- use failonerror=false in case the applications directory is not there -->
+            <filelist dir="." files="applications/build.xml"/>
+        </subant>
+        <subant target="clean">
+            <filelist dir="." files="framework/build.xml"/>
+        </subant>
+        <delete file="ofbiz.jar"/>
+        <echo message="[clean] ========== Done Cleaning =========="/>
+    </target>
+
+    <target name="refresh-gwt">
+        <antcall target="clean-gwt"/>
+        <antcall target="gwt"/>
+    </target>
+
+    <target name="clean-gwt" depends="">
+        <subant inheritall="false" target="clean-gwt">
+            <filelist dir="." files="hot-deploy/opentaps-common"/>
+            <filelist dir="." files="hot-deploy/crmsfa/build.xml"/>
+            <filelist dir="." files="hot-deploy/financials/build.xml"/>
+            <filelist dir="." files="hot-deploy/purchasing/build.xml"/>
+            <filelist dir="." files="hot-deploy/warehouse/build.xml"/>
+        </subant>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Build GWT Modules                                                  -->
+    <!-- ================================================================== -->
+
+    <target name="gwt" depends="gwt-code"/>
+
+    <target name="gwt-code">
+        <echo message="[gwt code] ========== Start Building GWT Code (Compile) =========="/>
+        <subant inheritall="false" target="gwt-code">
+            <filelist dir="." files="hot-deploy/opentaps-common/build.xml"/>
+            <filelist dir="." files="hot-deploy/crmsfa/build.xml"/>
+            <!--<filelist dir="." files="hot-deploy/financials/build.xml"/>
+            <filelist dir="." files="hot-deploy/purchasing/build.xml"/>
+            <filelist dir="." files="hot-deploy/warehouse/build.xml"/>-->
+        </subant>
+        <echo message="[gwt code] ========== Done Building GWT Code (Compile) =========="/>
+    </target>
+
+    <target name="gwt-labels">
+        <echo message="[gwt-labels] ========== Start Building GWT Labels (Compile) =========="/>
+        <subant inheritall="false" target="gwt-labels">
+        	<filelist dir="." files="hot-deploy/opentaps-common/build.xml"/>
+        </subant>
+        <echo message="[gwt-labels] ========== Done Building GWT Labels (Compile) =========="/>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Build Components                                                   -->
+    <!-- ================================================================== -->
+
+    <target name="prebuild">
+        <subant inheritall="false">
+            <filelist dir="." files="framework/build.xml"/>
+        </subant>
+        <subant inheritall="false" failonerror="false">
+            <filelist dir="." files="applications/build.xml"/>
+        </subant>
+        <subant inheritall="false" failonerror="false">
+            <filelist dir="." files="specialpurpose/build.xml"/>
+        </subant>
+        <subant target="prebuild">
+            <filelist dir="." files="hot-deploy/opentaps-common/build.xml"/>
+        </subant>
+    </target>
+
+    <target name="server" depends="">
+
+        <echo message="[build] ========== Start Building (Compile) =========="/>
+
+        <subant inheritall="false">
+            <filelist dir="." files="framework/build.xml"/>
+        </subant>
+        <subant inheritall="false" failonerror="false">
+            <filelist dir="." files="applications/build.xml"/>
+        </subant>
+        <subant inheritall="false" failonerror="false">
+            <filelist dir="." files="specialpurpose/build.xml"/>
+        </subant>
+        <subant inheritall="false">
+            <fileset dir="${basedir}/hot-deploy" casesensitive="no">
+                <include name="**/build.xml"/>
+                <exclude name="disabled/**"/>
+            	<exclude name="purchasing/**"/>
+            	<exclude name="financials/**"/>
+            </fileset>
+        </subant>
+        <subant inheritall="false" failonerror="true">
+            <filelist dir="." files="hot-deploy/opentaps-common/build-aspects.xml"/>
+        </subant>
+
+        <echo message="[build] ========== Done Building (Compile) =========="/>
+    </target>
+
+    <target name="build" depends="server, gwt" />
+
+    <!-- ================================================================== -->
+    <!-- Build JavaDocs                                                     -->
+    <!-- ================================================================== -->
+
+    <target name="docs" depends="docs-framework,docs-applications"/>
+
+    <target name="docs-framework" depends="">
+        <echo message="[docs] ========== Building Framework JavaDoc =========="/>
+
+        <javadoc destdir="${basedir}/javadocs/framework/api" maxmemory="1024M"
+            author="true" version="true" use="true"
+            windowtitle="Opentaps 1.0 Framework API Reference">
+            <classpath>
+                <fileset dir="${basedir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+
+            <packageset dir="${basedir}/framework/appserver/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/base/src/base" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/catalina/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/common/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/datafile/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/entity/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/entityext/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/geronimo/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/guiapp/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/jetty/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/minilang/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/security/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/service/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/shark/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/testtools/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/webapp/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/webtools/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/widget/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/framework/workflow/src" defaultexcludes="yes"/>
+
+            <group title="Base Packages" packages="org.ofbiz.base*"/>
+            <group title="Common Packages" packages="org.ofbiz.common*"/>
+            <group title="Entity Engine Packages" packages="org.ofbiz.entity*"/>
+            <group title="Service Engine Packages" packages="org.ofbiz.service*"/>
+            <group title="Webapp Engine Packages" packages="org.ofbiz.webapp*"/>
+            <group title="Widget Engine Packages" packages="org.ofbiz.widget*"/>
+            <group title="Other Framework Packages">
+                <package name="org.ofbiz.geronimo*"/>
+                <package name="org.ofbiz.guiapp*"/>
+                <package name="org.ofbiz.minilang*"/>
+                <package name="org.ofbiz.webtools*"/>
+                <package name="org.ofbiz.jetty*"/>
+                <package name="org.ofbiz.security*"/>
+                <package name="org.ofbiz.appserver*"/>
+                <package name="org.ofbiz.shark*"/>
+                <package name="org.ofbiz.datafile*"/>
+                <package name="org.ofbiz.workflow*"/>
+                <package name="org.ofbiz.catalina*"/>
+            </group>
+
+            <doctitle><![CDATA[<h1>Opentaps 1.0 Framework API Reference</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2007 Open Source Strategies Inc. All Rights Reserved.</i>]]></bottom>
+            <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+            <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
+            <link href="http://javolution.org/api/"/>
+        </javadoc>
+    </target>
+
+    <target name="docs-applications" depends="">
+        <echo message="[docs] ========== Building Applications JavaDoc =========="/>
+
+        <javadoc destdir="${basedir}/javadocs/applications/api" maxmemory="1024M"
+            author="true" version="true" use="true"
+            windowtitle="Opentaps 1.0 Applications API Reference">
+            <classpath>
+                <fileset dir="${basedir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+
+            <!-- some of these require starting from src/org because of classes with no package in src/ (these cause the task to crash) -->
+            <packageset dir="${basedir}/applications/ecommerce/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/party/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/marketing/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/humanres/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/manufacturing/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/securityext/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/workeffort/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/accounting/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/applications/order/src" defaultexcludes="yes"/>
+            <fileset dir="${basedir}/applications/product/src/org"/>
+            <fileset dir="${basedir}/applications/content/src/org"/>
+
+            <packageset dir="${basedir}/hot-deploy/opentaps-common/src/common" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/hot-deploy/financials/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/hot-deploy/dataimport/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/hot-deploy/crmsfa/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/hot-deploy/purchasing/src" defaultexcludes="yes"/>
+            <packageset dir="${basedir}/hot-deploy/warehouse/src" defaultexcludes="yes"/>
+
+            <group title="Opentaps Commons Packages" packages="org.opentaps.common*"/>
+            <group title="Opentaps CRMSFA Packages" packages="com.opensourcestrategies.crmsfa*"/>
+            <group title="Opentaps Financials Packages" packages="com.opensourcestrategies.financials*"/>
+            <group title="Opentaps Purchasing Packages" packages="org.opentaps.purchasing*"/>
+            <group title="Opentaps Warehouse Packages" packages="org.opentaps.warehouse*"/>
+            <group title="Opentaps Dataimport Packages" packages="org.opentaps.dataimport*"/>
+            <group title="Open For Business Applications">
+                <package name="org.ofbiz.ecommerce*"/>
+                <package name="org.ofbiz.party*"/>
+                <package name="org.ofbiz.product*"/>
+                <package name="org.ofbiz.shipment*"/>
+                <package name="org.ofbiz.marketing*"/>
+                <package name="org.ofbiz.humanres*"/>
+                <package name="org.ofbiz.manufacturing*"/>
+                <package name="org.ofbiz.securityext*"/>
+                <package name="org.ofbiz.workeffort*"/>
+                <package name="org.ofbiz.accounting*"/>
+                <package name="org.ofbiz.content*"/>
+                <package name="org.ofbiz.order*"/>
+            </group>
+            <group title="Other Application Packages" packages="org.ofbiz.*"/>
+
+            <doctitle><![CDATA[<h1>Opentaps 1.0 Applications API Reference</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2007 Open Source Strategies Inc. All Rights Reserved.</i>]]></bottom>
+            <link href="../../framework/api/"/>
+            <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+            <link href="http://java.sun.com/j2ee/1.4/docs/api/"/>
+            <link href="http://javolution.org/api/"/>
+        </javadoc>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Contrib Targets                                                    -->
+    <!-- ================================================================== -->
+
+    <target name="copy-contrib">
+        <copy todir="${basedir}" overwrite="true" verbose="true">
+            <fileset dir="${basedir}/contrib" excludes="contrib/**,**/*.class"/>
+        </copy>
+    </target>
+
+    <target name="build-contrib" depends="copy-contrib,refresh"/>
+
+    <!-- ================================================================== -->
+    <!-- WebSite Targets                                                    -->
+    <!-- ================================================================== -->
+
+    <target name="build-website">
+        <antcall target="copy-dtds"/>
+        <antcall target="docs"/>
+        <antcall target="copy-apis"/>
+    </target>
+
+    <target name="copy-apis">
+        <mkdir dir="${site.dir}/api"/>
+        <mkdir dir="${site.dir}/api/framework"/>
+        <mkdir dir="${site.dir}/api/applications"/>
+        <mkdir dir="${site.dir}/api/specialpurpose"/>
+        <copy todir="${site.dir}/api/framework">
+            <fileset dir="${basedir}/framework" includes="**/build/javadocs/**"/>
+        </copy>
+        <copy todir="${site.dir}/api/applications">
+            <fileset dir="${basedir}/applications" includes="**/build/javadocs/**"/>
+        </copy>
+    </target>
+
+    <target name="copy-dtds">
+        <mkdir dir="${site.dir}/dtds"/>
+        <copy todir="${site.dir}/dtds" flatten="true" overwrite="true">
+            <fileset dir="${basedir}" includes="**/*.dtd"/>
+            <fileset dir="${basedir}" includes="**/*.xsd"/>
+        </copy>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Script Targets                                                     -->
+    <!-- ================================================================== -->
+
+    <target name="scriptfix">
+        <fixcrlf srcdir="${basedir}" eol="lf" eof="remove" includes="**/*.sh"/>
+        <fixcrlf srcdir="${basedir}" eol="crlf" includes="**/*.bat"/>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Custom Configuration                                               -->
+    <!-- ================================================================== -->
+
+    <target name="copy-config">
+        <subant target="copy-config" inheritall="false" failonerror="false">
+            <fileset dir="${basedir}/hot-deploy" casesensitive="no">
+                <exclude name="opentaps-common/build.xml"/>
+                <exclude name="crmsfa/build.xml"/>
+                <exclude name="financials/build.xml"/>
+                <exclude name="purchasing/build.xml"/>
+                <exclude name="warehouse/build.xml"/>
+                <exclude name="dataimport/build.xml"/>
+                <exclude name="mycompany/build.xml"/>
+                <exclude name="funambol/build.xml"/>
+                <exclude name="pentaho/build.xml"/>
+                <exclude name="amazon/build.xml"/>
+                <exclude name="livecatalog/build.xml"/>
+                <exclude name="opentaps-tests/build.xml"/>
+                <include name="**/build.xml"/>
+            </fileset>
+        </subant>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Checkstyle                                                        -->
+    <!-- ================================================================== -->
+
+    <taskdef resource="checkstyletask.properties" classpath="./hot-deploy/opentaps-common/lib/checkstyle-all-5.0-beta2.jar"/>
+
+    <target name="checkstyle" description="Generates a report of code convention violations.">
+      <checkstyle config="opentaps_checks.xml" failOnViolation="false">
+        <fileset dir="hot-deploy" includes="**/*.java"/>
+        <formatter type="xml" toFile="./hot-deploy/opentaps-common/build/checkstyle_errors.xml"/>
+      </checkstyle>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Start OFBiz                                                        -->
+    <!-- ================================================================== -->
+
+    <target name="run" depends="build">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+        </java>
+    </target>
+    <target name="run-pos" depends="server">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+            <arg value="pos"/>        	
+        </java>
+    </target>
+    <target name="run-install" depends="server">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+            <arg value="install"/>
+        </java>
+    </target>
+    <target name="run-install-seed" depends="server">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+            <arg value="install"/>
+            <arg value="readers=seed"/>
+        </java>
+    </target>
+    <target name="run-install-extseed" depends="server">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+            <arg value="install"/>
+            <arg value="readers=seed,ext"/>
+        </java>
+    </target>
+    <target name="run-debug" depends="build">
+        <java jar="ofbiz.jar"  fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+            <jvmarg value="-Xnoagent"/>
+            <jvmarg value="-Djava.compiler=NONE"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8091"/>
+        </java>
+    </target>
+    <target name="run-tests" depends="server">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+            <arg value="test"/>
+        </java>
+    </target>
+    <target name="test-html-report">
+      <junitreport todir="./runtime/logs">
+        <fileset dir="./runtime/logs">
+          <include name="tests.xml"/>
+        </fileset>
+        <report format="frames" todir="./runtime/tests"/>
+      </junitreport>
+    </target>
+    <target name="make-base-entities" depends="prebuild">
+        <delete verbose="on">
+            <fileset dir="./hot-deploy/opentaps-common/src/common/org/opentaps/domain/base/entities/" includes="*.java"/>
+        </delete>
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="${permmemory.max.param}"/>
+            <arg value="pojoentities"/>
+        </java>
+    </target>
+</project>

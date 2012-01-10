@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2009 - 2009 Open Source Strategies, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the Honest Public License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Honest Public License for more details.
+ *
+ * You should have received a copy of the Honest Public License
+ * along with this program; if not, write to Funambol,
+ * 643 Bair Island Road, Suite 305 - Redwood City, CA 94063, USA
+-->
+
+<project name="Fitnesse Build" default="build" basedir=".">
+
+  <!-- The port used by the fitnesse server. -->
+  <property name="fitnesse-port" value="8070"/>
+  <!-- The port used by Opentaps where selenium will access, should be non SSL.  -->
+  <property name="opentaps-port" value="8100"/>
+  <!-- The full path to the firefox executable that selenium should use. -->
+  <property name="firefox-bin" value="/usr/bin/opera"/>
+
+  <property name="fitnesse-jar" value="fitnesse-20090321.jar"/>
+  <property name="selenium-server-jar" value="./lib/selenium-server-1.0-beta-2.jar"/>
+  <property name="selenium-timeout" value="30"/>
+
+  <target name="start" depends="build, start-selenium, start-fitnesse"/>
+  <target name="stop" depends="stop-fitnesse, stop-selenium"/>
+  <target name="restart">
+    <antcall target="stop"/>
+    <sleep seconds="2"/>
+    <antcall target="start"/>
+  </target>
+
+  <target name="fitnesse-tests" depends="build, start-selenium, start-fitnesse, fitnesse, stop-fitnesse, stop-selenium"/>
+
+  <target name="fitnesse">
+    <echo message="========== Starting Fitnesse Tests =========="/>
+    <java fork="true" classname="fitnesse.runner.TestRunner" classpath="${fitnesse-jar}" failonerror="true">
+      <sysproperty key="opentaps.application-port" value="${opentaps-port}" />
+      <arg line="-html fitnesse-results.html localhost ${fitnesse-port} FitNesse.OpentapsTests.AutomatedTests" />
+    </java>
+    <echo message="========== Fitnesse Tests Done, see fitnesse-results.html =========="/>
+  </target>
+
+  <target name="start-fitnesse">
+    <echo message="========== Starting Fitnesse on port ${fitnesse-port} =========="/>
+    <java fork="true" spawn="true" classname="fitnesse.FitNesse" classpath="${fitnesse-jar}">
+      <arg line="-e 0 -p ${fitnesse-port}"/>
+    </java>
+    <waitfor maxwait="10" maxwaitunit="second">
+      <and>
+        <http url="http://localhost:${fitnesse-port}/FitNesse"/>
+      </and>
+    </waitfor>
+  </target>
+
+  <target name="stop-fitnesse">
+    <echo message="========== Stopping Fitnesse on port ${fitnesse-port} =========="/>
+    <java fork="true" classname="fitnesse.Shutdown" classpath="${fitnesse-jar}" >
+      <arg line="-p ${fitnesse-port}"/>
+    </java>
+  </target>
+
+  <target name="start-selenium">
+    <echo message="========== Starting Selenium with application ${firefox-bin} =========="/>
+    <java fork="true" spawn="true" jar="${selenium-server-jar}">
+      <arg line="-timeout ${selenium-timeout}"/>
+      <arg line="-DfirefoxDefaultPath=${firefox-bin}"/>
+    </java>
+    <waitfor maxwait="10" maxwaitunit="second">
+      <and>
+        <socket server="localhost" port="4444"/>
+      </and>
+    </waitfor>
+  </target>
+
+  <target name="stop-selenium">
+    <echo message="========== Stopping Selenium =========="/>
+    <get taskname="selenium-shutdown"
+         src="http://localhost:4444/selenium-server/driver/?cmd=shutDown"
+         dest="result.txt" ignoreerrors="true" />
+    <echo taskname="selenium-shutdown" message="Errors during shutdown are expected" />
+  </target>
+
+  <target name="build" depends="clean">
+    <echo message="========== Building Fitnesse Fixtures =========="/>
+    <mkdir dir="build"/>
+    <javac debug="on" destdir="build">
+      <classpath>
+        <fileset dir="lib" includes="*.jar" />
+        <fileset dir="." includes="fitnesse*.jar" />
+      </classpath>
+      <src path="src"/>
+    </javac>
+  </target>
+
+  <target name="clean" >
+    <delete dir="build"/>
+  </target>
+
+</project>

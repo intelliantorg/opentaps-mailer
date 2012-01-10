@@ -1,0 +1,7 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Merge leads, this uses methods defined in the CRMSFA fixture
+| merge accounts | !-res-! | with from account | 10030 | with to account | 10031 |

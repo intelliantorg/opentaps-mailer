@@ -1,0 +1,55 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Click on a CRMSFA ui element, they are defined in the CrmsfaElements class
+| click button | main tab contacts |
+| click button | contacts shortcut create contact |
+
+Fill the form
+| type text in | create contact first name  | value | testContactFN |
+| type text in | create contact last name | value | testContactLN |
+| type text in | create contact first name local | value | testContactFNL |
+| type text in | create contact last name local | value | testContactLNL |
+| type text in | create contact personal title | value | Mr. |
+| type text in | create contact birth date | value |  |
+| type text in | create contact general prof title | value | tester |
+| type text in | create contact department | value | testing |
+| select from | create contact preferred currency uom id | value |  |
+| type text in | create contact account party id | value |  |
+| type text in | create contact description | value | TESTING |
+| type text in | create contact important note | value | TESTING |
+| type text in | create contact primary phone country code | value |  |
+| type text in | create contact primary phone area code | value |  |
+| type text in | create contact primary phone number | value |  |
+| type text in | create contact primary phone extension | value |  |
+| type text in | create contact primary phone ask for name | value |  |
+| type text in | create contact primary email | value |  |
+| type text in | create contact general to name | value |  |
+| type text in | create contact general attn name | value |  |
+| type text in | create contact general address one | value |  |
+| type text in | create contact general address two | value |  |
+| type text in | create contact general city | value |  |
+| select from | create contact general state province geo id | value |  |
+| type text in | create contact general postal code | value |  |
+| select from | create contact general country geo id | value |  |
+| type text in | create contact general postal code ext | value |  |
+
+Submit the form
+| click button | create contact submit button |
+
+Save the created sales opportunity id
+| save value | created contact id | in | !-#contact-! |
+
+Wait for the list to load the data
+| sleep for | 10 | seconds |
+
+Check the values we just entered
+| check element | view contact first name | has text | testContactFN |
+| check element | view contact last name | contains text | testContactLN |
+| check element | view contact first name local | contains text | testContactFNL |
+| check element | view contact last name local | contains text | testContactLNL |
+| check element | view contact personal title | contains text | Mr. |
+| check element | view contact general prof title | contains text | tester |
+| check element | view contact department | contains text | testing |

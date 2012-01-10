@@ -1,0 +1,1 @@
+javaservice.exe -uninstall opentaps

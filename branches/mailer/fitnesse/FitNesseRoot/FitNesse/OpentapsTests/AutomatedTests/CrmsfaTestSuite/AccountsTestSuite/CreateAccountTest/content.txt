@@ -1,0 +1,51 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Click on a CRMSFA ui element, they are defined in the CrmsfaElements class
+| click button | main tab accounts |
+| click button | accounts shortcut create account |
+
+Fill the form
+| type text in | create account name | value | Test Account Selenium |
+| type text in | create account to name | value | Someone |
+| type text in | create account address | value | 133rd Some Street |
+| type text in | create account city | value | Sometown |
+| type text in | create account postal code | value | 13342 |
+| select from | create account country | value | FRA |
+
+Submit the form
+| click button | create account submit button |
+
+Save the created party id
+| save value | created account id | in | !-#account-! |
+
+Find the created party
+| click button | accounts shortcut find accounts |
+
+Select the ID tab of the find widget
+| click on | find accounts id tab |
+| wait for element | find accounts by id | to be visible |
+| type text in | find accounts by id | value | !-#account-! |
+| click on | find accounts submit button |
+
+Wait for the list to load the data
+| sleep for | 2 | seconds |
+
+Check the found values, should only find one record
+| check element | found account id | with index | 1 | present |
+| check element | found account id | with index | 2 | absent |
+Value should be what we entered in the form
+| check element | found account id | with index | 1 | has text | !-#account-! |
+| check element | found account name | with index | 1 | has text | Test Account Selenium |
+
+Creates a second account, this uses methods defined in the CRMSFA fixture
+| create account | !-#account2-! | with name | Another Test Account | with city | Los Angeles | with state | CA | with zip code | 12345 |
+Go to the view page (even if we already are there after account creation)
+| view account | !-#account2-! |
+Check the values we just entered
+| check element | view account name | has text | Another Test Account |
+| check element | view account contact information section | contains text | California |
+| check element | view account contact information section | contains text | Los Angeles |
+| check element | view account contact information section | contains text | 12345 |

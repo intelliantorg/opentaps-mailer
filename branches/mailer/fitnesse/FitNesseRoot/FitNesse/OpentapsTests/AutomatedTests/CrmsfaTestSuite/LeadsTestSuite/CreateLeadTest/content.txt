@@ -1,0 +1,60 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Click on a CRMSFA ui element, they are defined in the CrmsfaElements class
+| click button | main tab leads |
+| click button | leads shortcut create lead |
+
+Fill the form
+| type text in | create lead company name | value | Test Lead CN Selenium |
+| type text in | create lead first name | value | Test Lead FN Selenium |
+| type text in | create lead last name | value | Test Lead LN Selenium |
+| type text in | create lead to name | value | Someone |
+| type text in | create lead address | value | 133rd Some Street |
+| type text in | create lead city | value | Kolkata |
+| type text in | create lead postal code | value | 700091 |
+| select from | create lead country | value | IND |
+
+Submit the form
+| click button | create lead submit button |
+
+Save the created party id
+| save value | created lead id | in | !-#lead-! |
+
+Find the created party
+| click button | leads shortcut find leads |
+
+Select the ID tab of the find widget
+| click on | find leads id tab |
+| wait for element | find leads by id | to be visible |
+| type text in | find leads by id | value | !-#lead-! |
+| click on | find leads submit button |
+
+Wait for the list to load the data
+| sleep for | 2 | seconds |
+
+Check the found values, should only find one record
+| check element | found lead id | with index | 1 | present |
+| check element | found lead id | with index | 2 | absent |
+Value should be what we entered in the form
+| check element | found lead id | with index | 1 | has text | !-#lead-! |
+
+| check element | found lead first name | with index | 1 | has text | Test Lead FN Selenium |
+| check element | found lead last name | with index | 1 | has text | Test Lead LN Selenium |
+| check element | found lead company name | with index | 1 | has text | Test Lead CN Selenium |
+
+Creates a second lead, this uses methods defined in the CRMSFA fixture
+| create lead | !-#lead2-! | with company name | Another Lead CN | with first name | Another Lead FN | with last name | Another Lead LN | with to name | someone | with address | salt lake | with city | Kolkata | with zip code | 700091 | with country | IND |
+Go to the view page (even if we already are there after lead creation)
+| view lead | !-#lead2-! |
+Check the values we just entered
+| check element | view lead company name | has text | Another Lead CN |
+| check element | view lead first name | has text | Another Lead FN |
+| check element | view lead last name | has text | Another Lead LN |
+| check element | view lead contact information section | contains text | salt lake |
+| check element | view lead contact information section | contains text | Kolkata |
+| check element | view lead contact information section | contains text | 700091 |
+| check element | view lead contact information section | contains text | someone |
+| check element | view lead contact information section | contains text | India |

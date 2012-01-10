@@ -1,0 +1,13 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Logs a  call Task, this uses methods defined in the CRMSFA fixture
+| log call task | !-#task-! | with outbound | Y | with internal party id | admin | with external party id | 10051 | with opportunity id | 10011 | with case id | 10003 | with subject | test sub | with message | test msg | with start date | 5/20/09 | with duration | 1:00 |
+
+Go to the view page (even if we already are there after task creation)
+| view task | !-#task-! |
+
+Check the values we just entered
+| check element | view task activity subject | has text | test sub |

@@ -1,0 +1,13 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Creates a case, this uses methods defined in the CRMSFA fixture
+| create case | !-#case-! | with account id | 10010 | with contact id | 10034 | with priority | Medium (5) | with type | Request For Catalog | with reason | Complex functionality | with subject | test subject | with description | test desc | with note | test note |
+
+Go to the view page (even if we already are there after lead creation)
+| view case | !-#case-! |
+
+Check the values we just entered
+| check element | view case subject | has text | test subject |

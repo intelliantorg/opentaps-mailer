@@ -1,0 +1,43 @@
+!|org.opentaps.fitnesse.OpentapsFixture|
+
+This logs in CRMSFA as admin and wait for the Home page to load
+| login to crmsfa |
+
+Click on a CRMSFA ui element, they are defined in the CrmsfaElements class
+| click button | main tab opportunities |
+| click button | opportunities shortcut create opportunity |
+
+Fill the form
+| type text in | create opportunity name  | value | Test Opportunity Name 2 |
+| type text in | create opportunity account name | value | 10012 |
+| select from | create opportunity stage | value | SOSTG_PROSPECT |
+| select from | create opportunity type | value | SOTYP_NEWBIZ |
+| type text in | create opportunity estimated amount | value | 700000 |
+| select from | create opportunity currency uom id | value | INR |
+| select from | create opportunity marketing campaign id | value | CATRQ_AUTOMOBILE |
+| select from | create opportunity data source id | value | LEAD_EMPLOYEE |
+| type text in | create opportunity estimated close date | value | 05/16/09 |
+| type text in | create opportunity description | value | Testing |
+| type text in | create opportunity next step | value | Testing |
+
+Submit the form
+| click button | create opportunity submit button |
+
+Save the created sales opportunity id
+| save value | created sales opportunity id | in | !-#opportunity-! |
+
+Wait for the list to load the data
+| sleep for | 10 | seconds |
+
+Check the values we just entered
+| check element | view opportunity opportunity name | has text | Test Opportunity Name 2 |
+| check element | view opportunity account name | contains text | Test Account Selenium |
+| check element | view opportunity stage | contains text | Prospect |
+| check element | view opportunity type | contains text | New Business |
+| check element | view opportunity estimated amount | contains text | Rs.700,000.00 |
+| check element | view opportunity estimated probablity | contains text |  |
+| check element | view opportunity marketing campaign | contains text | Automobile |
+| check element | view opportunity source | contains text | Employee |
+| check element | view opportunity estimated close date | contains text | 5/16/09 |
+| check element | view opportunity description | contains text | Testing |
+| check element | view opportunity next step | contains text | Testing |
