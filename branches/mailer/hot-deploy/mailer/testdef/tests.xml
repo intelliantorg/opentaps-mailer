@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-suite suite-name="Mailer Unit Tests" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/test-suite.xsd">
+    <test-case case-name="import-tests">
+    	<junit-test-suite class-name="net.intelliant.tests.ImportTests"/>
+    </test-case>
+</test-suite>
