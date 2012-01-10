@@ -6,7 +6,7 @@
 	<handler name="screen" type="view" class="org.ofbiz.widget.screen.ScreenWidgetViewHandler" />
 
 	<request-map uri="main">
-		<security https="true" auth="true" />
+		<!-- <security https="true" auth="true" /> -->
 		<response name="success" type="view" value="home" />
 	</request-map>	
 	
