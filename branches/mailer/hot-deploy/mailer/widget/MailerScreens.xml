@@ -5,7 +5,7 @@
 	<screen name="main-section-decorator">
         <section>
             <actions>
-            	<property-map resource="UILabels" map-name="uiLabelMapExt" global="true"/>
+            	<property-map resource="UILabels" map-name="uiLabelMap" global="true"/>
                 <set field="sectionName" value="marketing" global="true"/>
                 <set field="sectionStyle" value="twoColumn"/>
                 <set field="leftBarScreen" value="component://mailer/widget/CommonScreens.xml#leftBarScreen"/>
