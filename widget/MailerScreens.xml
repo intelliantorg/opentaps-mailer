@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+	<screen name="main-section-decorator">
+        <section>
+            <actions>
+            	<property-map resource="UILabels" map-name="uiLabelMapExt" global="true"/>
+                <set field="sectionName" value="marketing" global="true"/>
+                <set field="sectionStyle" value="twoColumn"/>
+                <set field="leftBarScreen" value="component://crmsfa/widget/crmsfa/screens/marketing/MarketingScreens.xml#leftBarScreen"/>
+            </actions>
+            <widgets>
+                <include-screen name="main-section-template" location="component://opentaps-common/widget/screens/common/CommonScreens.xml"/>
+            </widgets>
+        </section>
+    </screen>
+    
 	<screen name="home">
         <section>
             <actions>
-                <set field="pageTitleLabel" value="Main"/>
-                <set field="sectionHeaderUiLabel" value="Main Header"/>
+                <set field="pageTitleLabel" value="MainHeader"/>
+                <set field="sectionHeaderUiLabel" value="MainHeader"/>
                 <set field="listSortTarget" value="viewMarketingCampaign"/>
                 <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/includes/pagination.bsh"/>
                 <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/marketing/viewMarketingCampaign.bsh"/>
             </actions>
             <widgets>
-                <decorator-screen name="main-section-decorator" location="component://crmsfa/widget/crmsfa/screens/marketing/MarketingScreens.xml">
+                <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
                     <label>Label of home page</label>
                     <!-- 

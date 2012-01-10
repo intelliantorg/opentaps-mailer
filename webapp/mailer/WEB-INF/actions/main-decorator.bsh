@@ -1,0 +1,10 @@
+import javolution.util.FastMap;
+import org.ofbiz.base.util.UtilProperties;
+import org.ofbiz.base.util.UtilMisc;
+import org.opentaps.common.util.UtilConfig;
+import org.opentaps.common.security.OpentapsSecurity;
+
+sections = new ArrayList();
+sections.add(UtilMisc.toMap("uiLabel", "OpentapsMyHome", "uri", "/main", "sectionName", "myHome", "hasPermission", true));
+
+context.put("applicationSections", sections);
