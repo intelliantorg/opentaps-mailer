@@ -17,6 +17,7 @@
     
     <entity-resource type="group" reader-name="main" loader="main" location="entitydef/entitygroup.xml"/>
     -->
+    <test-suite loader="main" location="testdef/tests.xml"/>
     <webapp name="mailer"
           title="Mailer application"
           server="default-server"
