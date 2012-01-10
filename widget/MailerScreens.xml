@@ -4,9 +4,8 @@
 	<screen name="home">
         <section>
             <actions>
-            	<property-map map-name="uiLabels" resource="UILabels"/>
-                <set field="pageTitleLabel" value="MainHeader"/>
-                <set field="sectionHeaderUiLabel" value="MainHeader"/>
+                <set field="pageTitleLabel" value="Main"/>
+                <set field="sectionHeaderUiLabel" value="Main Header"/>
                 <set field="listSortTarget" value="viewMarketingCampaign"/>
                 <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/includes/pagination.bsh"/>
                 <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/marketing/viewMarketingCampaign.bsh"/>
