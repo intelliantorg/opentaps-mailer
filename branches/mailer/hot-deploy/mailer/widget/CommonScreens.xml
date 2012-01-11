@@ -5,6 +5,7 @@
     <screen name="main-application-decorator">
         <section>
             <actions>
+            	<property-map resource="UILabels" map-name="uiLabelMap" global="true"/>
             	<property-map global="true" resource="mailer" map-name="configProperties"/>
             	<set field="configProperties.mailer.title" value="Mailer" global="true"/>
                	<set field="opentapsApplicationName" value="mailer" global="true"/>
