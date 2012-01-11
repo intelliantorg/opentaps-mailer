@@ -31,7 +31,7 @@
                             <include-form name="createMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
                         </container>
                          -->
-                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/view/createCampaign.ftl"/></html></platform-specific>
+                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/createCampaign.ftl"/></html></platform-specific>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -142,7 +142,7 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">                     
-                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/view/ListMergeForms.ftl"/></html></platform-specific>
+                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/listMergeForms.ftl"/></html></platform-specific>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
