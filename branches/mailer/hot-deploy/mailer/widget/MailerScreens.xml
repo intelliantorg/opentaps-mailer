@@ -15,23 +15,7 @@
             </widgets>
         </section>
     </screen>
-    
-	<screen name="home">
-        <section>
-            <actions>
-                <set field="pageTitleLabel" value="MainHeader"/>
-                <set field="sectionHeaderUiLabel" value="MainHeader"/>
-            </actions>
-            <widgets>
-                <decorator-screen name="main-section-decorator">
-                    <decorator-section name="section-body">
-                    <label>Label of home page</label>
-                    </decorator-section>
-                </decorator-screen>
-            </widgets>
-        </section>
-    </screen>
-    
+        
     <screen name="createMarketingCampaignForm">
         <section>
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_CREATE"/></condition>
@@ -42,9 +26,12 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
+						<!-- 
                         <container style="form">
                             <include-form name="createMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
                         </container>
+                         -->
+                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/view/createCampaign.ftl"/></html></platform-specific>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
