@@ -27,4 +27,72 @@
 
         <field name="submitButton" title="${uiLabelMap.CrmCreateMarketingCampaign}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
+    
+    <form name="FindMarketingCampaign" type="single" target="${findMarketingCampaignsTarget}"
+        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
+
+        <field name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}" position="1">
+            <drop-down allow-empty="true" no-current-selected-key="MKTG_CAMP_INPROGRESS">
+                <entity-options entity-name="StatusItem" description="${description}">
+                    <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit"><submit/></field>
+    </form>
+    <form name="ListMarketingCampaigns" type="list" separate-columns="true" 
+        title="MarketingCampaigns"  default-title-style="tableheadtext" target=""
+        default-widget-style="tabletext" default-tooltip-style="tabletext"
+        default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"
+        paginate-target="${listSortTarget}" paginate-target-anchor="ListMarketingCampaigns" paginate-size-field="campaignsSize" paginate-index-field="campaignsIndex"
+        list-name="campaignsListIt">
+
+        <field name="campaignName" title="${uiLabelMap.CommonName}" widget-style="linktext"
+            header-link="${listSortTarget}?campaignsOrderBy=campaignName${findParams}#ListMarketingCampaigns" header-link-style="orderByHeaderLink">
+            <hyperlink description="${campaignName} (${marketingCampaignId})" target="viewMarketingCampaign?marketingCampaignId=${marketingCampaignId}"/>
+        </field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}"
+            header-link="${listSortTarget}?campaignsOrderBy=statusId${findParams}#ListMarketingCampaigns" header-link-style="orderByHeaderLink">
+            <display-entity entity-name="StatusItem"/>
+        </field>
+        <field name="fromDate" red-when="never" title="${uiLabelMap.CommonFrom}"><display/></field>
+        <field name="thruDate" red-when="never" title="${uiLabelMap.CommonThru}"><display/></field>
+        <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}">
+            <display type="currency" currency="${currencyUomId}"/>
+        </field>
+        <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}">
+            <display type="currency" currency="${currencyUomId}"/>
+        </field>
+        <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}">
+            <display type="currency" currency="${currencyUomId}"/>
+        </field>
+    </form> 
+    
+    <form name="createContactListForm" type="single" title="Create Contact List" target="createContactList"
+        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
+        <field name="contactListName" title="${uiLabelMap.CommonName}" title-style="requiredField"><text/></field>
+        <field name="contactListTypeId"><hidden value="MARKETING"/></field>
+        <field name="marketingCampaignId" title="${uiLabelMap.CrmMarketingCampaign}">
+            <drop-down allow-empty="true" current="selected">
+                <entity-options description="${campaignName}" entity-name="MarketingCampaign">
+                    <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
+                    <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_COMPLETED"/>
+                    <entity-order-by field-name="campaignName"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" title-style="requiredField" position="1">
+            <drop-down allow-empty="false">
+                <option key="EMAIL_ADDRESS" description="Email Address"/>
+                <option key="POSTAL_ADDRESS" description="Postal Address"/>
+                <option key="TELECOM_NUMBER" description="Phone Number"/>
+            </drop-down>
+        </field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><textarea/></field>
+
+        <field name="submitButton" title="${uiLabelMap.CrmCreateContactList}" widget-style="smallSubmit"><submit button-type="button"/></field>
+    </form> 
 </forms>
