@@ -55,12 +55,24 @@
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="createMarketingCampaignForm" />
 	</request-map>
+	<request-map uri="findMarketingCampaigns">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="findMarketingCampaigns" />
+	</request-map>
+	<request-map uri="createContactListForm">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="createContactListForm" />
+	</request-map>
+	
+	
 		
 	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
 	<view-map name="login" type="screen" page="component://opentaps-common/widget/screens/common/CommonScreens.xml#login"/>
 	<view-map name="myHomeMain" type="screen" page="component://mailer/widget/MailerScreens.xml#home" />
 	<view-map name="createMarketingCampaignForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createMarketingCampaignForm" />
-	
+	<view-map name="findMarketingCampaigns" type="screen" page="component://mailer/widget/MailerScreens.xml#findMarketingCampaigns" />
+	<view-map name="createContactListForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createContactListForm" />
+
 	<!-- end of view mappings -->
 </site-conf>

@@ -5,7 +5,7 @@
 	<screen name="main-section-decorator">
         <section>
             <actions>
-            	<property-map resource="UILabels" map-name="uiLabelMap" global="true"/>
+            	<property-map resource="UILabels" map-name="uiLabelMapExt" global="true"/>
                 <set field="sectionName" value="marketing" global="true"/>
                 <set field="sectionStyle" value="twoColumn"/>
                 <set field="leftBarScreen" value="component://mailer/widget/CommonScreens.xml#leftBarScreen"/>
@@ -52,6 +52,60 @@
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
                         <label style="head2">Permission denied</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
+        </section>
+    </screen>
+
+	<screen name="findMarketingCampaigns">
+        <section>
+            <actions>
+                <set field="pageTitleLabel" value="CrmFindMarketingCampaigns"/>
+                <set field="sectionHeaderUiLabel" value="CrmFindMarketingCampaigns"/>
+                <set field="parameters.listIteratorNameToUse" value="campaignsListIt"/> <!-- iterator for list of accounts -->
+                <set field="listSortTarget" value="findMarketingCampaigns"/>
+                <set field="findMarketingCampaignsTarget" value="findMarketingCampaigns"/>
+                <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/includes/pagination.bsh"/>
+                <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/marketing/findMarketingCampaigns.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container style="subSectionBlock">
+                            <container style="form">
+                                <include-form name="FindMarketingCampaign" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            </container>
+                        </container>
+                        <container style="subSectionBlock">
+                            <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.CrmMarketingCampaigns}</label></container>
+                            <include-form name="ListMarketingCampaigns" location="component://mailer/widget/forms/MailerForms.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+	<screen name="createContactListForm">
+        <section>
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
+            <actions>
+                <set field="pageTitleLabel" value="CrmCreateContactList"/>
+                <set field="sectionHeaderUiLabel" value="CrmCreateContactList"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container style="form">
+                            <include-form name="createContactListForm" location="component://mailer/widget/forms/MailerForms.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+            <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">${uiLabelMap.CrmErrorPermissionDenied}</label>
                     </decorator-section>
                 </decorator-screen>
             </fail-widgets>
