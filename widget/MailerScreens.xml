@@ -86,6 +86,7 @@
             </widgets>
         </section>
     </screen>
+    
 	<screen name="createContactListForm">
         <section>
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
@@ -109,6 +110,35 @@
                     </decorator-section>
                 </decorator-screen>
             </fail-widgets>
+        </section>
+    </screen>
+    
+    <screen name="findContactLists">
+        <section>
+            <actions>
+                <set field="pageTitleLabel" value="CrmFindContactLists"/>
+                <set field="sectionHeaderUiLabel" value="CrmFindContactLists"/>
+                <set field="parameters.listIteratorNameToUse" value="contactLists"/> <!-- iterator for list of contacts -->
+                <set field="listSortTarget" value="findContactLists"/>
+                <set field="findContactListsTarget" value="findContactLists"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/pagination.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/findContactLists.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container style="subSectionBlock">
+                            <container style="form">
+                                <include-form name="FindContactList" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            </container>
+                        </container>
+                        <container style="subSectionBlock">
+                            <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.CrmContactLists}</label></container>
+                            <include-form name="ListContactLists" location="component://mailer/widget/forms/MailerForms.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
         </section>
     </screen>
 </screens>     
