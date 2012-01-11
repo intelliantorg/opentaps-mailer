@@ -66,8 +66,8 @@
                 <set field="parameters.listIteratorNameToUse" value="campaignsListIt"/> <!-- iterator for list of accounts -->
                 <set field="listSortTarget" value="findMarketingCampaigns"/>
                 <set field="findMarketingCampaignsTarget" value="findMarketingCampaigns"/>
-                <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/includes/pagination.bsh"/>
-                <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/marketing/findMarketingCampaigns.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/pagination.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/findMarketingCampaigns.bsh"/>
             </actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
