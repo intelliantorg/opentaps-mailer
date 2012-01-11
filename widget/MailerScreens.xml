@@ -21,30 +21,40 @@
             <actions>
                 <set field="pageTitleLabel" value="MainHeader"/>
                 <set field="sectionHeaderUiLabel" value="MainHeader"/>
-                <set field="listSortTarget" value="viewMarketingCampaign"/>
-                <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/includes/pagination.bsh"/>
-                <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/marketing/viewMarketingCampaign.bsh"/>
             </actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
                     <label>Label of home page</label>
-                    <!-- 
-                        <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/viewMarketingCampaign.ftl"/></html></platform-specific>                            
-                        </container>
-
-                        <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/contactListsMenu.ftl"/></html></platform-specific>
-                         </container>
-
-                        <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/trackingCodesMenu.ftl"/></html></platform-specific>
-                        </container>
-                     -->
                     </decorator-section>
                 </decorator-screen>
             </widgets>
+        </section>
+    </screen>
+    
+    <screen name="createMarketingCampaignForm">
+        <section>
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_CREATE"/></condition>
+            <actions>
+                <set field="pageTitleLabel" value="CreateCampaignHeader"/>
+                <set field="sectionHeaderUiLabel" value="CreateCampaignHeader"/>
+			</actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container style="form">
+                            <include-form name="createMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+            <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">Permission denied</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
         </section>
     </screen>
 </screens>     

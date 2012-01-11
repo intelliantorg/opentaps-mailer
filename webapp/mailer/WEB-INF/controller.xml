@@ -50,10 +50,17 @@
 	<request-map uri="main">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="myHomeMain" />
-	</request-map>	
+	</request-map>
+	<request-map uri="createMarketingCampaignForm">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="createMarketingCampaignForm" />
+	</request-map>
+		
 	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
 	<view-map name="login" type="screen" page="component://opentaps-common/widget/screens/common/CommonScreens.xml#login"/>
-	<view-map name="myHomeMain" type="screen" page="component://mailer/widget/MailerScreens.xml#home" />	
+	<view-map name="myHomeMain" type="screen" page="component://mailer/widget/MailerScreens.xml#home" />
+	<view-map name="createMarketingCampaignForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createMarketingCampaignForm" />
+	
 	<!-- end of view mappings -->
 </site-conf>
