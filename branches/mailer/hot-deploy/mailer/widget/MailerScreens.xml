@@ -141,4 +141,24 @@
             </widgets>
         </section>
     </screen>
+    
+     <!-- Merge Forms -->
+    <screen name="manageMergeForms">
+        <section> 
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
+            <actions>
+                <set field="pageTitleLabel" value="CrmFormLetterTemplates"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
+                <set field="sectionHeaderUiLabel" value="CrmFormLetterTemplates"/>  <!-- this is for the main section of this page, ie <h2> -->
+                <set field="mergeFormLookupEntity" value="MergeFormAndCategory"/>  <!-- Override the entity name in getMergeFormsForCurrentUser.bsh -->
+                <script location="component://opentaps-common/webapp/common/WEB-INF/actions/includes/getMergeFormsForCurrentUser.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">                     
+                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/view/ListMergeForms.ftl"/></html></platform-specific>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
 </screens>     

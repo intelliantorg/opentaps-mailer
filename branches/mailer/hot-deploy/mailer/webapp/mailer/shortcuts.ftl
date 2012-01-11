@@ -7,7 +7,7 @@
         <li><a href="<@ofbizUrl>createContactListForm</@ofbizUrl>">${uiLabelMap.CrmCreateContactList}</a></li>
         <li><a href="<@ofbizUrl>findContactLists</@ofbizUrl>">${uiLabelMap.CrmFindContactLists}</a></li>
         <#if (security.hasEntityPermission("CRMSFA_CAMP", "_CREATE", session))>
-        <li><a href="<@ofbizUrl>ManageMergeForms</@ofbizUrl>">${uiLabelMap.CrmFormLetterTemplates}</a></li>
+        <li><a href="<@ofbizUrl>manageMergeForms</@ofbizUrl>">${uiLabelMap.CrmFormLetterTemplates}</a></li>
         </#if>
       </ul>
     </div>

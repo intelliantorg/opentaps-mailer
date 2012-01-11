@@ -67,6 +67,10 @@
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="findContactLists" />
 	</request-map>
+	<request-map uri="manageMergeForms">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="manageMergeForms" />
+	</request-map>
 	
 	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
@@ -76,7 +80,7 @@
 	<view-map name="findMarketingCampaigns" type="screen" page="component://mailer/widget/MailerScreens.xml#findMarketingCampaigns" />
 	<view-map name="createContactListForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createContactListForm" />
 	<view-map name="findContactLists" type="screen" page="component://mailer/widget/MailerScreens.xml#findContactLists" />
-	
+	<view-map name="manageMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#manageMergeForms" />
 
 	<!-- end of view mappings -->
 </site-conf>
