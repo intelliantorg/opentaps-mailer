@@ -1,0 +1,21 @@
+.basic-form div.rowContainer{
+	clear:both;
+}
+
+.basic-form div.label{
+	float:left;
+	width:14%;
+	text-align:right;
+	padding:3px;
+	border: 0px none;
+}
+.basic-form div.fieldContainer{
+	padding:1px;	
+	float:left;
+	width:25%;
+}
+.basic-form div.fieldContainerWide{
+	float:left;
+	width:75%;
+	padding:1px;
+}
