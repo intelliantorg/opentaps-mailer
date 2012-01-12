@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ * Copyright (c) 2006 - 2007 Open Source Strategies, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the Honest Public License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Honest Public License for more details.
+ * 
+ * You should have received a copy of the Honest Public License
+ * along with this program; if not, write to Funambol,
+ * 643 Bair Island Road, Suite 305 - Redwood City, CA 94063, USA
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/services.xsd">
+    <description>Opentaps Live Catalog Services</description>
+    <vendor>Open Source Strategies, Inc.</vendor>
+
+    <service name="mailer.createMarketingCampaign" engine="java" export="true"
+            location="net.intelliant.MarketingCampaignService" invoke="createMarketingCampaign">
+        <description>
+        	Provides a list of descriptions of promotions available. If a userId and password are specified,
+            the promotions will be filtered accordingly.
+        </description>
+        <implements service="createMarketingCampaign"/>
+        
+        <!-- <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/> -->
+        <attribute name="fromEmailAddress" type="String" mode="IN" optional="false"/>
+        <attribute name="templateId" type="String" mode="IN" optional="false"/>
+        <attribute name="contactListId" type="String" mode="IN" optional="false"/>
+        <attribute name="marketingCampaignId" type="String" mode="OUT" optional="false"/>
+    </service>    
+</services>

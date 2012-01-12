@@ -7,9 +7,9 @@
 					<td>
 						<div class="rowContainer">
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CommonName}</span></div>
-							<div class="fieldContainer"><input class="inputBox" size="35" name="name"></div>							
+							<div class="fieldContainer"><input class="inputBox" size="35" name="campaignName"></div>							
 							<div class="label"><span class="tableheadtext">From email</span></div>
-							<div class="fieldContainer"><input class="inputBox" size="35" name="fromEmail"></div>
+							<div class="fieldContainer"><input class="inputBox" size="35" name="fromEmailAddress"></div>
 						</div>
 						<div class="rowContainer">
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CommonFrom}</span></div>
@@ -17,7 +17,7 @@
 								<@inputDateTime name="fromDate" form="createMarketingCampaignForm" />
 							</div>							
 							<div class="label"><span class="tableheadtext">Template</span></div>
-							<div class="fieldContainer"><input class="inputBox" size="35" name="template"></div>
+							<div class="fieldContainer"><input class="inputBox" size="35" name="templateId"></div>
 						</div>
 						<div class="rowContainer">
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CommonThru}</span></div>
@@ -25,7 +25,7 @@
 								<@inputDateTime name="thruDate" form="createMarketingCampaignForm" />
 							</div>					
 							<div class="label"><span class="tableheadtext">Contact List</span></div>
-							<div class="fieldContainer"><input class="inputBox" size="35" name="contactList"></div>
+							<div class="fieldContainer"><input class="inputBox" size="35" name="contactListId"></div>
 						</div>
 						<div class="rowContainer">
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CrmMarketingBudgetedCost}</span></div>
@@ -33,7 +33,7 @@
 							
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CommonCurrency}</span></div>
 							<div class="fieldContainer" style="padding: 2px;">
-								<@inputCurrencySelect defaultCurrencyUomId=configProperties.defaultCurrencyUomId useDescription=true />
+								<@inputCurrencySelect name="currencyUomId" defaultCurrencyUomId=configProperties.defaultCurrencyUomId useDescription=true />
 							</div>
 						</div>
 						<div class="rowContainer">
