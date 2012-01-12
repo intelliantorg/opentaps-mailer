@@ -55,6 +55,12 @@
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="createMarketingCampaignForm" />
 	</request-map>
+	<request-map uri="createMarketingCampaign">
+		<security https="true" auth="true" />
+		<event type="service" invoke="mailer.createMarketingCampaign" />
+		<response name="success" type="view" value="createMarketingCampaignForm" />
+	</request-map>
+	
 	<request-map uri="findMarketingCampaigns">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="findMarketingCampaigns" />
