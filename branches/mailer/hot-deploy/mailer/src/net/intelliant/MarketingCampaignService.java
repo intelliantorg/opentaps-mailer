@@ -1,11 +1,11 @@
 package net.intelliant;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.ofbiz.base.util.UtilMisc;
+import org.ofbiz.base.util.UtilProperties;
+import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
@@ -17,50 +17,43 @@ import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
 
 public class MarketingCampaignService {
+	public static final String module = MarketingCampaignService.class.getName();
+	public static final String errorResource = "ErrorLabels";
+	public static final String successResource = "UILabels";
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Map createMarketingCampaign(DispatchContext dctx, Map context) throws GenericServiceException, GenericEntityException{
+    /**
+     *  Is a wrapper over the original marketing campaign, custom values will be persisted once the campaign is created. 
+     */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> createMarketingCampaign(DispatchContext dctx, Map<String, Object> context) {
 		GenericDelegator delegator = dctx.getDelegator();
-		
-		Locale locale = (Locale) context.get("locale");
-		String module = (String) context.get("module");
-		
-		GenericValue checkResults = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId",context.get("templateId")));
-		if(checkResults == null){
-			return UtilMessage.createAndLogServiceError("Proved template id is not valid", module);
+		Map<String, Object> serviceResults = ServiceUtil.returnSuccess(); 		
+		Locale locale = (Locale) context.get("locale");		
+		try {
+			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
+			if (UtilValidate.isEmpty(mergeFormGV)) {
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
+			}
+			ModelService service = dctx.getModelService("createMarketingCampaign");
+			Map<String, Object> inputs = service.makeValid(context, "IN");
+			LocalDispatcher dispatcher = dctx.getDispatcher();		
+			serviceResults = dispatcher.runSync(service.name, inputs);
+			if (ServiceUtil.isError(serviceResults)) {
+		        return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, module);
+		    }
+		    String marketingCampaignId = (String)serviceResults.get("marketingCampaignId");
+		    inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);	        	
+		    inputs.put("fromEmailAddress",context.get("fromEmailAddress"));
+		    inputs.put("templateId",context.get("templateId"));
+		    inputs.put("contactListId",context.get("contactListId"));
+		    GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", inputs);
+		    mailerMarketingCampaign.create();
+		    serviceResults.put("marketingCampaignId", marketingCampaignId);
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
+		} catch (GenericServiceException e) {
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
 		}
-		
-		checkResults = delegator.findByPrimaryKey("ContactList", UtilMisc.toMap("contactListId",context.get("contactListId")));
-		if(checkResults == null){
-			return UtilMessage.createAndLogServiceError("Proved contact list id is not valid", module);
-		}
-		
-		
-		//* Context will contain several parameters, keep the parameters acceptable to the service being called.
-		ModelService service = dctx.getModelService("createMarketingCampaign");
-		Map input = service.makeValid(context, "IN");
-		
-		LocalDispatcher dispatcher = dctx.getDispatcher();		
-		Map serviceResults = dispatcher.runSync(service.name, input);
-		
-		if (ServiceUtil.isError(serviceResults)) {
-	        return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, module);
-	    }
-		
-	    String marketingCampaignId = (String) serviceResults.get("marketingCampaignId");
-	    //* Try with Map.putAll()
-	    Map parameters = new HashMap();	        	
-	    parameters.put("marketingCampaignId", marketingCampaignId);
-	    parameters.put("fromEmailAddress",context.get("fromEmailAddress"));
-	    parameters.put("templateId",context.get("templateId"));
-	    parameters.put("contactListId",context.get("contactListId"));
-	    
-	    GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", parameters);
-	    mailerMarketingCampaign.create();
-	    
-	    serviceResults = ServiceUtil.returnSuccess();
-	    serviceResults.put("marketingCampaignId", marketingCampaignId);
 	    return serviceResults;
-	    //UtilMessage.createServiceSuccess("Operation successful! '"+context.get("campaignName")+"' added.", locale, serviceResults);//  serviceResults;
 	}
 }
