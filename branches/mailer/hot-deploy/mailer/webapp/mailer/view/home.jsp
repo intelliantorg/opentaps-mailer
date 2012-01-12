@@ -1,1 +1,0 @@
-Sample home page "Mailer application"
