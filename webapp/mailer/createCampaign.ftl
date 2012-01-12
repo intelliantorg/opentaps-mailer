@@ -9,7 +9,7 @@
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CommonName}</span></div>
 							<div class="fieldContainer"><input class="inputBox" size="35" name="name"></div>							
 							<div class="label"><span class="tableheadtext">From email</span></div>
-							<div class="fieldContainer"><input class="inputBox" size="35" name="name"></div>
+							<div class="fieldContainer"><input class="inputBox" size="35" name="fromEmail"></div>
 						</div>
 						<div class="rowContainer">
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CommonFrom}</span></div>
@@ -17,11 +17,7 @@
 								<@inputDateTime name="fromDate" form="createMarketingCampaignForm" />
 							</div>							
 							<div class="label"><span class="tableheadtext">Template</span></div>
-							<div class="fieldContainer">
-								<select class="inputBox" style="width:180px;">
-									<option value="">-- Select --</option>
-								</select>
-							</div>
+							<div class="fieldContainer"><input class="inputBox" size="35" name="template"></div>
 						</div>
 						<div class="rowContainer">
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CommonThru}</span></div>
@@ -29,7 +25,7 @@
 								<@inputDateTime name="thruDate" form="createMarketingCampaignForm" />
 							</div>					
 							<div class="label"><span class="tableheadtext">Contact List</span></div>
-							<div class="fieldContainer"><input class="inputBox" size="35" name="name"></div>
+							<div class="fieldContainer"><input class="inputBox" size="35" name="contactList"></div>
 						</div>
 						<div class="rowContainer">
 							<div class="label"><span class="tableheadtext">${uiLabelMap.CrmMarketingBudgetedCost}</span></div>
