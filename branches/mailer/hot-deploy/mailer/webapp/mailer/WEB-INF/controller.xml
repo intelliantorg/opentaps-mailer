@@ -51,14 +51,17 @@
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="findMarketingCampaigns" />
 	</request-map>
+	
 	<request-map uri="createMarketingCampaignForm">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="createMarketingCampaignForm" />
 	</request-map>
+	
 	<request-map uri="createMarketingCampaign">
 		<security https="true" auth="true" />
 		<event type="service" invoke="mailer.createMarketingCampaign" />
-		<response name="success" type="view" value="createMarketingCampaignForm" />
+		<response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId" allowed-attributes="marketingCampaignId" />
+		<response name="error" type="view" value="createMarketingCampaignForm"/>
 	</request-map>
 	
 	<request-map uri="findMarketingCampaigns">
