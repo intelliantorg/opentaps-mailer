@@ -1,7 +1,6 @@
 .basic-form div.rowContainer{
 	clear:both;
 }
-
 .basic-form div.label{
 	float:left;
 	width:14%;
@@ -18,4 +17,19 @@
 	float:left;
 	width:75%;
 	padding:1px;
+}
+label{
+	width: 10em; 
+	float: left; 
+}
+label.error{ 
+	float: none; 
+	color: red;
+	display: block;
+	padding-left: .5em; 
+	vertical-align: top; 
+}
+select.error, input.error {
+	border: 2px solid;
+    color: red;
 }
