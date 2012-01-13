@@ -49,6 +49,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		assertEquals(results.get("budgetedCost"), budgetedCost);
 		assertEquals(results.get("estimatedCost"), estimatedCost);
 		assertEquals(results.get("currencyUomId"), currencyUomId);
+		assertEquals(results.get("statusId"), "MKTG_CAMP_PLANNED"); /** Should be planned by default. */
 
 		results = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
