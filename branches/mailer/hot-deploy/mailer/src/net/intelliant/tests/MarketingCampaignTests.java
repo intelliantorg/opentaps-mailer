@@ -99,10 +99,8 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		Double estimatedCost = budgetedCost>1000?budgetedCost-900:budgetedCost-1;
 		String currencyUomId = "INR";
 		
-		// Creating marketing campaign
 		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 
-		// Assigning updated values. This values will be updated through service
 		currTime = System.currentTimeMillis();
 		campaignName = "Campaign_" + currTime;
 		fromEmailAddress = "email_" + currTime + "@email.com";
@@ -112,22 +110,18 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		estimatedCost = 11550.50;
 		currencyUomId = "INR";
 		
-		// Creating map with the updated values.
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("campaignName", campaignName);
 		inputs.put("userLogin", admin);
 		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("templateId", templateId);
-		//inputs.put("contactListId", contactListId);
 		inputs.put("budgetedCost", budgetedCost);
 		inputs.put("currencyUomId", currencyUomId);
 		inputs.put("estimatedCost", estimatedCost);
 		inputs.put("statusId", "MKTG_CAMP_PLANNED");
 		 
-		// Running update service & check for errors.
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
-		// Checking underlying entity is updated or not - 1
 		Map<?, ?> results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
 		assertEquals(results.get("campaignName"), campaignName);
@@ -135,7 +129,6 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		assertEquals(results.get("estimatedCost"), estimatedCost);
 		assertEquals(results.get("currencyUomId"), currencyUomId);
 
-		// Checking underlying entity is updated or not - 2
 		results = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
 		assertEquals(results.get("fromEmailAddress"), fromEmailAddress);
