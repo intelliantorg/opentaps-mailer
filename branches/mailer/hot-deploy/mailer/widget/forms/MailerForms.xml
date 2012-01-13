@@ -25,32 +25,6 @@
         <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display/></field>
     </form>
     
-	<form name="createMarketingCampaignForm" type="single" title="Create Marketing Campaign" target="createMarketingCampaign"
-        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
-
-        <field name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
-        <field name="statusId" title="${uiLabelMap.CommonStatus}"><hidden value="MKTG_CAMP_PLANNED"/></field>
-        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
-            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
-        </field>
-        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
-            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
-        </field>
-        <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1"><text size="20" maxlength="20"/></field>
-        <field name="currencyUomId" title="${uiLabelMap.CommonCurrency}" position="2">
-            <drop-down allow-empty="true" current="selected"  no-current-selected-key="${configProperties.defaultCurrencyUomId}">
-                <entity-options description="${uomId} - ${description}" entity-name="Uom" key-field-name="uomId">
-                    <entity-constraint name="uomTypeId" operator="equals" value="CURRENCY_MEASURE"/>
-                    <entity-order-by field-name="description"/>
-                </entity-options>
-            </drop-down>
-        </field>
-        <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="1"><text size="20" maxlength="20"/></field>
-        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><textarea/></field>
-
-        <field name="submitButton" title="${uiLabelMap.CrmCreateMarketingCampaign}" widget-style="smallSubmit"><submit button-type="button"/></field>
-    </form>
-    
     <form name="FindMarketingCampaign" type="single" target="${findMarketingCampaignsTarget}"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
@@ -66,6 +40,7 @@
 
         <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit"><submit/></field>
     </form>
+    
     <form name="ListMarketingCampaigns" type="list" separate-columns="true" 
         title="MarketingCampaigns"  default-title-style="tableheadtext" target=""
         default-widget-style="tabletext" default-tooltip-style="tabletext"
@@ -92,7 +67,8 @@
         <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}">
             <display type="currency" currency="${currencyUomId}"/>
         </field>
-    </form> 
+    </form>
+     
     <form name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
@@ -129,6 +105,7 @@
 
         <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
+    
     <form name="createContactListForm" type="single" title="Create Contact List" target="createContactList"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
         <field name="contactListName" title="${uiLabelMap.CommonName}" title-style="requiredField"><text/></field>
@@ -171,7 +148,6 @@
         <field name="submitButton" title="${uiLabelMap.CrmFindContactLists}" widget-style="smallSubmit"><submit/></field>
     </form>
     
-    <!-- TODO: pagination and sort for this list -->
     <form name="ListContactLists" type="list" separate-columns="true" 
         title="List Contact Lists"  default-title-style="tableheadtext" target=""
         default-widget-style="tabletext" default-tooltip-style="tabletext"
