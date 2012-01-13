@@ -72,8 +72,8 @@
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
         <field name="marketingCampaignId"><hidden/></field>
-        <field widget-style="inputBox required" name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
-        <field name="statusId" title="${uiLabelMap.CommonStatus}" position="1">
+        <field widget-style="inputBox required" title-style="requiredField" name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
+        <field name="statusId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.CommonStatus}" position="1">
             <drop-down allow-empty="false">
                 <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
                     <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
@@ -81,11 +81,11 @@
                 </entity-options>
             </drop-down>
         </field>
-        <field name="fromEmailAddress" title="${uiLabelMap.LabelFromEmailAddress}" position="2"><text/></field>
+        <field name="fromEmailAddress" widget-style="inputBox required email" title-style="requiredField" title="${uiLabelMap.FromEmailAddress}" position="2"><text/></field>
         <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
-        <field name="templateId" title="${uiLabelMap.LabelTemplateId}" position="2"><text/></field>
+        <field name="templateId" widget-style="inputBox required" title-style="requiredField" title="${uiLabelMap.Template}" position="2"><text/></field>
         <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
