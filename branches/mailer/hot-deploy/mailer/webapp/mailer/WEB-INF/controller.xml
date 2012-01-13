@@ -70,7 +70,12 @@
 	<request-map uri="findMarketingCampaigns">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="findMarketingCampaigns" />
+	</request-map>	
+	<request-map uri="updateMarketingCampaignForm">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="updateMarketingCampaignForm" />
 	</request-map>
+	
 	<request-map uri="createContactListForm">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="createContactListForm" />
@@ -94,6 +99,7 @@
 	<view-map name="findContactLists" type="screen" page="component://mailer/widget/MailerScreens.xml#findContactLists" />
 	<view-map name="manageMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#manageMergeForms" />
 	<view-map name="viewMarketingCampaign" type="screen" page="component://mailer/widget/MailerScreens.xml#viewMarketingCampaign" />
+	<view-map name="updateMarketingCampaignForm" type="screen" page="component://mailer/widget/MailerScreens.xml#updateMarketingCampaignForm" />
 
 	<!-- end of view mappings -->
 </site-conf>
