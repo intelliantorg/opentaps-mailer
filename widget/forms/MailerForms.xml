@@ -166,4 +166,26 @@
             <display description="${bsh:com.opensourcestrategies.crmsfa.marketing.MarketingHelper.countContactListMembers(contactListId, delegator)}"/>
         </field>
     </form>
+    
+   	<form name="ListMarketingCampaignContactLists" type="list" separate-columns="true" 
+        title="List Marketing Campaign Contact Lists"  default-title-style="tableheadtext" target=""
+        default-widget-style="tabletext" default-tooltip-style="tabletext"
+        default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"
+        list-name="marketingCampaignContactLists">
+        
+        <field name="contactListId" title="Segment" widget-area-style="fieldWidth300" widget-style="linktext" use-when="contactListId!=null">
+            <hyperlink description="${contactListName} (${contactListId})" target="viewContactList?contactListId=${contactListId}"/>
+        </field>
+
+        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" use-when="contactListId!=null">
+            <display-entity entity-name="ContactMechType"/>
+        </field>
+        <field name="" title="${uiLabelMap.CrmNumberOfMembers}" use-when="contactListId!=null">
+            <display description="${bsh:com.opensourcestrategies.crmsfa.marketing.MarketingHelper.countContactListMembers(contactListId, delegator)}"/>
+        </field>
+
+        <field name="remove" title="" widget-style="buttontext" use-when="contactListId!=null">
+          <hyperlink target="removeContactListFromMarketingCampaign?marketingCampaignId=${marketingCampaignId}&amp;campaignListId=${campaignListId}" description="${uiLabelMap.CommonRemove}" />
+        </field>
+    </form>
 </forms>

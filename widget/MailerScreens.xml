@@ -155,7 +155,6 @@
                 <set field="pageTitleLabel" value="ViewCampaignHeader"/>
                 <set field="sectionHeaderUiLabel" value="ViewCampaignHeader"/>
                 <set field="listSortTarget" value="viewMarketingCampaign"/>
-                <!-- <script location="component://crmsfa/webapp/crmsfa/WEB-INF/actions/includes/pagination.bsh"/> -->
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewMarketingCampaign.bsh"/>
             </actions>
             <widgets>
@@ -166,6 +165,11 @@
                             <container style="form">
                                 <include-form name="viewMarketingCampaign" location="component://mailer/widget/forms/MailerForms.xml"/>
                             </container>
+                        </container>
+						<container style="subSectionBlock">
+                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/contactListsMenu.ftl"/></html></platform-specific>
+                            <include-form name="ListMarketingCampaignContactLists" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            <include-form name="addContactListToMarketingCampaignForm" location="component://crmsfa/widget/crmsfa/forms/marketing/MarketingForms.xml"/>
                         </container>
                     </decorator-section>
                 </decorator-screen>
