@@ -29,7 +29,7 @@
 
         <field name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
         <field name="statusId" title="${uiLabelMap.CommonStatus}" position="1">
-            <drop-down allow-empty="true" no-current-selected-key="MKTG_CAMP_INPROGRESS">
+            <drop-down allow-empty="true">
                 <entity-options entity-name="StatusItem" description="${description}">
                     <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
                     <entity-order-by field-name="sequenceId"/>
