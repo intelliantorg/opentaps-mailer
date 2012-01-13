@@ -1,9 +1,11 @@
 package net.intelliant.tests;
 
+import java.util.List;
 import java.util.Map;
 
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilMisc;
+import org.ofbiz.entity.util.EntityUtil;
 import org.opentaps.tests.OpentapsTestCase;
 
 public class MarketingCampaignTests extends OpentapsTestCase {
@@ -19,21 +21,21 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		super.tearDown();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testCreateMarketingCampaign() throws GeneralException {
-		String campaignName = "Sample test campaign";
-		String fromEmailAddress = "Sample test address";
+		String campaignName = "Campaign_" + System.currentTimeMillis();
+		String fromEmailAddress = "email@email.com";
 		String templateId = "10000";
-		String contractListId = "10000";
+		String contactListId = "10000";
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
 
-		Map<String, Object> inputs = UtilMisc.toMap("campaignName", "Sample test campaign");
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
 		inputs.put("userLogin", admin);
-		inputs.put("campaignName", campaignName);
 		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("templateId", templateId);
-		inputs.put("contactListId", contractListId);
+		inputs.put("contactListId", contactListId);
 		inputs.put("budgetedCost", budgetedCost);
 		inputs.put("currencyUomId", currencyUomId);
 		inputs.put("estimatedCost", estimatedCost);
@@ -52,26 +54,30 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		assertNotNull(results);
 		assertEquals(results.get("fromEmailAddress"), fromEmailAddress);
 		assertEquals(results.get("templateId"), templateId);
-		assertEquals(results.get("contactListId"), contractListId);
+		
+		List<?> contactListsForMMC = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		assertNotEmpty("There must be atleast one active relation between MC and CL", EntityUtil.filterByDate(contactListsForMMC));
 	}
 
-	public void testCreateMarketingCampaignNoTemplateId() throws GeneralException {
-		String campaignName = "Sample test campaign";
-		String fromEmailAddress = "Sample test address";
-		String contractListId = "10000";
+	@SuppressWarnings("unchecked")
+	public void testCreateMarketingCampaignWithIncorrectTemplateId() throws GeneralException {
+		String campaignName = "Campaign_" + System.currentTimeMillis();
+		String fromEmailAddress = "email@email.com";
+		String templateId = "XYZ";
+		String contactListId = "10000";
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
 
-		Map<String, Object> inputs = UtilMisc.toMap("campaignName", "Sample test campaign");
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
 		inputs.put("userLogin", admin);
-		inputs.put("campaignName", campaignName);
 		inputs.put("fromEmailAddress", fromEmailAddress);
-		inputs.put("contactListId", contractListId);
+		inputs.put("templateId", templateId);
+		inputs.put("contactListId", contactListId);
 		inputs.put("budgetedCost", budgetedCost);
 		inputs.put("currencyUomId", currencyUomId);
 		inputs.put("estimatedCost", estimatedCost);
 
-		runAndAssertServiceFailure("mailer.createMarketingCampaign", inputs);
+		runAndAssertServiceError("mailer.createMarketingCampaign", inputs);
 	}
 }
