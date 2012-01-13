@@ -89,6 +89,24 @@
 		<response name="success" type="view" value="manageMergeForms" />
 	</request-map>
 	
+	<request-map uri="addContactListToMailerMarketingCampaign">
+		<security https="true" auth="true" />
+		<event type="service" invoke="mailer.addContactListToCampaign" />
+		<response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId" />
+		<response name="error" type="view" value="viewMarketingCampaign"/>
+	</request-map>
+	
+	<request-map uri="removeContactListFromMarketingCampaign">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="mailer.removeContactListFromMarketingCampaign"/>
+        <response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId"/>
+        <response name="error" type="view" value="viewMarketingCampaign"/>
+    </request-map>
+	
+	<request-map uri="LookupContactList">
+    	<security https="true" auth="true"/>
+    	<response name="success" type="view" value="LookupContactList"/>
+	</request-map>
 	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
 	<view-map name="login" type="screen" page="component://opentaps-common/widget/screens/common/CommonScreens.xml#login"/>
@@ -100,6 +118,5 @@
 	<view-map name="manageMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#manageMergeForms" />
 	<view-map name="viewMarketingCampaign" type="screen" page="component://mailer/widget/MailerScreens.xml#viewMarketingCampaign" />
 	<view-map name="updateMarketingCampaignForm" type="screen" page="component://mailer/widget/MailerScreens.xml#updateMarketingCampaignForm" />
-
-	<!-- end of view mappings -->
+	<view-map name="LookupContactList" type="screen" page="component://crmsfa/widget/crmsfa/screens/common/LookupScreens.xml#LookupContactList"/>
 </site-conf>
