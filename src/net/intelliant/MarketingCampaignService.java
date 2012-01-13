@@ -39,6 +39,7 @@ public class MarketingCampaignService {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
 		String contactListId = (String) context.get("contactListId");
+		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		try {
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
@@ -61,7 +62,7 @@ public class MarketingCampaignService {
 			GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", inputs);
 			mailerMarketingCampaign.create();
 
-			addContactListToCampaign(delegator, contactListId, marketingCampaignId, null);
+			addContactListToCampaign(delegator, userLogin, contactListId, marketingCampaignId, null);
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
 		} catch (GenericServiceException e) {
@@ -103,12 +104,13 @@ public class MarketingCampaignService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void addContactListToCampaign(GenericDelegator delegator, String contactListId, String marketingCampaignId, Timestamp now) throws GenericEntityException {
+	private static void addContactListToCampaign(GenericDelegator delegator, GenericValue userLogin, String contactListId, String marketingCampaignId, Timestamp now) throws GenericEntityException {
 		if (now == null) {
 			now = UtilDateTime.nowTimestamp();
 		}
 		String campaignListId = delegator.getNextSeqId("MailerMarketingCampaignAndContactList");
 		Map<String, Object> inputs = UtilMisc.toMap("campaignListId", campaignListId, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId, "fromDate", now);
+		inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
 		GenericValue mailerMarketingCampaignContactList = delegator.makeValue("MailerMarketingCampaignAndContactList", inputs);
 		mailerMarketingCampaignContactList.create();
 	}
@@ -117,6 +119,7 @@ public class MarketingCampaignService {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> addContactListToCampaign(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
+		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		Locale locale = (Locale) context.get("locale");
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
@@ -127,7 +130,7 @@ public class MarketingCampaignService {
 		try {
 			List marketingCampaignContactLists = dctx.getDelegator().findByCondition("MailerMarketingCampaignAndContactList", conditions, null, UtilMisc.toList("fromDate"));
 			if (UtilValidate.isEmpty(marketingCampaignContactLists)) {
-				addContactListToCampaign(dctx.getDelegator(), contactListId, marketingCampaignId, null);
+				addContactListToCampaign(dctx.getDelegator(), userLogin, contactListId, marketingCampaignId, null);
 			} else {
 				if (Debug.infoOn()) {
 					Debug.logInfo("Contact List - " + contactListId + " already associated with campaign - " + marketingCampaignId, module);
@@ -146,19 +149,19 @@ public class MarketingCampaignService {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> removeContactListFromMarketingCampaign(DispatchContext dctx, Map<String, Object> context) {
 		GenericDelegator delegator = dctx.getDelegator();
+		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		Locale locale = (Locale) context.get("locale");
 		String campaignListId = (String) context.get("campaignListId");
 		Timestamp now = UtilDateTime.nowTimestamp();
 
 		try {
-			// get the MarketingCampaignContactList
 			GenericValue marketingCampaignContactList = delegator.findByPrimaryKey("MailerMarketingCampaignAndContactList", UtilMisc.toMap("campaignListId", campaignListId));
 			if (UtilValidate.isEmpty(marketingCampaignContactList)) {
 				return UtilMessage.createAndLogServiceError("CrmErrorMarketingCampaignContactListNotFound", UtilMisc.toMap("campaignListId", campaignListId), locale, module);
 			}
-			// expire it
 			if (UtilValidate.isEmpty(marketingCampaignContactList.get("thruDate"))) {
 				marketingCampaignContactList.set("thruDate", now);
+				marketingCampaignContactList.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
 				delegator.store(marketingCampaignContactList);
 			}
 
