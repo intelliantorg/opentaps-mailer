@@ -14,14 +14,14 @@
       	</relation>
       	<relation type="one" fk-name="MMC_TO_MERGEFORM" rel-entity-name="MergeForm">
         	<key-map field-name="templateId" rel-field-name="mergeFormId"/>
-      </relation>
+      	</relation>
     </entity> 
     
     <view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
         <member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
         <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
-        <alias-all entity-alias="MC"></alias-all>
-        <alias-all entity-alias="MMC"></alias-all>
+        <alias-all entity-alias="MC"/>
+        <alias-all entity-alias="MMC"/>
         <view-link entity-alias="MC" rel-entity-alias="MMC" rel-optional="true">
             <key-map field-name="marketingCampaignId"/>
         </view-link>
@@ -33,6 +33,8 @@
         <field name="contactListId" type="id-ne"/>
         <field name="fromDate" type="date-time"/>
         <field name="thruDate" type="date-time"/>
+        <field name="createdByUserLogin" type="id-vlong"/>
+        <field name="lastModifiedByUserLogin" type="id-vlong"/>
         <prim-key field="campaignListId"/>
         <relation type="one" fk-name="MMCACL_TO_MC" rel-entity-name="MarketingCampaign">
             <key-map field-name="marketingCampaignId"/>
@@ -52,5 +54,79 @@
 		<view-link entity-alias="MMCCL" rel-entity-alias="CL">
 			<key-map field-name="contactListId"/>
 		</view-link>
-	</view-entity>  
+	</view-entity> 
+	
+	<extend-entity entity-name="MergeForm">
+		<field name="scheduleAt" type="id"/>
+	</extend-entity>
+	
+	<entity entity-name="MailerRecipient" package-name="net.intelliant.mailer" title="Mailer recipient">
+    	<field name="recipientId" type="id-ne"/>
+    	<!-- 
+    		Some customer information will be placed here including
+    		<field name="dateOfOperation" type="date"/>
+    	-->
+    	<field name="firstName" type="name">
+    		<description>First Name</description>
+    	</field>
+    	<field name="lastName" type="name">
+    	 	<description>Last Name</description>
+    	</field>
+    	<field name="emailAddress" type="email">
+    	 	<description>Email Address</description>
+    	</field>
+    	<field name="importedOnDateTime" type="date-time"/>
+    	<field name="importedByUserLogin" type="id-vlong"/>
+    	<prim-key field="recipientId"/>
+   	</entity>
+	
+	<entity entity-name="MailerCampaignStatus" package-name="net.intelliant.mailer" title="To track campaign status">
+    	<field name="campaignStatusId" type="id-ne"/>
+    	<field name="recipientId" type="id-ne"/>
+    	<field name="contactListId" type="id-ne"/> <!-- indicates customer was added as part of this contact list -->
+    	<field name="marketingCampaignId" type="id-ne"/>
+    	<field name="statusId" type="id-ne"/>
+    	<field name="scheduledForDate" type="date"/>
+    	<field name="actualExecutionDateTime" type="date-time"/>
+    	<prim-key field="campaignStatusId"/>
+    	<relation type="one" fk-name="MCS_TO_MKTGCPN" rel-entity-name="MarketingCampaign">
+        	<key-map field-name="marketingCampaignId"/>
+      	</relation>
+      	<relation type="one" fk-name="MCS_TO_MC" rel-entity-name="MailerRecipient">
+        	<key-map field-name="recipientId"/>
+      	</relation>
+      	<relation type="one" fk-name="MCS_TO_SI" rel-entity-name="StatusItem">
+        	<key-map field-name="statusId"/>
+      	</relation>
+      	<relation type="one" fk-name="MCS_TO_CL" rel-entity-name="ContactList">
+            <key-map field-name="contactListId"/>
+        </relation>
+    </entity> 
+    
+    <entity entity-name="MailerImportMapper" package-name="net.intelliant.mailer" title="Mailer import mapper">
+    	<field name="importMapperId" type="id-ne"/>
+    	<field name="importMapperName" type="id-ne"/>
+    	<field name="description" type="description"/>
+    	<field name="contentId" type="id-ne"/>
+    	<field name="statusId" type="id-ne"/>
+    	<field name="createdByUserLogin" type="id-vlong"/>
+      	<field name="lastModifiedByUserLogin" type="id-vlong"/>
+    	<prim-key field="importMapperId"/>
+    	<relation type="one" fk-name="MIM_TO_CNT" rel-entity-name="Content">
+        	<key-map field-name="contentId"/>
+      	</relation>
+   	</entity>
+   	
+   	<entity entity-name="MailerImportColumnMapper" package-name="net.intelliant.mailer" title="Stores mapping of XLS columns with entity columns">
+   		<field name="importColumnMapperId" type="id-ne"/>
+    	<field name="importMapperId" type="id-ne"/>
+    	<field name="entityColName" type="id-ne"/>
+    	<field name="importFileColIdx" type="id-ne"/>
+    	<field name="createdByUserLogin" type="id-vlong"/>
+      	<field name="lastModifiedByUserLogin" type="id-vlong"/>
+    	<prim-key field="importColumnMapperId"/>    	
+      	<relation type="one" fk-name="MICM_TO_MIM" rel-entity-name="MailerImportMapper">
+        	<key-map field-name="importMapperId"/>
+      	</relation>
+   	</entity>
 </entitymodel>
