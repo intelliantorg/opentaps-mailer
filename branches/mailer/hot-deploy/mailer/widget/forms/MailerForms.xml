@@ -9,14 +9,13 @@
             <display-entity entity-name="StatusItem"/>
         </field>
         <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1"><display/></field>
-        <field name="fromEmailAddress" title="${uiLabelMap.fromEmailAddress}" position="2"><display/></field><!--  * -->
+        <field name="fromEmailAddress" title="${uiLabelMap.fromEmailAddress}" position="2"><display/></field>
         <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1"><display/></field>
-        <field name="templateId" title="${uiLabelMap.templateId}" position="2"><display/></field><!--  * -->
+        <field name="templateId" title="${uiLabelMap.templateId}" position="2"><display/></field>
         <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1">
             <display type="currency" currency="${marketingCampaign.currencyUomId}"/>
         </field>
-        <field name="contactListId" title="${uiLabelMap.contactListId}" position="2"><display/></field><!-- * -->
-        <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="1">
+        <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="2">
             <display type="currency" currency="${marketingCampaign.currencyUomId}"/>
         </field>
         <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}" position="1">
