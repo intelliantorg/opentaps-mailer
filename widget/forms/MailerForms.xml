@@ -68,11 +68,11 @@
         </field>
     </form>
      
-    <form name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
+    <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
         <field name="marketingCampaignId"><hidden/></field>
-        <field name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
+        <field widget-style="inputBox required" name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
         <field name="statusId" title="${uiLabelMap.CommonStatus}" position="1">
             <drop-down allow-empty="false">
                 <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">

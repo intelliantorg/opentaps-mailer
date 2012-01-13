@@ -1,9 +1,4 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
-<script>
-	$(document).ready(function(){
-		$("#createMarketingCampaignForm").validate();
-  	});
-</script>
 <div class="allSubSectionBlocks">
 	<div class="form">
 		<form class="basic-form" id="createMarketingCampaignForm" name="createMarketingCampaignForm" action="<@ofbizUrl>createMarketingCampaign</@ofbizUrl>" method="post">
