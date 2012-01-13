@@ -1,8 +1,10 @@
 package net.intelliant;
 
+import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.Map;
 
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
@@ -30,6 +32,8 @@ public class MarketingCampaignService {
 		GenericDelegator delegator = dctx.getDelegator();
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
+		String contactListId = (String) context.get("contactListId");
+		Timestamp now = UtilDateTime.nowTimestamp();
 		try {
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
@@ -43,13 +47,18 @@ public class MarketingCampaignService {
 				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, module);
 			}
 			String marketingCampaignId = (String) serviceResults.get("marketingCampaignId");
+			serviceResults.put("marketingCampaignId", marketingCampaignId);
+			
 			inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 			inputs.put("fromEmailAddress", context.get("fromEmailAddress"));
 			inputs.put("templateId", context.get("templateId"));
-			inputs.put("contactListId", context.get("contactListId"));
 			GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", inputs);
 			mailerMarketingCampaign.create();
-			serviceResults.put("marketingCampaignId", marketingCampaignId);
+			
+			String campaignListId = delegator.getNextSeqId("MailerMarketingCampaignAndContactList");
+			inputs = UtilMisc.toMap("campaignListId", campaignListId, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId, "fromDate", now);
+			GenericValue mailerMarketingCampaignContactList = delegator.makeValue("MailerMarketingCampaignAndContactList", inputs);
+			mailerMarketingCampaignContactList.create();
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
 		} catch (GenericServiceException e) {
