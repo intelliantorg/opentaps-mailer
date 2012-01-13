@@ -60,10 +60,13 @@
 								<@inputText name="budgetedCost" size=35 />
 							</div>
 							<div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.CommonCurrency />
+								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
 							</div>
 							<div class="fieldContainer" style="padding: 2px;">
-								<@inputCurrencySelect name="currencyUomId" defaultCurrencyUomId=configProperties.defaultCurrencyUomId useDescription=true />
+								<#assign selectMap = Static["org.ofbiz.base.util.UtilMisc"].toMap("statusTypeId", "MKTG_CAMP_STATUS")>
+								<#assign orderBy = Static["org.ofbiz.base.util.UtilMisc"].toList("sequenceId")>
+								<#assign statusItems = delegator.findByAnd("StatusItem", selectMap, orderBy)>
+								<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
 							</div>
 						</div>
 						<div class="rowContainer">
@@ -72,6 +75,12 @@
 							</div>
 							<div class="fieldContainer">
 								<@inputText name="estimatedCost" size=35 />
+							</div>
+							<div class="label">
+								<@display class="tableheadtext" text=uiLabelMap.CommonCurrency />
+							</div>
+							<div class="fieldContainer" style="padding: 2px;">
+								<@inputCurrencySelect name="currencyUomId" defaultCurrencyUomId=configProperties.defaultCurrencyUomId useDescription=true />
 							</div>
 						</div>
 						<div class="rowContainer">

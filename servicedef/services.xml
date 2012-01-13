@@ -5,6 +5,7 @@
 
     <service name="mailer.createMarketingCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="createMarketingCampaign" auth="true">
         <implements service="createMarketingCampaign"/>
+        <attribute name="statusId" type="String" mode="IN" optional="false"/>
         <attribute name="fromEmailAddress" type="String" mode="IN" optional="false"/>
         <attribute name="templateId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>

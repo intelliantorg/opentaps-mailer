@@ -22,15 +22,16 @@
             <actions>
                 <set field="pageTitleLabel" value="CreateCampaignHeader"/>
                 <set field="sectionHeaderUiLabel" value="CreateCampaignHeader"/>
+                <!-- NOT sure why this is NOT working 
+                <entity-and list="statusItems" entity-name="StatusItem">
+                	<field-map field-name="statusTypeId" value="MKTG_CAMP_STATUS"/>
+                	<order-by field-name="sequenceId"/>
+                </entity-and>
+                -->
 			</actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
-						<!-- 
-                        <container style="form">
-                            <include-form name="createMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
-                        </container>
-                         -->
                         <platform-specific><html><html-template location="component://mailer/webapp/mailer/createCampaign.ftl"/></html></platform-specific>
                     </decorator-section>
                 </decorator-screen>

@@ -39,6 +39,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		inputs.put("budgetedCost", budgetedCost);
 		inputs.put("currencyUomId", currencyUomId);
 		inputs.put("estimatedCost", estimatedCost);
+		inputs.put("statusId", "MKTG_CAMP_PLANNED");
 
 		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createMarketingCampaign", inputs);
 		String marketingCampaignId = (String) results.get("marketingCampaignId");

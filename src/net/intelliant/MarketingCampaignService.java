@@ -39,6 +39,7 @@ public class MarketingCampaignService {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
 		String contactListId = (String) context.get("contactListId");
+		String statusId = (String) context.get("statusId");
 		try {
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
@@ -46,7 +47,7 @@ public class MarketingCampaignService {
 			}
 			ModelService service = dctx.getModelService("createMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, "IN");
-			inputs.put("statusId", "MKTG_CAMP_PLANNED");
+			inputs.put("statusId", statusId);
 			LocalDispatcher dispatcher = dctx.getDispatcher();
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
