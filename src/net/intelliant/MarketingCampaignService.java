@@ -92,7 +92,6 @@ public class MarketingCampaignService {
 			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign",UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
 			mailerMarketingCampaign.set("fromEmailAddress", context.get("fromEmailAddress"));
 			mailerMarketingCampaign.set("templateId", context.get("templateId"));
-			//GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", inputs);
 			mailerMarketingCampaign.store();
 
 			return serviceResults;
