@@ -26,9 +26,7 @@ if (security.hasEntityPermission("CRMSFA_CAMP", "_UPDATE", userLogin)) {
 }
 
 // get the associated contact lists
-conditions = new EntityConditionList( UtilMisc.toList(
-            new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId),
-            EntityUtil.getFilterByDateExpr()
-        ), EntityOperator.AND);
-marketingCampaignContactLists = delegator.findListIteratorByCondition("TrackingCodeAndContactListAndMarketingCampaign", conditions, null, null, UtilMisc.toList("fromDate"), UtilCommon.DISTINCT_READ_OPTIONS);
+conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId), EntityUtil.getFilterByDateExpr()), EntityOperator.AND);
+marketingCampaignContactLists = delegator.findByCondition("MailerMarketingCampaignAndContactListDetails", conditions, null, UtilMisc.toList("fromDate"));
 context.put("marketingCampaignContactLists", marketingCampaignContactLists);
+System.out.println("marketingCampaignContactLists >> " + marketingCampaignContactLists);

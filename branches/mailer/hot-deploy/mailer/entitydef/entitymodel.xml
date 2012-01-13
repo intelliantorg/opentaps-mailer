@@ -40,5 +40,17 @@
         <relation type="one" fk-name="MMCACL_TO_CL" rel-entity-name="ContactList">
             <key-map field-name="contactListId"/>
         </relation>
-    </entity>  
+    </entity>
+    
+	<view-entity entity-name="MailerMarketingCampaignAndContactListDetails" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
+		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
+		<member-entity entity-alias="CL" entity-name="ContactList"/>
+		<alias-all entity-alias="CL">
+			<exclude field="marketingCampaignId" />
+		</alias-all>
+		<alias-all entity-alias="MMCCL" />
+		<view-link entity-alias="MMCCL" rel-entity-alias="CL">
+			<key-map field-name="contactListId"/>
+		</view-link>
+	</view-entity>  
 </entitymodel>
