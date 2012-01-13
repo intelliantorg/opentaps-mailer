@@ -46,6 +46,7 @@ public class MarketingCampaignService {
 			}
 			ModelService service = dctx.getModelService("createMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, "IN");
+			inputs.put("statusId", "MKTG_CAMP_PLANNED");
 			LocalDispatcher dispatcher = dctx.getDispatcher();
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
