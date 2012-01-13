@@ -2,13 +2,8 @@ package net.intelliant.tests;
 
 import java.util.Map;
 
-import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilMisc;
-import org.ofbiz.entity.GenericDelegator;
-import org.ofbiz.entity.GenericEntityException;
-import org.ofbiz.service.GenericServiceException;
-import org.ofbiz.service.LocalDispatcher;
 import org.opentaps.tests.OpentapsTestCase;
 
 public class MarketingCampaignTests extends OpentapsTestCase {
@@ -58,7 +53,6 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		assertEquals(results.get("fromEmailAddress"), fromEmailAddress);
 		assertEquals(results.get("templateId"), templateId);
 		assertEquals(results.get("contactListId"), contractListId);
-
 	}
 
 	public void testCreateMarketingCampaignNoTemplateId() throws GeneralException {

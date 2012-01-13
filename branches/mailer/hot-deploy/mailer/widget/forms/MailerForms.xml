@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-form.xsd">
-
+	<form name="viewMarketingCampaign" type="single" title="View Marketing Campaign" default-map-name="marketingCampaign"
+        default-title-style="tableheadtext" default-widget-style="tabletext" default-tooltip-style="tabletext">
+        
+        <field name="campaignName" title="${uiLabelMap.CommonName}" position="1"><display/></field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}" position="2">
+            <display-entity entity-name="StatusItem"/>
+        </field>
+        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1"><display/></field>
+        <field name="fromEmailAddress" title="${uiLabelMap.fromEmailAddress}" position="2"><display/></field><!--  * -->
+        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1"><display/></field>
+        <field name="templateId" title="${uiLabelMap.templateId}" position="2"><display/></field><!--  * -->
+        <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1">
+            <display type="currency" currency="${marketingCampaign.currencyUomId}"/>
+        </field>
+        <field name="contactListId" title="${uiLabelMap.contactListId}" position="2"><display/></field><!-- * -->
+        <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="1">
+            <display type="currency" currency="${marketingCampaign.currencyUomId}"/>
+        </field>
+        <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}" position="1">
+            <display type="currency" currency="${marketingCampaign.currencyUomId}"/>
+        </field>
+        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display/></field>
+    </form>
+    
 	<form name="createMarketingCampaignForm" type="single" title="Create Marketing Campaign" target="createMarketingCampaign"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
@@ -70,6 +93,40 @@
             <display type="currency" currency="${currencyUomId}"/>
         </field>
     </form> 
+    <form name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
+        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
+
+        <field name="marketingCampaignId"><hidden/></field>
+        <field name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}" position="1">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
+                    <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
+            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
+        </field>
+        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
+            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
+        </field>
+        <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1"><text size="20" maxlength="20"/></field>
+        <field name="currencyUomId" title="${uiLabelMap.CommonCurrency}" position="2">
+            <drop-down allow-empty="true" current="selected"  no-current-selected-key="${configProperties.defaultCurrencyUomId}">
+                <entity-options description="${uomId} - ${description}" entity-name="Uom" key-field-name="uomId">
+                    <entity-constraint name="uomTypeId" operator="equals" value="CURRENCY_MEASURE"/>
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="1"><text size="20" maxlength="20"/></field>
+        <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}" position="1"><text size="20" maxlength="20"/></field>
+        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><textarea/></field>
+
+        <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
+    </form>
     
     <form name="createContactListForm" type="single" title="Create Contact List" target="createContactList"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
