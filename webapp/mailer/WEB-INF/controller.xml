@@ -63,7 +63,10 @@
 		<response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId" allowed-attributes="marketingCampaignId" />
 		<response name="error" type="view" value="createMarketingCampaignForm"/>
 	</request-map>
-	
+	<request-map uri="viewMarketingCampaign">
+		<security https="true" auth="true" />
+		<response name="success" type="view" value="viewMarketingCampaign" />
+	</request-map>
 	<request-map uri="findMarketingCampaigns">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="findMarketingCampaigns" />
@@ -90,6 +93,7 @@
 	<view-map name="createContactListForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createContactListForm" />
 	<view-map name="findContactLists" type="screen" page="component://mailer/widget/MailerScreens.xml#findContactLists" />
 	<view-map name="manageMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#manageMergeForms" />
+	<view-map name="viewMarketingCampaign" type="screen" page="component://mailer/widget/MailerScreens.xml#viewMarketingCampaign" />
 
 	<!-- end of view mappings -->
 </site-conf>

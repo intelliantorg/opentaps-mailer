@@ -16,5 +16,15 @@
       	<relation type="one" fk-name="MMC_TO_MERGEFORM" rel-entity-name="MergeForm">
         	<key-map field-name="templateId" rel-field-name="mergeFormId"/>
       </relation>
-    </entity>    
+    </entity> 
+    
+    <view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
+        <member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
+        <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
+        <alias-all entity-alias="MC"></alias-all>
+        <alias-all entity-alias="MMC"></alias-all>
+        <view-link entity-alias="MC" rel-entity-alias="MMC" rel-optional="true">
+            <key-map field-name="marketingCampaignId"/>
+        </view-link>
+    </view-entity>  
 </entitymodel>
