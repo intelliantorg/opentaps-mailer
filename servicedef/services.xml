@@ -9,4 +9,14 @@
         <attribute name="templateId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>
     </service>
+    
+    <service name="mailer.addContactListToCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="addContactListToCampaign" auth="true">
+        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
+        <attribute name="contactListId" type="String" mode="IN" optional="false"/>
+    </service>
+    
+    <service name="mailer.removeContactListFromMarketingCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="removeContactListFromMarketingCampaign" auth="true">
+        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
+        <attribute name="campaignListId" type="String" mode="IN" optional="false"/>
+    </service>
 </services>

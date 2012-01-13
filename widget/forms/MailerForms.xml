@@ -188,4 +188,13 @@
           <hyperlink target="removeContactListFromMarketingCampaign?marketingCampaignId=${marketingCampaignId}&amp;campaignListId=${campaignListId}" description="${uiLabelMap.CommonRemove}" />
         </field>
     </form>
+    
+    <form name="addContactListToMailerMarketingCampaignForm" type="single" target="addContactListToMailerMarketingCampaign"
+        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
+        <field name="marketingCampaignId"><hidden/></field>
+        <field name="contactListId" title="${uiLabelMap.CrmContactList}" title-style="requiredField">
+        	<lookup target-form-name="LookupContactList" size="15"/>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CrmAddContactList}" widget-style="smallSubmit"><submit button-type="button"/></field>
+    </form>
 </forms>
