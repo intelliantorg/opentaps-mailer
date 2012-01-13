@@ -5,4 +5,8 @@
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndMarketingCampaignAppl" />
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndContactList" />
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndContactListDetails" />
+	<entity-group group="org.ofbiz" entity="MailerRecipient" />
+	<entity-group group="org.ofbiz" entity="MailerCampaignStatus" />
+	<entity-group group="org.ofbiz" entity="MailerImportMapper" />
+	<entity-group group="org.ofbiz" entity="MailerImportColumnMapper" />
 </entitygroup>
