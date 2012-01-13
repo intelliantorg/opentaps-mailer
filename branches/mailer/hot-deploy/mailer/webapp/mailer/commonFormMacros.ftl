@@ -14,3 +14,14 @@
 		<label for="${name}" generated="true" class="${class}">This field is required.</label>
 	</div>
 </#macro>
+
+<#macro inputStatusItemSelect list=[] name="statusId" defaultStatusId="" id="" class="dropDown">
+	<#if id == ""><#assign idVal = name><#else><#assign idVal = id></#if>
+  	<#assign statusItems = list />
+  	<select id="${getIndexedName(idVal, index)}" name="${getIndexedName(name, index)}" class="${class}">
+		<#list statusItems as option>
+  			<#if option.statusId == defaultStatusId><#assign selected = "selected=\"selected\""><#else><#assign selected = ""></#if>
+  			<option ${selected} value="${option.statusId}">${option.description}</option>
+		</#list>
+  	</select>
+</#macro>
