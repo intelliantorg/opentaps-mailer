@@ -10,6 +10,11 @@
         <attribute name="templateId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>
     </service>
+    <service name="mailer.updateMarketingCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="updateMarketingCampaign" auth="true">
+        <implements service="updateMarketingCampaign"/>
+        <attribute name="fromEmailAddress" type="String" mode="IN" optional="false"/>
+        <attribute name="templateId" type="String" mode="IN" optional="false"/>
+    </service>
     
     <service name="mailer.addContactListToCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="addContactListToCampaign" auth="true">
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>

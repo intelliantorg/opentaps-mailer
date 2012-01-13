@@ -1,1 +1,1 @@
-Sample error page "Mailer application"
+Error occoured @ "Mailer application"
