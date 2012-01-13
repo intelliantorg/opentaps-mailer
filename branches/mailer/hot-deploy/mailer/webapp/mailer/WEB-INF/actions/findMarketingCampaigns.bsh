@@ -31,7 +31,7 @@ if (statusId != null && !statusId.equals("")) {
     searchConditions.add(new EntityExpr("statusId", EntityOperator.EQUALS, statusId));
     findParams += "&statusId="+statusId;
 }
-if (searchConditions.size() == 0) return;
+//if (searchConditions.size() == 0) return;
 searchConditionList = new EntityConditionList(searchConditions, EntityOperator.AND);
 
 listIt = delegator.findListIteratorByCondition("MarketingCampaign", searchConditionList, null, 
