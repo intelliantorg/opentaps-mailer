@@ -49,8 +49,8 @@
 	<screen name="findMarketingCampaigns">
         <section>
             <actions>
-                <set field="pageTitleLabel" value="CrmFindMarketingCampaigns"/>
-                <set field="sectionHeaderUiLabel" value="CrmFindMarketingCampaigns"/>
+                <set field="pageTitleLabel" value="FindCampaignsHeader"/>
+                <set field="sectionHeaderUiLabel" value="FindCampaignsHeader"/>
                 <set field="parameters.listIteratorNameToUse" value="campaignsListIt"/> <!-- iterator for list of accounts -->
                 <set field="listSortTarget" value="findMarketingCampaigns"/>
                 <set field="findMarketingCampaignsTarget" value="findMarketingCampaigns"/>
@@ -79,15 +79,13 @@
         <section>
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
             <actions>
-                <set field="pageTitleLabel" value="CrmCreateContactList"/>
-                <set field="sectionHeaderUiLabel" value="CrmCreateContactList"/>
+                <set field="pageTitleLabel" value="CreateContactListHeader"/>
+                <set field="sectionHeaderUiLabel" value="CreateContactListHeader"/>
             </actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
-                        <container style="form">
-                            <include-form name="createContactListForm" location="component://mailer/widget/forms/MailerForms.xml"/>
-                        </container>
+                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/createContactList.ftl"/></html></platform-specific>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -104,8 +102,8 @@
     <screen name="findContactLists">
         <section>
             <actions>
-                <set field="pageTitleLabel" value="CrmFindContactLists"/>
-                <set field="sectionHeaderUiLabel" value="CrmFindContactLists"/>
+                <set field="pageTitleLabel" value="FindContactListHeader"/>
+                <set field="sectionHeaderUiLabel" value="FindContactListHeader"/>
                 <set field="parameters.listIteratorNameToUse" value="contactLists"/> <!-- iterator for list of contacts -->
                 <set field="listSortTarget" value="findContactLists"/>
                 <set field="findContactListsTarget" value="findContactLists"/>
@@ -130,7 +128,7 @@
         </section>
     </screen>
     
-     <!-- Merge Forms -->
+    <!-- Merge Forms -->
     <screen name="manageMergeForms">
         <section> 
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>

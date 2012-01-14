@@ -70,7 +70,7 @@
 	<request-map uri="findMarketingCampaigns">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="findMarketingCampaigns" />
-	</request-map>	
+	</request-map>
 	<request-map uri="updateMarketingCampaignForm">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="updateMarketingCampaignForm" />
