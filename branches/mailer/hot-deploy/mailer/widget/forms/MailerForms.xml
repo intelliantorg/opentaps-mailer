@@ -67,20 +67,12 @@
             <display type="currency" currency="${currencyUomId}"/>
         </field>
     </form>
-     
+    
     <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
         <field name="marketingCampaignId"><hidden/></field>
         <field widget-style="inputBox required" title-style="requiredField" name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
-        <field name="statusId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.CommonStatus}" position="1">
-            <drop-down allow-empty="false">
-                <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
-                    <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
-                    <entity-order-by field-name="sequenceId"/>
-                </entity-options>
-            </drop-down>
-        </field>
         <field name="fromEmailAddress" widget-style="inputBox required email" title-style="requiredField" title="${uiLabelMap.FromEmailAddress}" position="2"><text/></field>
         <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
@@ -88,6 +80,14 @@
         <field name="templateId" widget-style="inputBox required" title-style="requiredField" title="${uiLabelMap.Template}" position="2"><text/></field>
         <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
+        </field>
+        <field name="statusId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.CommonStatus}" position="2">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
+                    <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
         </field>
         <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1"><text size="20" maxlength="20"/></field>
         <field name="currencyUomId" title="${uiLabelMap.CommonCurrency}" position="2">
@@ -165,7 +165,7 @@
             <display description="${bsh:com.opensourcestrategies.crmsfa.marketing.MarketingHelper.countContactListMembers(contactListId, delegator)}"/>
         </field>
     </form>
-    
+
    	<form name="ListMarketingCampaignContactLists" type="list" separate-columns="true" 
         title="List Marketing Campaign Contact Lists"  default-title-style="tableheadtext" target=""
         default-widget-style="tabletext" default-tooltip-style="tabletext"
