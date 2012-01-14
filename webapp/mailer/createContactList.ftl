@@ -25,8 +25,11 @@
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelContactType />
 							</div>
-							<div class="fieldContainer">							
-								<#assign contactMechTypeItems = delegator.findAll("ContactMechType")>								
+							<div class="fieldContainer">
+								<#assign emailAddress = Static["org.ofbiz.base.util.UtilMisc"].toMap("contactMechTypeId", "EMAIL_ADDRESS", "description", "Email Address")>							
+								<#assign postalAddress = Static["org.ofbiz.base.util.UtilMisc"].toMap("contactMechTypeId", "POSTAL_ADDRESS", "description", "Postal Address")>
+								<#assign phoneNumber = Static["org.ofbiz.base.util.UtilMisc"].toMap("contactMechTypeId", "TELECOM_NUMBER", "description", "Phone Number")>
+								<#assign contactMechTypeItems = [emailAddress, postalAddress, phoneNumber]>								
 								<@inputSelect name="contactType" list=contactMechTypeItems displayField="description" key="contactMechTypeId" />            
 							</div>
 						</div>
