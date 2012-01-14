@@ -29,7 +29,7 @@
         <description>Verify a user is logged in.</description>
         <security https="true" auth="false"/>
         <event type="java" path="org.ofbiz.webapp.control.LoginWorker" invoke="checkLogin" />
-        <response name="success" type="view" value="myHomeMain" />
+        <response name="success" type="request" value="main" />
         <response name="error" type="view" value="login" />
     </request-map>
     
@@ -116,7 +116,6 @@
 	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
 	<view-map name="login" type="screen" page="component://opentaps-common/widget/screens/common/CommonScreens.xml#login"/>
-	<view-map name="myHomeMain" type="screen" page="component://mailer/widget/MailerScreens.xml#home" />
 	<view-map name="createMarketingCampaignForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createMarketingCampaignForm" />
 	<view-map name="findMarketingCampaigns" type="screen" page="component://mailer/widget/MailerScreens.xml#findMarketingCampaigns" />
 	<view-map name="createContactListForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createContactListForm" />
