@@ -276,7 +276,6 @@
 	    <section> 
 	        <actions>
 	            <set field="pageTitleLabel" value="Configure Mappings"/>
-	            <set field="entityColumnsToIgnore" value="${bsh:org.ofbiz.base.util.UtilMisc.toList(&quot;lastUpdatedStamp&quot;, &quot;lastUpdatedTxStamp&quot;, &quot;createdStamp&quot;, &quot;createdTxStamp&quot;, &quot;importedOnDateTime&quot;, &quot;importedByUserLogin&quot;)}"/>
 	            <script location="component://mailer/webapp/mailer/WEB-INF/actions/uploadImportSampleForMapping.bsh"/>
 	        </actions>
 	        <widgets>
