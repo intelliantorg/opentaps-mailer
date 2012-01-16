@@ -12,28 +12,20 @@ import org.ofbiz.entity.util.ByteWrapper;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilValidate;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.ofbiz.entity.model.ModelReader;
-import org.ofbiz.entity.model.ModelEntity;
-import org.ofbiz.entity.model.ModelField;
+import net.intelliant.imports.UtilImport;
 
 module = "uploadImportSampleForMapping.bsh";
 dispatcher = request.getAttribute("dispatcher");
 delegator = request.getAttribute("delegator");
 userLogin = session.getAttribute("userLogin");
 encoding = request.getCharacterEncoding();
-isMultiPart = FileUpload.isMultipartContent(request);
 fileAndPath = "";
 multiPartMap = FastMap.newInstance();
-/****
+/**
  * Ideally this enitre uploaded data file extraction should have been picked from org.ofbiz.content.layout.LayoutWorker()
  * The need to extract entity name prevents taking this approach.   
  */
+isMultiPart = FileUpload.isMultipartContent(request);
 if (isMultiPart) {
     DiskFileUpload upload = new DiskFileUpload();
     if (encoding != null) {
@@ -122,43 +114,12 @@ if (isMultiPart) {
     }
 }
 if (UtilValidate.isNotEmpty(fileAndPath)) {
-	ModelReader reader = delegator.getModelReader();
-	ModelEntity modelEntity = reader.getModelEntity(multiPartMap.get("entityName"));
-	Iterator fieldIterator = modelEntity.getFieldsIterator();
-	lhsColumns = new ArrayList();
-	colsToIgnore = context.get("entityColumnsToIgnore"); 
-	while (fieldIterator.hasNext()) {
-	    ModelField field = fieldIterator.next();
-	    fieldDesc = field.getDescription();
-	    if (UtilValidate.isEmpty(fieldDesc)) {
-	    	fieldDesc = field.getName();
-	    }
-	    if (!colsToIgnore.contains(field.getName()) && !field.getIsPk()) {
-	    	lhsColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc));
-	    }
-	}
+	entityColumnsToIgnore = UtilMisc.toList("lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin");
+	lhsColumns = UtilImport.getEntityColumns(multiPartMap.get("entityName"), entityColumnsToIgnore);
 	context.put("lhsColumns", lhsColumns);
 	
-	File file = new File(fileAndPath);
-	if (file != null && file.canRead()) {
-		POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(file));
-		HSSFWorkbook wb = new HSSFWorkbook(fs);
-//		HSSFSheet sheet = wb.getSheet(wb.getActiveSheetIndex());
-		HSSFSheet sheet = wb.getSheetAt(0);
-		rhsColumns = new ArrayList();
-		if (sheet != null) {
-			HSSFRow firstRow = sheet.getRow(sheet.getFirstRowNum());
-			if (firstRow != null) {
-				firstRow.getPhysicalNumberOfCells();
-				Iterator cells = firstRow.cellIterator();
-				while (cells.hasNext()) {
-					HSSFCell cell = (HSSFCell) cells.next();
-					rhsColumns.add(cell.getCellNum()); // this gives the cells with data.
-				}
-			}
-		}
-		context.put("rhsColumns", rhsColumns);
-	}
+	rhsColumns = UtilImport.readExcelIndices(fileAndPath, 0);
+	context.put("rhsColumns", rhsColumns);
 } else {
 	Debug.logWarning("fileAndPath was empty !", module);
 }
