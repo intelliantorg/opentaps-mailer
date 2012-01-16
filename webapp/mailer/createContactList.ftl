@@ -44,7 +44,7 @@
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
 							<div class="fieldContainer">
-								<@inputSubmit title=uiLabelMap.CrmCreateMarketingCampaign onClick="" class=smallSubmit />
+								<@inputSubmit title=uiLabelMap.ButtonCreateContactList onClick="" class=smallSubmit />
 							</div>
 						</div>					
 					</td>
