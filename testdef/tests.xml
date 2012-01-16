@@ -8,4 +8,9 @@
     <test-case case-name="marketing-campaign-test">
     	<junit-test-suite class-name="net.intelliant.tests.MarketingCampaignTests"/>
     </test-case>
+    
+    
+    <test-case case-name="marketing-merge-form-test">
+    	<junit-test-suite class-name="net.intelliant.tests.MarketingMergedFormsTests"/>
+    </test-case>
 </test-suite>
