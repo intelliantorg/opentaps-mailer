@@ -29,7 +29,10 @@ label.error{
 	padding-left: .5em; 
 	vertical-align: top; 
 }
-select.error, input.error {
+select.error, input.error{
 	border: 2px solid;
     color: red;
+}
+.titleCellAutoWidth{
+	width:auto;	
 }
