@@ -34,7 +34,7 @@ public class UtilImport {
 		ModelReader reader = ModelReader.getModelReader("default");
 		ModelEntity modelEntity = reader.getModelEntity(entityName);
 		Iterator<ModelField> fieldIterator = modelEntity.getFieldsIterator();
-		List<Map<String, Object>> lhsColumns = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> entityColumns = new ArrayList<Map<String, Object>>();
 		while (fieldIterator.hasNext()) {
 		    ModelField field = fieldIterator.next();
 		    String fieldDesc = field.getDescription();
@@ -42,10 +42,10 @@ public class UtilImport {
 		    	fieldDesc = field.getName();
 		    }
 		    if (!entityColumnsToIgnore.contains(field.getName()) && !field.getIsPk()) {
-		    	lhsColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc));
+		    	entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc));
 		    }
 		}
-		return lhsColumns;		
+		return entityColumns;		
 	}
 	
 	public static List<Integer> readExcelIndices(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
