@@ -1,7 +1,8 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 <div class="allSubSectionBlocks">
 	<div class="form">
-		<form class="basic-form" id="createMarketingCampaignForm" name="createMarketingCampaignForm" action="<@ofbizUrl>createMarketingCampaign</@ofbizUrl>" method="post">
+		<form class="basic-form" id="createMarketingCampaignForm" name="createMarketingCampaignForm" action="<@ofbizUrl>createContactList</@ofbizUrl>" method="post">
+			<@inputHidden name="contactListTypeId" value="MARKETING" />
 			<table width="100%">
 				<tr>
 					<td>
@@ -10,7 +11,7 @@
 								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonName />
 							</div>
 							<div class="fieldContainer">
-								<@inputText name="contactName" size=35 class="inputBox required"/>
+								<@inputText name="contactListName" size=35 class="inputBox required"/>
 							</div>
 						</div>
 						<div class="rowContainer">
@@ -18,7 +19,7 @@
 								<@display class="tableheadtext" text=uiLabelMap.LabelMarketingCampaign />
 							</div>
 							<div class="fieldContainer">
-								<@inputSelect name="marketingCampaign" list=marketingCampaignList displayField="campaignName" key="marketingCampaignId" required=false />
+								<@inputSelect name="marketingCampaignId" list=marketingCampaignList displayField="campaignName" key="marketingCampaignId" required=false />
 							</div>
 						</div>
 						<div class="rowContainer">
@@ -30,7 +31,7 @@
 								<#assign postalAddress = Static["org.ofbiz.base.util.UtilMisc"].toMap("contactMechTypeId", "POSTAL_ADDRESS", "description", "Postal Address")>
 								<#assign phoneNumber = Static["org.ofbiz.base.util.UtilMisc"].toMap("contactMechTypeId", "TELECOM_NUMBER", "description", "Phone Number")>
 								<#assign contactMechTypeItems = [emailAddress, postalAddress, phoneNumber]>								
-								<@inputSelect name="contactType" list=contactMechTypeItems displayField="description" key="contactMechTypeId" />            
+								<@inputSelect name="contactMechTypeId" list=contactMechTypeItems displayField="description" key="contactMechTypeId" />            
 							</div>
 						</div>
 						<div class="rowContainer">
@@ -40,7 +41,7 @@
 							<div class="fieldContainer">
 								<@inputTextarea name="description" rows=4 cols=33 />
 							</div>
-						</div>						
+						</div>
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
 							<div class="fieldContainer">

@@ -1,4 +1,4 @@
-package net.intelliant;
+package net.intelliant.marketing;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -24,8 +24,8 @@ import org.ofbiz.service.ModelService;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
 
-public class MarketingCampaignService {
-	public static final String module = MarketingCampaignService.class.getName();
+public class MarketingCampaignServices {
+	public static final String module = MarketingCampaignServices.class.getName();
 	public static final String errorResource = "ErrorLabels";
 	public static final String successResource = "UILabels";
 

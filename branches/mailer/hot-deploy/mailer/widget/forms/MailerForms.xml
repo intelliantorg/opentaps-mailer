@@ -196,4 +196,29 @@
         </field>
         <field name="submitButton" title="${uiLabelMap.CrmAddContactList}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
+    
+    <form name="viewContactList" type="single" title="View Contact List" default-map-name="contactList"
+        default-title-style="tableheadtext" default-widget-style="tabletext" default-tooltip-style="tabletext">
+        <field name="contactListName" title="${uiLabelMap.CommonName}" position="1"><display/></field>
+        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" position="1">
+            <display-entity entity-name="ContactMechType"/>
+        </field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><display/></field>
+        <field name="numberOfMembers" title="${uiLabelMap.CrmNumberOfMembers}">
+            <display/>
+        </field>
+        <field name="calculate3605Postage" title="" widget-style="buttontext" 
+            use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
+            <hyperlink description="${uiLabelMap.CrmCalculate3605Postage}" target="calculate3605Postage?contactListId=${contactList.contactListId}"/>
+        </field>
+        <field name="sortUSPSBusinessMail" title="" widget-style="buttontext"
+            use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
+            <hyperlink description="${uiLabelMap.CrmSortUSPSBusinessMail}" target="sortUSPSBusinessMail?contactListId=${contactList.contactListId}"/>
+        </field>
+        <field name="viewUSPSSortResult" title="" widget-style="buttontext" 
+            use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
+            <hyperlink description="${uiLabelMap.CrmReportUSPSHeader}" target="viewUSPSSortResult?contactListId=${contactList.contactListId}"/>
+        </field>
+    </form>
+    
 </forms>
