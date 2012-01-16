@@ -135,25 +135,7 @@
         </section>
     </screen>
     
-    <!-- Merge Forms -->
-    <screen name="manageMergeForms">
-        <section> 
-            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
-            <actions>
-                <set field="pageTitleLabel" value="CrmFormLetterTemplates"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
-                <set field="sectionHeaderUiLabel" value="CrmFormLetterTemplates"/>  <!-- this is for the main section of this page, ie <h2> -->
-                <set field="mergeFormLookupEntity" value="MergeFormAndCategory"/>  <!-- Override the entity name in getMergeFormsForCurrentUser.bsh -->
-                <script location="component://opentaps-common/webapp/common/WEB-INF/actions/includes/getMergeFormsForCurrentUser.bsh"/>
-            </actions>
-            <widgets>
-                <decorator-screen name="main-section-decorator">
-                    <decorator-section name="section-body">                     
-                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/listMergeForms.ftl"/></html></platform-specific>
-                    </decorator-section>
-                </decorator-screen>
-            </widgets>
-        </section>
-    </screen>
+    
     
     <screen name="viewMarketingCampaign">
         <section>
@@ -253,6 +235,51 @@
             </widgets>
         </section>
     </screen>
+
+    <!-- Merge Forms -->
+    <screen name="manageMergeForms">
+        <section> 
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
+            <actions>
+                <set field="pageTitleLabel" value="FormLetterTemplateHeader"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
+                <set field="sectionHeaderUiLabel" value="FormLetterTemplateHeader"/>  <!-- this is for the main section of this page, ie <h2> -->
+                <set field="mergeFormLookupEntity" value="MergeFormAndCategory"/>  <!-- Override the entity name in getMergeFormsForCurrentUser.bsh -->
+                <script location="component://opentaps-common/webapp/common/WEB-INF/actions/includes/getMergeFormsForCurrentUser.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">                     
+                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/listMergeForms.ftl"/></html></platform-specific>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="editMergeForms">
+        <section>
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
+            <actions>
+                <set field="tabButtonItem" value="${uiLabelMap.CrmFormLetterTemplates}"/>
+                <set field="pageTitleLabel" value="CrmFormLetterTemplates"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
+                <set field="sectionHeaderUiLabel" value="CrmFormLetterTemplates"/> <!-- this is for the main section of this page, ie <h2> -->
+                <!-- this script will do the lookup and pass results to the widgets below -->   
+                <set field="mergeFormId" from-field="parameters.mergeFormId"/>   
+                <set field="partyId" value="${userLogin.partyId}"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/getMergeForm.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">                
+                    <decorator-section name="section-body">
+						<platform-specific>
+                        	<html><html-template location="component://mailer/webapp/mailer/mergeForm.ftl"/></html>
+                        </platform-specific> 
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    
     
     <screen name="listConfiguredImportMappingsScreen">
 	    <section> 
@@ -287,4 +314,4 @@
 	        </widgets>
 	    </section>
 	</screen>
-</screens>     
+</screens>

@@ -23,8 +23,7 @@
   <div class="subSectionTitle">${uiLabelMap.CrmFormLetterTemplates}</div>
   <#if security.hasEntityPermission("CRMSFA_CAMP", "_CREATE", userLogin)>
     <div class="subMenuBar">
-      <a class="subMenuButton" href="EditMergeFormCategory" title="${uiLabelMap.CrmCreateNewTemplateCategory}">${uiLabelMap.CrmCreateNewTemplateCategory}</a>
-      <a class="subMenuButton" href="EditMergeForm" title="${uiLabelMap.CrmCreateNewTemplate}">${uiLabelMap.CrmCreateNewTemplate}</a>
+      <a class="subMenuButton" href="editMergeForms" title="${uiLabelMap.CrmCreateNewTemplate}">${uiLabelMap.CrmCreateNewTemplate}</a>
     </div>
   </#if>
 </div>
@@ -32,16 +31,17 @@
 <#if templates?has_content>
   <table class="listTable" style="border:none">
     <tr class="listTableHeader" style="border:none">
-      <td class="titleCell" style="text-align:left">${uiLabelMap.OpentapsTemplateName}</td>
-      <td class="titleCell" style="text-align:left">${uiLabelMap.FormFieldTitle_categoryName}</td>
-      <td class="titleCell" style="text-align:left">${uiLabelMap.CommonDescription}</td>
+      <td class="titleCellAutoWidth" style="text-align:left">${uiLabelMap.OpentapsTemplateName}</td>
+      <td class="titleCellAutoWidth" style="text-align:left">${uiLabelMap.FormFieldTitle_categoryName}</td>
+      <td class="titleCellAutoWidth" style="text-align:left">${uiLabelMap.CommonDescription}</td>
       <td>&nbsp;</td>
     </tr>
     <#list templates as template>
       <tr class="${tableRowClass(template_index)}">
-        <@displayLinkCell href="EditMergeForm?mergeFormId=${template.mergeFormId}" text=template.mergeFormName/>
+        <@displayLinkCell href="editMergeForms?mergeFormId=${template.mergeFormId}" text=template.mergeFormName/>
         <#if template.mergeFormCategoryId?has_content>
           <@displayLinkCell href="EditMergeFormCategory?mergeFormCategoryId=${template.mergeFormCategoryId?if_exists}" text=template.mergeFormCategoryName?if_exists/>
+          <#-- <td>${template.mergeFormCategoryName?default("")}</td> -->
         <#else>
           <td>&nbsp;</td>
         </#if>

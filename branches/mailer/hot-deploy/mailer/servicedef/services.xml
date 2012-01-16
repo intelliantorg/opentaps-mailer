@@ -35,4 +35,15 @@
         <override name="contactListTypeId" optional="false"/>
         <override name="contactListName" optional="false"/>
     </service>
+    
+    
+    <service name="mailer.createMergeForm" engine="java" default-entity-name="MergeForm"
+            location="net.intelliant.marketing.MergeFormServices" invoke="createMergeForm" auth="true">
+        <description>Create merge form</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="OUT" optional="true"/>
+        <attribute name="mergeFormName" type="String" mode="IN" optional="false"/>
+        <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
+        <attribute name="privateForm" type="String" mode="IN" optional="true"/>
+    </service>
 </services>
