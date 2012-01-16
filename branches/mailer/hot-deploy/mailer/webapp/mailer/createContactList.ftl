@@ -18,8 +18,6 @@
 								<@display class="tableheadtext" text=uiLabelMap.LabelMarketingCampaign />
 							</div>
 							<div class="fieldContainer">
-								<#assign orderBy = Static["org.ofbiz.base.util.UtilMisc"].toList("campaignName")>
-								<#assign marketingCampaignList = delegator.findAll("MarketingCampaign",orderBy)>
 								<@inputSelect name="marketingCampaign" list=marketingCampaignList displayField="campaignName" key="marketingCampaignId" required=false />
 							</div>
 						</div>
