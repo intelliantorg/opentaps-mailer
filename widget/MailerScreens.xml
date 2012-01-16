@@ -213,4 +213,44 @@
             </fail-widgets>
         </section>
     </screen>
+    
+    <screen name="viewContactList">
+        <section>
+            <actions>
+                <set field="pageTitleLabel" value="ViewContactListHeader"/>
+                <set field="sectionHeaderUiLabel" value="ViewContactListHeader"/>
+                <set field="parameters.listIteratorNameToUse" value="contactListParties"/> <!-- iterator for list of parties -->
+                <set field="listSortTarget" value="viewContactList"/>
+                <set field="findContactListPartiesTarget" value="viewContactList"/>
+                <set field="listContactListPartiesTarget" value="removeContactListParties"/>
+                <set field="isContactListSearch" value="Y"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/pagination.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewContactList.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/findContactListParties.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container style="subSectionBlock">
+                            <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/viewContactListMenu.ftl"/></html></platform-specific>
+                            <container style="form">
+                                <include-form name="viewContactList" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            </container>
+                        </container>
+                        <container style="subSectionBlock">
+                            <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.CrmFindContactListParties}</label></container>
+                            <container style="form">
+                                <include-form name="FindContactListParties" location="component://crmsfa/widget/crmsfa/forms/marketing/ContactListForms.xml"/>
+                            </container>
+                        </container>
+
+                        <container style="subSectionBlock">
+                            <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>
+                            <include-form name="ListContactListParties" location="component://crmsfa/widget/crmsfa/forms/marketing/ContactListForms.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
 </screens>     

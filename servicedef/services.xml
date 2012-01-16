@@ -3,26 +3,36 @@
 <services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/services.xsd">
     <description>Services for mailer</description>
 
-    <service name="mailer.createMarketingCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="createMarketingCampaign" auth="true">
+    <service name="mailer.createMarketingCampaign" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="createMarketingCampaign" auth="true">
         <implements service="createMarketingCampaign"/>
         <attribute name="statusId" type="String" mode="IN" optional="false"/>
         <attribute name="fromEmailAddress" type="String" mode="IN" optional="false"/>
         <attribute name="templateId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>
     </service>
-    <service name="mailer.updateMarketingCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="updateMarketingCampaign" auth="true">
+    <service name="mailer.updateMarketingCampaign" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="updateMarketingCampaign" auth="true">
         <implements service="updateMarketingCampaign"/>
         <attribute name="fromEmailAddress" type="String" mode="IN" optional="false"/>
         <attribute name="templateId" type="String" mode="IN" optional="false"/>
     </service>
     
-    <service name="mailer.addContactListToCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="addContactListToCampaign" auth="true">
+    <service name="mailer.addContactListToCampaign" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="addContactListToCampaign" auth="true">
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>
     </service>
     
-    <service name="mailer.removeContactListFromMarketingCampaign" engine="java" location="net.intelliant.MarketingCampaignService" invoke="removeContactListFromMarketingCampaign" auth="true">
+    <service name="mailer.removeContactListFromMarketingCampaign" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="removeContactListFromMarketingCampaign" auth="true">
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="campaignListId" type="String" mode="IN" optional="false"/>
+    </service>
+    
+    
+    <service name="mailer.createContactList" default-entity-name="ContactList" engine="simple"
+            location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="createContactList" auth="true">
+        <description>Create a ContactList record</description>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="contactListTypeId" optional="false"/>
+        <override name="contactListName" optional="false"/>
     </service>
 </services>
