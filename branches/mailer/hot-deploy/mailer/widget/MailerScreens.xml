@@ -253,4 +253,39 @@
             </widgets>
         </section>
     </screen>
+    
+    <screen name="listConfiguredImportMappingsScreen">
+	    <section> 
+	        <actions>
+	            <set field="pageTitleLabel" value="Configured Mappings"/>
+	            <entity-condition entity-name="MailerImportMapper" list="listOfMappings" list-name="listOfMappings">
+					<order-by field-name="importMapperName"/>
+				</entity-condition>
+	        </actions>
+	        <widgets>
+	            <decorator-screen name="main-section-decorator">
+	                <decorator-section name="section-body">                     
+	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/listImportConfigurations.ftl"/></html></platform-specific>
+	                </decorator-section>
+	            </decorator-screen>
+	        </widgets>
+	    </section>
+	</screen>
+	
+	<screen name="configureImportMappingsScreen">
+	    <section> 
+	        <actions>
+	            <set field="pageTitleLabel" value="Configure Mappings"/>
+	            <set field="entityColumnsToIgnore" value="${bsh:org.ofbiz.base.util.UtilMisc.toList(&quot;lastUpdatedStamp&quot;, &quot;lastUpdatedTxStamp&quot;, &quot;createdStamp&quot;, &quot;createdTxStamp&quot;, &quot;importedOnDateTime&quot;, &quot;importedByUserLogin&quot;)}"/>
+	            <script location="component://mailer/webapp/mailer/WEB-INF/actions/uploadImportSampleForMapping.bsh"/>
+	        </actions>
+	        <widgets>
+	            <decorator-screen name="main-section-decorator">
+	                <decorator-section name="section-body">                     
+	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/configureImportMapping.ftl"/></html></platform-specific>
+	                </decorator-section>
+	            </decorator-screen>
+	        </widgets>
+	    </section>
+	</screen>
 </screens>     
