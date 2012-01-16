@@ -178,7 +178,6 @@
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
                         <container style="subSectionBlock">
-                            <!-- <platform-specific><html><html-template location="component://mailer/webapp/mailer/viewMarketingCampaign.ftl"/></html></platform-specific> -->                            
                             <container style="form">
                                 <include-form name="updateMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
                             </container>
@@ -314,4 +313,21 @@
 	        </widgets>
 	    </section>
 	</screen>
-</screens>
+	
+	<screen name="updateImportMappingScreen">
+        <section>
+            <actions>
+                <set field="pageTitleLabel" value="Update Mapping"/>
+                <set field="sectionHeaderUiLabel" value="Update Mapping"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
+            </actions>
+            <widgets>
+            	<decorator-screen name="main-section-decorator">
+	                <decorator-section name="section-body">                     
+	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>
+	                </decorator-section>
+	            </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+</screens>     

@@ -136,6 +136,28 @@
     	<response name="success" type="view" value="LookupContactList"/>
 	</request-map>
 	
+	<request-map uri="viewImportMappings">
+    	<security https="true" auth="true"/>
+    	<response name="success" type="view" value="listConfiguredImportMappingsScreen"/>
+	</request-map>
+	
+	<request-map uri="configureImportMapping">
+    	<security https="true" auth="true"/>
+    	<response name="success" type="view" value="configureImportMappingsScreen"/>
+	</request-map>
+	
+	<request-map uri="createConfiguredMapping">
+    	<security https="true" auth="true"/>
+    	<event type="service" invoke="mailer.configureImportMapping"/>
+        <response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId"/>
+    	<response name="success" type="view" value="configureImportMappingsScreen"/>
+	</request-map>
+	
+	<request-map uri="updateImportMapping">
+    	<security https="true" auth="true"/>
+    	<response name="success" type="view" value="updateImportMappingScreen"/>
+	</request-map>	
+	
 	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
 	<view-map name="login" type="screen" page="component://opentaps-common/widget/screens/common/CommonScreens.xml#login"/>
@@ -153,4 +175,7 @@
 	
 	<view-map name="manageMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#manageMergeForms" />
 	<view-map name="editMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#editMergeForms" />
+	<view-map name="listConfiguredImportMappingsScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#listConfiguredImportMappingsScreen"/>
+	<view-map name="configureImportMappingsScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#configureImportMappingsScreen"/>
+	<view-map name="updateImportMappingScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#updateImportMappingScreen"/>	
 </site-conf>

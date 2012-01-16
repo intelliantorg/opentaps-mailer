@@ -25,3 +25,8 @@
 		</#list>
   	</select>
 </#macro>
+
+<#macro inputFile name size=30 maxlength="" default="" index=-1 onChange="" id="" errorField="" tabIndex="" class="inputBox">
+	<#if id == ""><#assign idVal = name><#else><#assign idVal = id></#if>
+  	<input id="${getIndexedName(idVal, index)}" name="${getIndexedName(name, index)}" type="file" size="${size}" maxlength="${maxlength}" class="${class}" onChange="${onChange}" <#if tabIndex?has_content>tabindex="${tabIndex}"</#if>/>
+</#macro>
