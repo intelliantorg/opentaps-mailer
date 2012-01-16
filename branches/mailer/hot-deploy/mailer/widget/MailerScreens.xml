@@ -260,8 +260,8 @@
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
             <actions>
                 <set field="tabButtonItem" value="${uiLabelMap.CrmFormLetterTemplates}"/>
-                <set field="pageTitleLabel" value="CrmFormLetterTemplates"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
-                <set field="sectionHeaderUiLabel" value="CrmFormLetterTemplates"/> <!-- this is for the main section of this page, ie <h2> -->
+                <set field="pageTitleLabel" value="FormLetterTemplateHeader"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
+                <set field="sectionHeaderUiLabel" value="FormLetterTemplateHeader"/> <!-- this is for the main section of this page, ie <h2> -->
                 <!-- this script will do the lookup and pass results to the widgets below -->   
                 <set field="mergeFormId" from-field="parameters.mergeFormId"/>   
                 <set field="partyId" value="${userLogin.partyId}"/>
