@@ -27,6 +27,7 @@ public class MarketingMergedFormsTests extends OpentapsTestCase {
 		String partyId = "10083";
 		String mergeFormName = "Test form name - " + currTime;
 		String subject = "Test subject - " + currTime;
+		String scheduleAt = "" + (int)Math.random()*10000;
 		String description = "Test description - " + currTime;
 		String mergeFormText = "Test merge form text - " + currTime;
 		String showInSelect = (Math.random() > .5) ? "Y" : "N";
@@ -35,12 +36,13 @@ public class MarketingMergedFormsTests extends OpentapsTestCase {
 		inputs.put("partyId", partyId);
 		inputs.put("mergeFormName", mergeFormName);
 		inputs.put("subject", subject);
+		inputs.put("scheduleAt", scheduleAt);
 		inputs.put("description", description);
 		inputs.put("mergeFormText", mergeFormText);
 		inputs.put("showInSelect", showInSelect);
 
 		Map<String, Object> results = runAndAssertServiceSuccess("mailer.createMergeForm", inputs);
-		System.out.println(module+" - RESULT : "+results);
+		System.out.println(module + " - RESULT : " + results);
 		mergeFormId = (String) results.get("mergeFormId");
 
 		results = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
@@ -56,14 +58,14 @@ public class MarketingMergedFormsTests extends OpentapsTestCase {
 		subject = "Test subject - " + currTime;
 		description = "Test description - " + currTime;
 		showInSelect = (Math.random() > .5) ? "Y" : "N";
-		
+
 		inputs.clear();
 		inputs = UtilMisc.toMap("userLogin", admin);
 		inputs.put("partyId", partyId);
 		inputs.put("subject", subject);
 		inputs.put("description", description);
 		inputs.put("showInSelect", showInSelect);
-		
+
 		runAndAssertServiceFailure("mailer.createMergeForm", inputs);
 	}
 }

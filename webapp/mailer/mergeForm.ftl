@@ -72,14 +72,14 @@
 </#if >
 
 <div class="form">
-  <form method="post" action="${formName}" name="${formName}" style="margin: 0;">
+  <form id="mergedForm" method="post" action="${formName}" name="${formName}" style="margin: 0;">
     <#if mergeFormId?exists><@inputHidden name="mergeFormId" value=mergeFormId /></#if >
     <@inputHidden name="partyId" value=userLogin.partyId />
   
     <div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.OpentapsTemplateName}</span>
       <span class="formInputSpan">
-        <input type="text" class="inputBox" name="mergeFormName" value="${(mergeForm.mergeFormName)?if_exists}" size="50" maxlength="100"/>
+        <input type="text" class="inputBox required" name="mergeFormName" value="${(mergeForm.mergeFormName)?if_exists}" size="50" maxlength="100"/>
       </span>
     </div>
 
@@ -123,11 +123,18 @@
         <input type="text" class="inputBox" name="subject" size="50" value="${(mergeForm.subject)?if_exists}" maxlength="255"/>
       </span>
     </div>
+    
+    <div class="formRow">
+      <span class="formLabelRequired">${uiLabelMap.LabelScheduledAt}</span>
+      <span class="formInputSpan">
+        <input type="text" class="inputBox required digits" name="scheduleAt" size="50" value="${(mergeForm.subject)?if_exists}" maxlength="255"/>
+      </span>
+    </div>
 
     <div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.OpentapsTemplate}</span>
       <span class="formInputSpan">
-        <@htmlTextArea textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://crmsfa/webapp/crmsfa/includes/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>
+        <@htmlTextArea class="required" textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://crmsfa/webapp/crmsfa/includes/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>
       </span>
     </div>
 
