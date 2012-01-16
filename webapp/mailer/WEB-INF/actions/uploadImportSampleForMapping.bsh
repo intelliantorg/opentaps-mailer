@@ -30,6 +30,10 @@ encoding = request.getCharacterEncoding();
 isMultiPart = FileUpload.isMultipartContent(request);
 fileAndPath = "";
 multiPartMap = FastMap.newInstance();
+/****
+ * Ideally this enitre uploaded data file extraction should have been picked from org.ofbiz.content.layout.LayoutWorker()
+ * The need to extract entity name prevents taking this approach.   
+ */
 if (isMultiPart) {
     DiskFileUpload upload = new DiskFileUpload();
     if (encoding != null) {
@@ -129,7 +133,7 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 	    if (UtilValidate.isEmpty(fieldDesc)) {
 	    	fieldDesc = field.getName();
 	    }
-	    if (! colsToIgnore.contains(field.getName()) && !field.getIsPk()) {
+	    if (!colsToIgnore.contains(field.getName()) && !field.getIsPk()) {
 	    	lhsColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc));
 	    }
 	}
@@ -151,7 +155,6 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 					HSSFCell cell = (HSSFCell) cells.next();
 					rhsColumns.add(cell.getCellNum()); // this gives the cells with data.
 				}
-//				System.out.println("getPhysicalNumberOfCells() " + firstRow.getPhysicalNumberOfCells());
 			}
 		}
 		context.put("rhsColumns", rhsColumns);
