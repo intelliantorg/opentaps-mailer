@@ -36,3 +36,7 @@ select.error, input.error{
 .titleCellAutoWidth{
 	width:auto;	
 }
+
+input.smallTextfield{
+	width:100px;
+}
