@@ -11,6 +11,6 @@
     
     
     <test-case case-name="marketing-merge-form-test">
-    	<junit-test-suite class-name="net.intelliant.tests.MarketingMergedFormsTests"/>
+    	<junit-test-suite class-name="net.intelliant.tests.MergeFormsTests"/>
     </test-case>
 </test-suite>
