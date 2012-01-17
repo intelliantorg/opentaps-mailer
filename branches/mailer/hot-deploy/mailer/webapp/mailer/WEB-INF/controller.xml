@@ -149,8 +149,8 @@
 	<request-map uri="createConfiguredMapping">
     	<security https="true" auth="true"/>
     	<event type="service" invoke="mailer.configureImportMapping"/>
-        <response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId"/>
-    	<response name="success" type="view" value="configureImportMappingsScreen"/>
+        <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params=""/>
+    	<response name="error" type="view" value="configureImportMappingsScreen"/>
 	</request-map>
 	
 	<request-map uri="updateImportMapping">
