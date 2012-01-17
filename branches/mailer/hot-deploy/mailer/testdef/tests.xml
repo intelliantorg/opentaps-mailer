@@ -5,12 +5,15 @@
     	<junit-test-suite class-name="net.intelliant.tests.ImportTests"/>
     </test-case>
     
-    <test-case case-name="marketing-campaign-test">
+    <test-case case-name="marketing-campaign-tests">
     	<junit-test-suite class-name="net.intelliant.tests.MarketingCampaignTests"/>
+    </test-case>    
+    
+    <test-case case-name="marketing-merge-form-tests">
+    	<junit-test-suite class-name="net.intelliant.tests.MergeFormsTests"/>
     </test-case>
     
-    
-    <test-case case-name="marketing-merge-form-test">
-    	<junit-test-suite class-name="net.intelliant.tests.MergeFormsTests"/>
+    <test-case case-name="ui-tests">
+    	<junit-test-suite class-name="net.intelliant.tests.UITests"/>
     </test-case>
 </test-suite>
