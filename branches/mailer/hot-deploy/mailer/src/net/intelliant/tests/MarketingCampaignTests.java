@@ -9,7 +9,7 @@ import org.ofbiz.entity.util.EntityUtil;
 import org.opentaps.tests.OpentapsTestCase;
 
 public class MarketingCampaignTests extends OpentapsTestCase {
-	private final static String module = MarketingMergedFormsTests.class.getName();
+	private final static String module = MarketingCampaignTests.class.getName();
 
 	@Override
 	public void setUp() throws Exception {
