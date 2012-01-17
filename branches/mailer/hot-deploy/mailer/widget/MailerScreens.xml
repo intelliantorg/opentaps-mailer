@@ -295,6 +295,7 @@
 	<screen name="configureImportMappingsScreen">
 	    <section> 
 	        <actions>
+	        	<set field="nameOfEntity" value="MailerRecipient"/>
 	            <set field="pageTitleLabel" value="Configure Mappings"/>
 	            <script location="component://mailer/webapp/mailer/WEB-INF/actions/uploadImportSampleForMapping.bsh"/>
 	        </actions>
