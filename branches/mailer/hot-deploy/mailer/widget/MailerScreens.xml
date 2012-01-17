@@ -133,9 +133,7 @@
                 </decorator-screen>
             </widgets>
         </section>
-    </screen>
-    
-    
+    </screen>    
     
     <screen name="viewMarketingCampaign">
         <section>
@@ -241,7 +239,6 @@
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
             <actions>
                 <set field="pageTitleLabel" value="FormLetterTemplateHeader"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
-                <set field="sectionHeaderUiLabel" value="FormLetterTemplateHeader"/>  <!-- this is for the main section of this page, ie <h2> -->
                 <set field="mergeFormLookupEntity" value="MergeFormAndCategory"/>  <!-- Override the entity name in getMergeFormsForCurrentUser.bsh -->
                 <script location="component://opentaps-common/webapp/common/WEB-INF/actions/includes/getMergeFormsForCurrentUser.bsh"/>
             </actions>
@@ -260,7 +257,6 @@
             <actions>
                 <set field="tabButtonItem" value="${uiLabelMap.CrmFormLetterTemplates}"/>
                 <set field="pageTitleLabel" value="FormLetterTemplateHeader"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
-                <set field="sectionHeaderUiLabel" value="FormLetterTemplateHeader"/> <!-- this is for the main section of this page, ie <h2> -->
                 <!-- this script will do the lookup and pass results to the widgets below -->   
                 <set field="mergeFormId" from-field="parameters.mergeFormId"/>   
                 <set field="partyId" value="${userLogin.partyId}"/>
@@ -276,9 +272,7 @@
                 </decorator-screen>
             </widgets>
         </section>
-    </screen>
-    
-    
+    </screen>    
     
     <screen name="listConfiguredImportMappingsScreen">
 	    <section> 
