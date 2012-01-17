@@ -86,7 +86,8 @@
     <div class="formRow">
       <span class="formLabel">${uiLabelMap.CrmFormLetterTemplatePrivate}</span>
       <span class="formInputSpan">
-        <input type="checkbox" name="privateForm" value="Y" <#if mergeForm?default({}).partyId?has_content>checked="checked"</#if>/>
+        <input type="checkbox" name="privateForm" value="Y" <#if mergeForm?default({}).partyId?has_content>checked="checked"</#if> />
+        
       </span>
     </div>
 

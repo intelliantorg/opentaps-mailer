@@ -3,14 +3,14 @@
 <div class="subSectionHeader">
 	<div class="subSectionTitle">Configured Mappings</div>
 	<div class="subMenuBar">
-		<a class="subMenuButton" href="<@ofbizUrl>configureImportMapping</@ofbizUrl>">Configure New Mapping</a>
+		<a class="subMenuButton" href="<@ofbizUrl>configureImportMapping</@ofbizUrl>">${uiLabelMap.ConfigureNewMapping}</a>
 	</div>
 </div>
 
 <#if listOfMappings?has_content>
   <table class="listTable" style="border:none">
     <tr class="listTableHeader" style="border:none">
-      <td class="titleCell titleCellAutoWidth" style="text-align:left">Name</td>
+      <td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.LabelName}</td>
       <td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CommonDescription}</td>
       <td>&nbsp;</td>
     </tr>

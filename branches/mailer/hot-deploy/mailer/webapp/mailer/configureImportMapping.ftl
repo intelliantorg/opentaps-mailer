@@ -64,7 +64,7 @@
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
 							<div class="fieldContainer">
-								<@inputSubmit title="Configure Mapping" onClick="" class=smallSubmit />
+								<@inputSubmit title=uiLabelMap.ButtonConfigureMapping onClick="" class=smallSubmit />
 							</div>
 						</div>					
 					</td>
