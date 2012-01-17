@@ -140,7 +140,7 @@
 
     <div class="formRow">
       <span class="formInputSpan">
-        <input type="submit" class="smallSubmit" name="submitButton" value="${formSubmit}" onClick="submitFormWithSingleClick(this)" />
+        <input type="submit" class="smallSubmit" name="submitButton" value="${formSubmit}" onClick="" />
         <#if mergeForm?has_content><@inputConfirm title=uiLabelMap.CommonDelete form="deleteMergeForm"/></#if >
       </span>
     </div>
