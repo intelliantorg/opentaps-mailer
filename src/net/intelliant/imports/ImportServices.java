@@ -26,7 +26,6 @@ public class ImportServices {
 	public static Map<String, Object> configureImportMapping(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
-		Debug.logInfo("This is the context >> " + context, module);
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperName = (String) context.get("importMapperName");
 		String description = (String) context.get("description");
@@ -56,6 +55,7 @@ public class ImportServices {
 	public static Map<String, Object> configureImportColumnsMapping(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
+		String importMapperId = (String) context.get("importMapperId");
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		Map<String, Object> entityColNames = (Map) context.get("entityColName");
 		Map<String, Object> importFileColIdx = (Map) context.get("importFileColIdx");
@@ -65,6 +65,7 @@ public class ImportServices {
 			Map<String, Object> inputs = UtilMisc.toMap("importColumnMapperId", importColumnMapperId);
 			String importFileColIdxValue = importFileColIdx.get(key).toString();
 			if (UtilValidate.isNotEmpty(importFileColIdxValue) && !importFileColIdxValue.equals("_NA_")) {
+				inputs.put("importMapperId", importMapperId);				
 				inputs.put("entityColName", entityColNames.get(key));
 				inputs.put("importFileColIdx", importFileColIdxValue);
 				inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
