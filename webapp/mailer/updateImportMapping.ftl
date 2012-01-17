@@ -14,7 +14,7 @@
 								<@inputText name="importMapperName" size=35 class="inputBox required" default="${importMapping.importMapperName}" />
 							</div>
 							<div class="label">
-								<@display class="tableheadtext" text="Sample Import" />
+								<@display class="tableheadtext" text=uiLabelMap.LabelSampleImport />
 							</div>
 							<div class="fieldContainer">
 								<@display class="tabletext" text='${importMapping.getRelatedOne("Content").get("contentName")} (${importMapping.contentId})' />
@@ -22,13 +22,13 @@
 						</div>
 						<div class="rowContainer">
 							<div class="label">
-								<@display class="tableheadtext" text="Created By User" />
+								<@display class="tableheadtext" text=uiLabelMap.LabelCreatedByUser />
 							</div>
 							<div class="fieldContainer">
 								<@display class="tabletext" text="${importMapping.createdByUserLogin?if_exists}" />
 							</div>
 							<div class="label">
-								<@display class="tableheadtext" text="Last Updated By User" />
+								<@display class="tableheadtext" text=uiLabelMap.LabelLastUpdatedByUser />
 							</div>
 							<div class="fieldContainer">
 								<@display class="tabletext" text="${importMapping.lastModifiedByUserLogin?if_exists}" />
@@ -45,7 +45,7 @@
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
 							<div class="fieldContainer">
-								<@inputSubmit title="Update Mapping" onClick="" class=smallSubmit />
+								<@inputSubmit title=uiLabelMap.ButtonUpdateMapping onClick="" class=smallSubmit />
 							</div>
 						</div>					
 					</td>
