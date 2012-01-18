@@ -35,11 +35,18 @@
         <attribute name="importFileColIdx" type="Map" string-map-prefix="importFileColIdx_" mode="IN" optional="true"/>
         <attribute name="importMapperId" type="String" mode="OUT" optional="false"/>
     </service>
-    
+
     <service name="mailer.configureImportColumnsMapping" engine="java" location="net.intelliant.imports.ImportServices" invoke="configureImportColumnsMapping" auth="true">
     	<attribute name="importMapperId" type="String" mode="IN" optional="false"/>
         <attribute name="entityColName" type="Map" string-map-prefix="entityColName_" mode="IN" optional="true"/>
         <attribute name="importFileColIdx" type="Map" string-map-prefix="importFileColIdx_" mode="IN" optional="true"/>
+    </service>
+    <service name="mailer.updateImportMapping" engine="java" location="net.intelliant.imports.ImportServices" invoke="updateImportMapping" auth="true">
+    	<attribute name="importMapperId" type="String" mode="IN" optional="false"/>
+    	<attribute name="importMapperName" type="String" mode="IN" optional="false"/>
+    	<attribute name="description" type="String" mode="IN" optional="true"/>    	
+        <attribute name="entityColName" type="Map" string-map-prefix="entityColName_" mode="IN" optional="false"/>
+        <attribute name="importFileColIdx" type="Map" string-map-prefix="importFileColIdx_" mode="IN" optional="false"/>
     </service>
     
     <service name="mailer.createContactList" default-entity-name="ContactList" engine="simple"

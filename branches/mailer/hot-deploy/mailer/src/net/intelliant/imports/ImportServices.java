@@ -1,21 +1,22 @@
 package net.intelliant.imports;
 
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
+import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
+import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.GenericServiceException;
 import org.ofbiz.service.ModelService;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
-
 
 public class ImportServices {
 	public static final String module = ImportServices.class.getName();
@@ -48,9 +49,9 @@ public class ImportServices {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
 		}
 		serviceResults.put("importMapperId", importMapperId);
-		return serviceResults;	
+		return serviceResults;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> configureImportColumnsMapping(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
@@ -65,7 +66,7 @@ public class ImportServices {
 			Map<String, Object> inputs = UtilMisc.toMap("importColumnMapperId", importColumnMapperId);
 			String importFileColIdxValue = importFileColIdx.get(key).toString();
 			if (UtilValidate.isNotEmpty(importFileColIdxValue)) {
-				inputs.put("importMapperId", importMapperId);				
+				inputs.put("importMapperId", importMapperId);
 				inputs.put("entityColName", entityColNames.get(key));
 				inputs.put("importFileColIdx", importFileColIdxValue);
 				inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
@@ -73,9 +74,79 @@ public class ImportServices {
 					dctx.getDelegator().makeValue("MailerImportColumnMapper", inputs).create();
 				} catch (GenericEntityException e) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
-				}	
+				}
 			}
 		}
-		return serviceResults;	
+		return serviceResults;
+	}
+
+	public static Map<String, Object> updateImportMapping(DispatchContext dctx, Map<String, Object> context) {
+		// System.out.println("Data : "+context);
+		GenericDelegator delegator = dctx.getDelegator();
+		Locale locale = (Locale) context.get("locale");
+		GenericValue userLogin = (GenericValue) context.get("userLogin");
+		String userLoginId = (String) userLogin.get("userLoginId");
+		String importMapperId = (String) context.get("importMapperId");
+
+		String importMapperName = (String) context.get("importMapperName");
+		String description = (String) context.get("description");
+
+		Map<String, Object> entityColName = (Map) context.get("entityColName");
+		Map<String, Object> importFileColIdx = (Map) context.get("importFileColIdx");
+
+		System.out.println("Ent col nm : " + entityColName);
+		System.out.println("Import fil col indx : " + importFileColIdx);
+
+		try {
+			updateMailerImportMapping(delegator, importMapperId, importMapperName, description, userLoginId);
+			updateMailerImportColumnMapping(delegator, importMapperId, userLogin, entityColName, importFileColIdx);
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "Error updating MailerImportMapping", locale), module);
+		}
+		return ServiceUtil.returnSuccess();
+	}
+
+	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String userLoginId) throws GenericEntityException {
+		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
+		
+		if (!(mailerImportMapper.get("importMapperName").equals(importMapperName) && mailerImportMapper.get("description").equals(description))) {
+			mailerImportMapper.set("importMapperName", importMapperName);
+			mailerImportMapper.set("description", description);
+			mailerImportMapper.set("lastModifiedByUserLogin", userLoginId);
+			mailerImportMapper.store();
+		}
+	}
+
+	private static void updateMailerImportColumnMapping(GenericDelegator delegator, String importMapperId, GenericValue userLogin, Map<String, Object> entityColName, Map<String, Object> importFileColIdx) throws GenericEntityException {
+		GenericValue mailerImportColumnMapper = null;
+
+		// These key sets are same for entityColName & importFileColIdx
+		// java.util.Map.
+		Set<String> keys = entityColName.keySet();
+		Iterator<String> keysItr = keys.iterator();
+		String key;
+
+		while (keysItr.hasNext()) {
+			key = keysItr.next();
+			mailerImportColumnMapper = EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", entityColName.get(key))));
+
+			if (!((String) mailerImportColumnMapper.get("importFileColIdx")).equals((String) importFileColIdx.get(key))) {
+				if (UtilValidate.isNotEmpty(mailerImportColumnMapper)) {
+					mailerImportColumnMapper.set("lastModifiedByUserLogin", userLogin.get("userLoginId"));
+					mailerImportColumnMapper.set("importFileColIdx", importFileColIdx.get(key));
+					mailerImportColumnMapper.store();
+				} else {
+					String importColumnMapperId = delegator.getNextSeqId("MailerImportColumnMapper");
+
+					Map<String, Object> inputs = UtilMisc.toMap("importColumnMapperId", importColumnMapperId);
+					inputs.put("importMapperId", importMapperId);
+					inputs.put("entityColName", entityColName.get(key));
+					inputs.put("importFileColIdx", importFileColIdx.get(key));
+					inputs.put("createdByUserLogin", userLogin.get("userLoginId"));
+
+					delegator.makeValue("MailerImportColumnMapper", inputs).create();
+				}
+			}
+		}
 	}
 }

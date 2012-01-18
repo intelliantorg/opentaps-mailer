@@ -149,15 +149,21 @@
 	<request-map uri="createConfiguredMapping">
     	<security https="true" auth="true"/>
     	<event type="service" invoke="mailer.configureImportMapping"/>
-        <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params=""/>
+        <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params="na"/>
     	<response name="error" type="view" value="configureImportMappingsScreen"/>
 	</request-map>
 	
-	<request-map uri="updateImportMapping">
+	<request-map uri="updateImportMappingForm">
     	<security https="true" auth="true"/>
     	<response name="success" type="view" value="updateImportMappingScreen"/>
+	</request-map>
+	<request-map uri="updateImportMapping">	
+    	<security https="true" auth="true"/>
+		<event type="service" invoke="mailer.updateImportMapping"/>
+    	<!-- <response name="success" type="view" value="updateImportMappingScreen"/> -->
+        <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params="importMapperId"/>
+    	<!-- <response name="error" type="view" value="updateImportMappingScreen"/> -->
 	</request-map>	
-	
 	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
 	<view-map name="login" type="screen" page="component://opentaps-common/widget/screens/common/CommonScreens.xml#login"/>
@@ -172,9 +178,10 @@
 	<view-map name="createContactListForm" type="screen" page="component://mailer/widget/MailerScreens.xml#createContactListForm" />
 	<view-map name="findContactLists" type="screen" page="component://mailer/widget/MailerScreens.xml#findContactLists" />
 	<view-map name="viewContactList" type="screen" page="component://mailer/widget/MailerScreens.xml#viewContactList" />
-	
+
 	<view-map name="manageMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#manageMergeForms" />
 	<view-map name="editMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#editMergeForms" />
+	
 	<view-map name="listConfiguredImportMappingsScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#listConfiguredImportMappingsScreen"/>
 	<view-map name="configureImportMappingsScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#configureImportMappingsScreen"/>
 	<view-map name="updateImportMappingScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#updateImportMappingScreen"/>	

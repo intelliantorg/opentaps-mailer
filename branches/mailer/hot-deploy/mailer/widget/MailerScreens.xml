@@ -314,12 +314,14 @@
             <actions>
                 <set field="pageTitleLabel" value="Update Mapping"/>
                 <set field="sectionHeaderUiLabel" value="Update Mapping"/>
+	        	<set field="nameOfEntity" value="MailerRecipient"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.groovy"/>                
             </actions>
             <widgets>
             	<decorator-screen name="main-section-decorator">
 	                <decorator-section name="section-body">                     
-	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>
+	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>	                    
 	                </decorator-section>
 	            </decorator-screen>
             </widgets>

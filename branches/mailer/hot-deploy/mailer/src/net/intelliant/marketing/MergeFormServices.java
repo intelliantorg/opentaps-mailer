@@ -5,12 +5,14 @@ import java.util.Map;
 
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
+import org.ofbiz.content.content.ContentServices;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
+import org.opentaps.domain.base.entities.Content;
 
 public class MergeFormServices {
 	private final static String module = MergeFormServices.class.getName();
@@ -27,7 +29,7 @@ public class MergeFormServices {
         Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
         mergeForm = delegator.makeValue("MergeForm", newMergeFormMap);
         mergeForm.setNonPKFields(context);
-        
+
         if (! privateForm) mergeForm.set("partyId", null);
 
         try {
@@ -47,9 +49,14 @@ public class MergeFormServices {
         Boolean privateForm = "Y".equals((String) context.get("privateForm"));
         Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
         GenericValue mergeForm = null;
+      
+        /* My play ground [START] */
         
+        /* My play ground [END] */
+                
         try {
             mergeForm = delegator.findByPrimaryKey("MergeForm", newMergeFormMap);
+            //delegator.findByAnd(entityName, fields)
             mergeForm.setNonPKFields(context);
             if ((! privateForm)) mergeForm.set("partyId", null);
             delegator.store(mergeForm);
