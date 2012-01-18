@@ -108,7 +108,7 @@ public class ImportServices {
 
 	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String userLoginId) throws GenericEntityException {
 		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-		
+
 		if (!(mailerImportMapper.get("importMapperName").equals(importMapperName) && mailerImportMapper.get("description").equals(description))) {
 			mailerImportMapper.set("importMapperName", importMapperName);
 			mailerImportMapper.set("description", description);
@@ -120,14 +120,9 @@ public class ImportServices {
 	private static void updateMailerImportColumnMapping(GenericDelegator delegator, String importMapperId, GenericValue userLogin, Map<String, Object> entityColName, Map<String, Object> importFileColIdx) throws GenericEntityException {
 		GenericValue mailerImportColumnMapper = null;
 
-		// These key sets are same for entityColName & importFileColIdx
-		// java.util.Map.
+		// This key set is same for entityColName & importFileColIdx
 		Set<String> keys = entityColName.keySet();
-		Iterator<String> keysItr = keys.iterator();
-		String key;
-
-		while (keysItr.hasNext()) {
-			key = keysItr.next();
+		for (String key : keys) {
 			mailerImportColumnMapper = EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", entityColName.get(key))));
 
 			if (!((String) mailerImportColumnMapper.get("importFileColIdx")).equals((String) importFileColIdx.get(key))) {
