@@ -16,9 +16,9 @@
     </tr>
     <#list listOfMappings as listOfMapping>
       <tr class="${tableRowClass(listOfMapping_index)}">
-        <@displayLinkCell href="updateImportMapping?importMapperId=${listOfMapping.importMapperId}" text=listOfMapping.importMapperName/>
+        <@displayLinkCell href="updateImportMappingForm?importMapperId=${listOfMapping.importMapperId}" text=listOfMapping.importMapperName/>
         <td>${listOfMapping.description?default("")}</td>
-        <td style="text-align:right"><@displayLink href="updateImportMapping?importMapperId=${listOfMapping.importMapperId}" text=uiLabelMap.CommonEdit/></td>
+        <td style="text-align:right"><@displayLink href="updateImportMappingForm?importMapperId=${listOfMapping.importMapperId}" text=uiLabelMap.CommonEdit/></td>
       </tr>
     </#list>
   </table>

@@ -42,6 +42,26 @@
 								<@inputTextarea name="description" rows=4 cols=35 default="${importMapping.description?if_exists}"/>
 							</div>
 						</div>
+						<!-- <div style="clear:both; height:30px;"></div> -->
+						<#if lhsColumns?has_content>
+							<#list lhsColumns as lhsColumn>
+								<div class="rowContainer">
+									<div class="label">
+										${lhsColumn.get("entityColDesc")}
+									</div>
+									<div class="fieldContainer">
+										<input type="hidden" name="entityColName_${lhsColumn_index}" value='${lhsColumn.get("entityColName")}'>
+										<select class="dropDown" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
+											<option value='_NA_'>--select--</option>
+											<#list rhsColumns as rhsColumn>
+												<option value='${rhsColumn}' <#if (selectedIndex.get(lhsColumn_index)?string==rhsColumn?string) >selected='selected'</#if> >Column Index ${rhsColumn}</option>
+											</#list>
+										</select>
+									</div>
+								</div>
+							</#list>
+						</#if>
+						
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
 							<div class="fieldContainer">
