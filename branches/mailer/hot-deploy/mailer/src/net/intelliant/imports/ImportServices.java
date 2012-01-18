@@ -64,7 +64,7 @@ public class ImportServices {
 			String importColumnMapperId = dctx.getDelegator().getNextSeqId("MailerImportColumnMapper");
 			Map<String, Object> inputs = UtilMisc.toMap("importColumnMapperId", importColumnMapperId);
 			String importFileColIdxValue = importFileColIdx.get(key).toString();
-			if (UtilValidate.isNotEmpty(importFileColIdxValue) && !importFileColIdxValue.equals("_NA_")) {
+			if (UtilValidate.isNotEmpty(importFileColIdxValue)) {
 				inputs.put("importMapperId", importMapperId);				
 				inputs.put("entityColName", entityColNames.get(key));
 				inputs.put("importFileColIdx", importFileColIdxValue);
