@@ -41,6 +41,7 @@
             <fileset dir="${ofbiz.dir}/framework/minilang/build/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/framework/webapp/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/framework/webapp/build/lib" includes="*.jar"/>
+        	<fileset dir="${ofbiz.dir}/framework/widget/build/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/framework/common/build/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/applications/accounting/build/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/applications/content/build/lib" includes="*.jar"/>
