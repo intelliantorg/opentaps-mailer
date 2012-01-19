@@ -145,14 +145,14 @@
     	<security https="true" auth="true"/>
     	<response name="success" type="view" value="configureImportMappingsScreen"/>
 	</request-map>
-	
+
 	<request-map uri="createConfiguredMapping">
     	<security https="true" auth="true"/>
     	<event type="service" invoke="mailer.configureImportMapping"/>
         <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params="na"/>
     	<response name="error" type="view" value="configureImportMappingsScreen"/>
 	</request-map>
-	
+
 	<request-map uri="updateImportMappingForm">
     	<security https="true" auth="true"/>
     	<response name="success" type="view" value="updateImportMappingScreen"/>

@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
@@ -44,9 +45,11 @@ public class ImportServices {
 			inputs.put("importMapperId", importMapperId);
 			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
+			Debug.log(e.toString());
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), module);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
+			Debug.log(e.toString());
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), module);
 		}
 		serviceResults.put("importMapperId", importMapperId);
 		return serviceResults;
