@@ -31,11 +31,11 @@ public class ImportServices {
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperName = (String) context.get("importMapperName");
 		String description = (String) context.get("description");
-		String entityName = (String) context.get("entityName");
+		String entityName = (String) context.get("ofbizEntityName");
 		String contentId = (String) context.get("contentId");
 		String importMapperId = dctx.getDelegator().getNextSeqId("MailerImportMapper");
 		Map<String, Object> inputs = UtilMisc.toMap("importMapperId", importMapperId, "importMapperName", importMapperName, "description", description);
-		inputs.put("entityName", entityName);
+		inputs.put("ofbizEntityName", entityName);
 		inputs.put("contentId", contentId);
 		inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
 		try {

@@ -260,6 +260,9 @@
                 <!-- this script will do the lookup and pass results to the widgets below -->   
                 <set field="mergeFormId" from-field="parameters.mergeFormId"/>   
                 <set field="partyId" value="${userLogin.partyId}"/>
+                
+	        	<set field="nameOfEntity" value="MailerRecipient"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/getEntityColumnList.groovy"/>   	        	
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/getMergeForm.bsh"/>
             </actions>
             <widgets>

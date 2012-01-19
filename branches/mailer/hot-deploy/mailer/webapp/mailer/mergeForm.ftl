@@ -135,7 +135,8 @@
     <div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.OpentapsTemplate}</span>
       <span class="formInputSpan">
-        <@htmlTextArea class="required" textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://crmsfa/webapp/crmsfa/includes/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>
+        <@htmlTextArea class="required" textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://mailer/webapp/mailer/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>
+        <!-- <@htmlTextArea class="required" textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://crmsfa/webapp/crmsfa/includes/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>-->
       </span>
     </div>
 
