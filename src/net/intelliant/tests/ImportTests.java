@@ -105,7 +105,7 @@ public class ImportTests extends OpentapsTestCase {
 
 		Map<String, Object> createData = UtilMisc.toMap("userLogin", admin);
 		createData.put("importMapperName", "Name-" + timeStamp);
-		createData.put("entityName", "MailerRecipient");
+		createData.put("ofbizEntityName", "MailerRecipient");
 		createData.put("contentId", createContentData(userLogin));
 		createData.put("description", "Des-" + timeStamp);
 
@@ -137,7 +137,7 @@ public class ImportTests extends OpentapsTestCase {
 		GenericValue mailerImportMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
 
 		assertEquals(mailerImportMapperGV.get("importMapperName"), inputs.get("importMapperName"));
-		assertEquals(mailerImportMapperGV.get("entityName"), inputs.get("entityName"));
+		assertEquals(mailerImportMapperGV.get("ofbizEntityName"), inputs.get("ofbizEntityName"));
 		assertEquals(mailerImportMapperGV.get("contentId"), inputs.get("contentId"));
 		assertEquals(mailerImportMapperGV.get("description"), inputs.get("description"));
 	}
@@ -146,11 +146,134 @@ public class ImportTests extends OpentapsTestCase {
 	private void testConfigureImportColumnMapperData(String importMapperId, Map<String, Object> inputs) throws GenericEntityException {
 		Map<String, Object> entityColNames = (Map<String, Object>) inputs.get("entityColName");
 		Map<String, Object> importFileColIdxs = (Map<String, Object>) inputs.get("importFileColIdx");
-		
+
 		Set<String> keys = entityColNames.keySet();
-		for(String key : keys){
+		for (String key : keys) {
 			GenericValue mailerImportColumnMapperGV = EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", entityColNames.get(key))));
 			assertEquals(importFileColIdxs.get(key), mailerImportColumnMapperGV.get("importFileColIdx"));
 		}
+	}
+
+	public void testUpdateImportMapper() throws GenericEntityException {
+		// Create import mapper
+		Map<String, Object> inputs = getCreateImportMapperData(admin);
+
+		Map<String, Object> inputsEntityColNames = UtilMisc.toMap("0", "firstName");
+		inputsEntityColNames.put("1", "lastName");
+		inputsEntityColNames.put("2", "emailAddress");
+		inputs.put("entityColName", inputsEntityColNames);
+
+		Map<String, Object> inputsimportFileColIdx = UtilMisc.toMap("0", "0");
+		inputsimportFileColIdx.put("1", "1");
+		inputsimportFileColIdx.put("2", "_NA_");
+		inputs.put("importFileColIdx", inputsimportFileColIdx);
+
+		Map<?, ?> results = runAndAssertServiceSuccess("mailer.configureImportMapping", inputs);
+		String importMapperId = (String) results.get("importMapperId");
+
+		testConfigureImportMapperData(importMapperId, inputs);
+		testConfigureImportColumnMapperData(importMapperId, inputs);
+
+		// Update import mapper.
+		Map<String, Object> updateInputs = getCreateImportMapperData(admin);
+		updateInputs.put("importMapperId", importMapperId);
+		updateInputs.remove("ofbizEntityName");
+		updateInputs.remove("contentId");
+
+		inputsEntityColNames = UtilMisc.toMap("0", "firstName");
+		inputsEntityColNames.put("1", "lastName");
+		inputsEntityColNames.put("2", "emailAddress");
+		updateInputs.put("entityColName", inputsEntityColNames);
+
+		inputsimportFileColIdx = UtilMisc.toMap("0", "1");
+		inputsimportFileColIdx.put("1", "_NA_");
+		inputsimportFileColIdx.put("2", "_NA_");
+		updateInputs.put("importFileColIdx", inputsimportFileColIdx);
+
+		// Run update service
+		runAndAssertServiceSuccess("mailer.updateImportMapping", updateInputs);
+
+		// GenericValue value =
+		// delegator.findByPrimaryKey("MailerImportMapper",UtilMisc.toMap("importMapperId",
+		// importMapperId));
+		testUpdateImportMapperData(importMapperId, updateInputs);
+		testUpdateImportColumnMapperData(importMapperId, inputs, updateInputs);
+		testUpdateMustFail(importMapperId, updateInputs);
+	}
+
+	// To test inserted data is expected or not?
+	private void testUpdateImportMapperData(String importMapperId, Map<String, Object> inputs) throws GenericEntityException {
+		GenericValue mailerImportMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
+		assertEquals(mailerImportMapperGV.get("importMapperName"), inputs.get("importMapperName"));
+		assertEquals(mailerImportMapperGV.get("description"), inputs.get("description"));
+	}
+	
+	private void testUpdateImportColumnMapperData(String importMapperId, Map<String, Object> createInputs, Map<String, Object> updateInputs) throws GenericEntityException {
+		testConfigureImportColumnMapperData(importMapperId, updateInputs);
+		
+		Map<String, Object> createEntityColumnNames = (Map<String, Object>) createInputs.get("entityColName");
+		Map<String, Object> createFileColumnIndexes = (Map<String, Object>) createInputs.get("importFileColIdx");
+		
+		Map<String, Object> updateEntityColumnNames = (Map<String, Object>) updateInputs.get("entityColName");
+		Map<String, Object> updateFileColumnIndexes = (Map<String, Object>) updateInputs.get("importFileColIdx");
+		
+		Set<String> keys = createEntityColumnNames.keySet();
+		GenericValue mailerImportColumnMapperGV = null;
+		for(String key : keys){
+			mailerImportColumnMapperGV =  EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", updateEntityColumnNames.get(key))));
+			
+			if(createFileColumnIndexes.get(key).equals(updateFileColumnIndexes.get(key))){
+				assertEquals(null,mailerImportColumnMapperGV.get("lastModifiedByUserLogin"));
+			}else{
+				assertEquals(((GenericValue)updateInputs.get("userLogin")).get("userLoginId"),mailerImportColumnMapperGV.get("lastModifiedByUserLogin"));
+			}
+		}		
+	}
+	private void testUpdateMustFail(String importMapperId, Map<String, Object> inputs) throws GenericEntityException{
+		inputs.put("importMapperId", importMapperId);
+		inputs.remove("importMapperName");
+		inputs.remove("ofbizEntityName");
+		inputs.remove("contentId");
+
+		Map<String,Object> inputsEntityColNames = UtilMisc.toMap("0", "firstName");
+		inputsEntityColNames.put("1", "lastName");
+		inputsEntityColNames.put("2", "emailAddress");
+		inputs.put("entityColName", inputsEntityColNames);
+
+		Map<String,Object> inputsimportFileColIdx = UtilMisc.toMap("0", "1");
+		inputsimportFileColIdx.put("1", "_NA_");
+		inputsimportFileColIdx.put("2", "_NA_");
+		inputs.put("importFileColIdx", inputsimportFileColIdx);
+
+		runAndAssertServiceFailure("mailer.updateImportMapping", inputs);
+		
+		inputs.clear();
+		inputs = getCreateImportMapperData(admin);
+		inputs.put("importMapperId", importMapperId);
+		//inputs.remove("ofbizEntityName");
+		//inputs.remove("contentId");
+		inputsEntityColNames = UtilMisc.toMap("0", "firstName");
+		inputsEntityColNames.put("1", "lastName");
+		inputsEntityColNames.put("2", "emailAddress");
+		inputs.put("entityColName", inputsEntityColNames);
+
+		inputsimportFileColIdx = UtilMisc.toMap("0", "1");
+		inputsimportFileColIdx.put("1", "_NA_");
+		inputsimportFileColIdx.put("2", "_NA_");
+		inputs.put("importFileColIdx", inputsimportFileColIdx);
+		runAndAssertServiceFailure("mailer.updateImportMapping", inputs);
+
+		inputs.clear();
+		inputs = getCreateImportMapperData(admin);
+		inputs.put("importMapperId", importMapperId);
+		inputs.remove("ofbizEntityName");
+		inputs.remove("contentId");
+
+		inputsimportFileColIdx = UtilMisc.toMap("0", "1");
+		inputsimportFileColIdx.put("1", "_NA_");
+		inputsimportFileColIdx.put("2", "_NA_");
+		inputs.put("importFileColIdx", inputsimportFileColIdx);
+
+		runAndAssertServiceFailure("mailer.updateImportMapping", inputs);		
 	}
 }

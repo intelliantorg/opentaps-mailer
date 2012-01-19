@@ -115,7 +115,7 @@ if (isMultiPart) {
 }
 if (UtilValidate.isNotEmpty(fileAndPath)) {
 	entityColumnsToIgnore = UtilMisc.toList("lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin");
-	lhsColumns = UtilImport.getEntityColumns(multiPartMap.get("entityName"), entityColumnsToIgnore);
+	lhsColumns = UtilImport.getEntityColumns(multiPartMap.get("ofbizEntityName"), entityColumnsToIgnore);
 	context.put("lhsColumns", lhsColumns);
 	
 	rhsColumns = UtilImport.readExcelIndices(fileAndPath, 0);

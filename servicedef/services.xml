@@ -28,7 +28,7 @@
     
     <service name="mailer.configureImportMapping" engine="java" location="net.intelliant.imports.ImportServices" invoke="configureImportMapping" auth="true">
         <attribute name="importMapperName" type="String" mode="IN" optional="false"/>
-        <attribute name="entityName" type="String" mode="IN" optional="false"/>
+        <attribute name="ofbizEntityName" type="String" mode="IN" optional="false"/>
         <attribute name="contentId" type="String" mode="IN" optional="false"/>
         <attribute name="description" type="String" mode="IN" optional="true"/>
         <attribute name="entityColName" type="Map" string-map-prefix="entityColName_" mode="IN" optional="true"/>

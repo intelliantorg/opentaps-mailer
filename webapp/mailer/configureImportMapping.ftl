@@ -10,7 +10,7 @@
 			</#assign>
 		</#if>
 		<form id="configureImortMappingForm" name="configureImortMappingForm" action="${actionURL}" method="post" enctype="multipart/form-data" class="basic-form">
-			<@inputHidden name="entityName" value="${nameOfEntity}"/>
+			<@inputHidden name="ofbizEntityName" value="${nameOfEntity}"/>
 			<table width="100%">
 				<tr>
 					<td>
