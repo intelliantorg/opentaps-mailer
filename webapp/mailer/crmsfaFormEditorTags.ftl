@@ -4,7 +4,7 @@
   
 	<#if entityColumns?has_content >
 		<#list entityColumns as entityColumn>
-			<#assign tags = tags + [{ "${entityColumn.entityColName}"                               : "${entityColumn.entityColDesc}"                 }]/>
+			<#assign tags = tags + [{ r"${"+"${entityColumn.entityColName}"+"}":"${entityColumn.entityColDesc}"}]/>
 		</#list>
 	</#if>
 	
