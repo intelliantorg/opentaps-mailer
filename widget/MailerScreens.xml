@@ -67,7 +67,8 @@
                         </container>
                         <container style="subSectionBlock">
                             <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.CrmMarketingCampaigns}</label></container>
-                            <include-form name="ListMarketingCampaigns" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            <!-- <include-form name="ListMarketingCampaigns" location="component://mailer/widget/forms/MailerForms.xml"/> -->
+                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/findMarketingCampaignListing.ftl"/></html></platform-specific>
                         </container>
                     </decorator-section>
                 </decorator-screen>

@@ -66,6 +66,7 @@
         <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}">
             <display type="currency" currency="${currencyUomId}"/>
         </field>
+        <field name="ss" title="${uiLabelMap.CommonSelect}"><check /></field>
     </form>
     
     <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
