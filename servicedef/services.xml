@@ -68,4 +68,16 @@
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
         <attribute name="privateForm" type="String" mode="IN" optional="true"/>
     </service>
+
+    <service name="mailer.importContactList" engine="java" location="net.intelliant.marketing.ContactListServices" 
+    		invoke="importContactList" auth="true">
+       <description>Import Contact List</description>
+       <attribute name="contactListId" type="String" mode="IN"/>
+       <!-- <attribute name="spreadSheetContactList" type="java.nio.ByteBuffer" mode="IN"/> --> 
+       <attribute name="spreadSheetContactList" type="org.ofbiz.entity.util.ByteWrapper" mode="IN"/>      
+       <attribute name="_spreadSheetContactList_fileName" type="String" mode="IN"/>
+       <attribute name="_spreadSheetContactList_contentType" type="String" mode="IN"/>
+       <attribute name="fileFormat" type="String" mode="IN" optional="true"/>
+       <attribute name="importColumnMapperId" type="String" mode="IN"/>
+    </service>
 </services>

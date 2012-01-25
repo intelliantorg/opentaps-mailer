@@ -15,7 +15,7 @@
             </widgets>
         </section>
     </screen>
-        
+
     <screen name="createMarketingCampaignForm">
         <section>
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_CREATE"/></condition>
@@ -75,7 +75,7 @@
             </widgets>
         </section>
     </screen>
-    
+
 	<screen name="createContactListForm">
         <section>
             <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
@@ -106,7 +106,7 @@
             </fail-widgets>
         </section>
     </screen>
-    
+
     <screen name="findContactLists">
         <section>
             <actions>
@@ -193,7 +193,7 @@
             </fail-widgets>
         </section>
     </screen>
-    
+
     <screen name="viewContactList">
         <section>
             <actions>
@@ -225,7 +225,7 @@
                         </container>
 
                         <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>
+                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>
                             <include-form name="ListContactListParties" location="component://crmsfa/widget/crmsfa/forms/marketing/ContactListForms.xml"/>
                         </container>
                     </decorator-section>
@@ -326,6 +326,43 @@
             	<decorator-screen name="main-section-decorator">
 	                <decorator-section name="section-body">                     
 	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>	                    
+	                </decorator-section>
+	            </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+	<screen name="updateImportMappingScreen">
+        <section>
+            <actions>
+                <set field="pageTitleLabel" value="Update Mapping"/>
+                <set field="sectionHeaderUiLabel" value="Update Mapping"/>
+	        	<set field="nameOfEntity" value="MailerRecipient"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.groovy"/>                
+            </actions>
+            <widgets>
+            	<decorator-screen name="main-section-decorator">
+	                <decorator-section name="section-body">                     
+	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>	                    
+	                </decorator-section>
+	            </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+	<screen name="importContactListScreen">
+        <section>
+            <actions>
+                <set field="pageTitleLabel" value="ImportContactListHeader"/>
+                <set field="sectionHeaderUiLabel" value="ImportContactListHeader"/>
+	        	<set field="nameOfEntity" value="MailerRecipient"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/importContactList.groovy"/>
+            </actions>
+            <widgets>
+            	<decorator-screen name="main-section-decorator">
+	                <decorator-section name="section-body">
+	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/importContactList.ftl"/></html></platform-specific>	                    
 	                </decorator-section>
 	            </decorator-screen>
             </widgets>

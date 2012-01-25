@@ -165,6 +165,17 @@
     	<!-- <response name="error" type="view" value="updateImportMappingScreen"/> -->
 	</request-map>	
 	
+	<request-map uri="importContactListForm">
+    	<security https="true" auth="true"/>
+    	<response name="success" type="view" value="importContactListScreen"/>
+	</request-map>
+	<request-map uri="importContactList">
+    	<security https="true" auth="true"/>
+    	<event type="service" invoke="mailer.importContactList"/>
+    	<response name="success" value="importContactListForm" type="request-redirect-filterparam" allowed-params="contactListId" />
+	</request-map>
+
+	
 	<view-map name="error" page="/view/error/defaultError.jsp" />
 	<view-map name="login" type="screen" page="component://opentaps-common/widget/screens/common/CommonScreens.xml#login"/>
 	
@@ -184,5 +195,7 @@
 	
 	<view-map name="listConfiguredImportMappingsScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#listConfiguredImportMappingsScreen"/>
 	<view-map name="configureImportMappingsScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#configureImportMappingsScreen"/>
-	<view-map name="updateImportMappingScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#updateImportMappingScreen"/>	
+	<view-map name="updateImportMappingScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#updateImportMappingScreen"/>
+	
+	<view-map name="importContactListScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#importContactListScreen"/>	
 </site-conf>
