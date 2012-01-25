@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
+import org.ofbiz.entity.transaction.TransactionUtil;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.GenericServiceException;
 import org.ofbiz.service.ServiceUtil;
@@ -30,6 +33,7 @@ public class ContactListServices {
 
 	/**
 	 * Gets the path for uploaded files.
+	 * 
 	 * @return a <code>String</code> value
 	 */
 	private static String getUploadPath() {
@@ -40,17 +44,13 @@ public class ContactListServices {
 		System.out.println("The inputs >> " + context);
 		String fileFormat = "EXCEL";
 		String fileName = (String) context.get("_uploadedFile_fileName");
-//		String mimeTypeId = (String) context.get("_uploadedFile_contentType");
+		// String mimeTypeId = (String)
+		// context.get("_uploadedFile_contentType");
+
+		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperId = (String) context.get("importMapperId");
-		
-//		if (mimeTypeId != null && mimeTypeId.length() > 60) {
-//			// XXX This is a fix to avoid problems where an OS gives us a mime
-//			// type that is too long to fit in 60 chars (ex. MS .xlsx as
-//			// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)
-//			Debug.logWarning("Truncating mime type [" + mimeTypeId + "] to 60 characters.", MODULE);
-//			mimeTypeId = mimeTypeId.substring(0, 60);
-//		}
 		String excelFilePath = getUploadPath() + fileName;
+
 		// save the file to the system using the ofbiz service
 		Map<String, Object> input = UtilMisc.toMap("dataResourceId", null, "binData", context.get("uploadedFile"), "dataResourceTypeId", "LOCAL_FILE", "objectInfo", excelFilePath);
 		try {
@@ -60,20 +60,9 @@ public class ContactListServices {
 			}
 			// for now we only support EXCEL format
 			if ("EXCEL".equalsIgnoreCase(fileFormat)) {
-				System.out.println("Congratulation! You have traveled a long path : " + excelFilePath);
 				GenericValue mailerImportMapper = dctx.getDelegator().findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-				insertIntoMailerRecipient(dctx.getDelegator(), mailerImportMapper.getString("ofbizEntityName"), excelFilePath, importMapperId);
-				/*
-				 * ExcelImportServices excelImportService; try { excelImportService
-				 * = new ExcelImportServices(new Infrastructure(dispatcher), new
-				 * User(userLogin), (Locale) context.get("locale"));
-				 * excelImportService.setUploadedFileName(fileName);
-				 * excelImportService.parseFileForDataImport(); } catch
-				 * (ServiceException e) { return
-				 * UtilMessage.createAndLogServiceError(e, MODULE); } catch
-				 * (IllegalArgumentException e) { return
-				 * UtilMessage.createAndLogServiceError(e, MODULE); }
-				 */
+
+				insertIntoMailerRecipient(dctx.getDelegator(), userLogin.getString("userLoginId"), mailerImportMapper.getString("ofbizEntityName"), String.valueOf(context.get("contactListId")), excelFilePath, importMapperId);
 			} else {
 				return UtilMessage.createAndLogServiceError("[" + fileFormat + "] is not a supported file format.", MODULE);
 			}
@@ -91,58 +80,95 @@ public class ContactListServices {
 	}
 
 	// Completed
-	private static StatusReportOfImportContactList insertIntoMailerRecipient(GenericDelegator delegator, String entityName, String excelFilePath, String columnMapperId) throws GenericEntityException, FileNotFoundException, IOException {
+	protected static StatusReportOfImportContactList insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, String contactListId, String excelFilePath, String columnMapperId) throws GenericEntityException, FileNotFoundException, IOException {
 		Map<String, Integer> columnMapper = getColumnMapper(delegator, columnMapperId);
 
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
-		HSSFSheet excelSheet = excelDocument.getSheetAt(0); 
-		
+		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
+
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
-		
+
+		String recipientId = null;
+
 		int index = 0;
 		int successfulInsertion = 0;
 		int failedInsertion = 0;
-		Map<Integer,String> fullReport = new LinkedHashMap<Integer, String>();
-		while(excelRowIterator.hasNext()){
-			try{
-				insertIntoMailerRecipient(delegator, entityName, excelRowIterator.next(), columnMapper);
+		Map<Integer, String> fullReport = new LinkedHashMap<Integer, String>();
+		while (excelRowIterator.hasNext()) {
+			try {
+				TransactionUtil.begin();
+
+				recipientId = insertIntoMailerRecipient(delegator, userLoginId, entityName, excelRowIterator.next(), columnMapper);
+				fetchCampaignForMailerCampaignStatus(delegator, contactListId, recipientId);
+
 				fullReport.put(index++, "Successful");
 				successfulInsertion++;
-			}catch (GenericEntityException gee) {
+				TransactionUtil.commit();
+			} catch (GenericEntityException gee) {
+				TransactionUtil.rollback();
 				Debug.log(gee, MODULE);
-				fullReport.put(index++, "Failed : "+gee.getMessage());
+				fullReport.put(index++, "Failed : " + gee.getMessage());
 				failedInsertion++;
 			}
 		}
 		StatusReportOfImportContactList report = new StatusReportOfImportContactList(successfulInsertion, failedInsertion, fullReport);
-		
+		// System.out.println(report.toString());
 		return report;
 	}
 
 	// Completed
-	private static void insertIntoMailerRecipient(GenericDelegator delegator, String entityName, HSSFRow excelRowData, Map<String, Integer> columnMapper) throws GenericEntityException {
+	protected static String insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Integer> columnMapper) throws GenericEntityException {
 		Map<String, Object> rowData = null;
 
 		String entityPrimaryKeyField = delegator.getModelEntity(entityName).getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
 		rowData = UtilMisc.toMap(entityPrimaryKeyField, entityPrimaryKey);
+		rowData.put("importedOnDateTime", new Timestamp(new Date().getTime()));
+		rowData.put("importedByUserLogin", userLoginId);
 
 		Set<String> keys = columnMapper.keySet();
-		for(String key : keys){
+		for (String key : keys) {
 			rowData.put(key, excelRowData.getCell(Short.parseShort(String.valueOf(columnMapper.get(key)))).toString());
 		}
-		System.out.println("The rowData >> " + rowData);
+		// System.out.println("Column mapper >> "+columnMapper);
+		// System.out.println("The rowData >> " + rowData);
 		delegator.create(entityName, rowData);
+		return entityPrimaryKey;
 	}
 
 	// Completed
-	private static Map<String, Integer> getColumnMapper(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
+	protected static Map<String, Integer> getColumnMapper(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
 		Map<String, Integer> data = new LinkedHashMap<String, Integer>();
-		List<GenericValue> columnToIndexMappings = delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", "columnMapperId"));
+		List<GenericValue> columnToIndexMappings = delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", columnMapperId));
 		// Converting list to map.
 		for (GenericValue columnToIndexMapping : columnToIndexMappings) {
 			data.put(String.valueOf(columnToIndexMapping.get("entityColName")), Integer.parseInt(String.valueOf(columnToIndexMapping.get("importFileColIdx"))));
 		}
+		// System.out.println("ID : "+columnMapperId+"\nData : "+data);
 		return data;
+	}
+
+	// Work on Progress
+	protected static void fetchCampaignForMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
+		List<GenericValue> mmcacl = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("contactListId", contactListId));
+
+		String marketingCampaignId = null;
+		for (GenericValue mmcaclDatum : mmcacl) {
+			marketingCampaignId = String.valueOf(mmcaclDatum.get("marketingCampaignId"));
+
+			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+			String statusId = String.valueOf(marketingCampaign.get("statusId"));
+
+			GenericValue mailerMarketingCampaign = marketingCampaign.getRelatedOne("MailerMarketingCampaign").getRelatedOne("MergeForm");
+			String scheduleAt = String.valueOf(mailerMarketingCampaign.get("scheduleAt"));
+
+			System.out.println("\nmarketingCampaignId:" + marketingCampaignId + "\nstatusId:" + statusId + "\nscheduleAt:" + scheduleAt);
+			insertIntoMailerCampaignStatus(delegator, contactListId, recipientId, marketingCampaignId, statusId, scheduleAt);
+		}
+	}
+
+	protected static void insertIntoMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId, String marketingCampaignId, String statusId, String scheduleAt) throws GenericEntityException {
+		String campaignStatusId = delegator.getNextSeqId("MailerCampaignStatus");
+		delegator.create("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId, "recipientId", recipientId, "contactListId", contactListId, "marketingCampaignId", marketingCampaignId, "statusId", statusId, "scheduledForDate", new Timestamp(new Date().getTime())));
 	}
 }

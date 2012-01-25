@@ -3,7 +3,7 @@
 <entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/entitymodel.xsd">
     <title>Entity definitions for mailer</title>    
     <author>IntelliAnt</author>
-	
+
     <entity entity-name="MailerMarketingCampaign" package-name="net.intelliant.mailer" title="Mailer Marketing Campaign Entity">
     	<field name="marketingCampaignId" type="id-ne"/>
     	<field name="fromEmailAddress" type="id-long" not-null="true"/>
@@ -16,7 +16,7 @@
         	<key-map field-name="templateId" rel-field-name="mergeFormId"/>
       	</relation>
     </entity> 
-    
+
     <view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
         <member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
         <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
