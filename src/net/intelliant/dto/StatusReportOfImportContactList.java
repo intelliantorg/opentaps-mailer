@@ -25,4 +25,8 @@ public class StatusReportOfImportContactList{
 	public Map<Integer, String> getFullReport() {
 		return fullReport;
 	}
+	
+	public String toString(){
+		return "Report{\nSUCC : "+this.successfulInsertion+"\nFAIL : "+this.failedInsertion+"\nMAP : "+fullReport.toString()+"}";
+	}
 }
