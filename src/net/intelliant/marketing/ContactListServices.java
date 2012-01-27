@@ -125,7 +125,7 @@ public class ContactListServices {
 		rowData = UtilMisc.toMap(entityPrimaryKeyField, entityPrimaryKey);
 		rowData.put("importedOnDateTime", new Timestamp(new Date().getTime()));
 		rowData.put("importedByUserLogin", userLoginId);
-
+		
 		Set<String> keys = columnMapper.keySet();
 		for (String key : keys) {
 			rowData.put(key, excelRowData.getCell(Short.parseShort(String.valueOf(columnMapper.get(key)))).toString());
