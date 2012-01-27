@@ -29,10 +29,7 @@
 			<td><span class="tableheadtext"><a class="orderByHeaderLink" href="${listSortTarget}?campaignsOrderBy=campaignName${findParams}#ListMarketingCampaigns">${uiLabelMap.CommonName}<a></span></td>
 			<td><span class="tableheadtext"><a class="orderByHeaderLink" href="${listSortTarget}?campaignsOrderBy=statusId${findParams}#ListMarketingCampaigns">${uiLabelMap.CommonStatus}</a></span></td>
 			<td><span class="tableheadtext">${uiLabelMap.CommonFrom}</span></td>
-			<td><span class="tableheadtext">${uiLabelMap.CommonThru}</span></td>
-			<#--<td><span class="tableheadtext">${uiLabelMap.CrmMarketingBudgetedCost}</span></td>-->
-			<#--<td><span class="tableheadtext">${uiLabelMap.CrmMarketingEstimatedCost}</span></td>-->
-			<#--<td><span class="tableheadtext">${uiLabelMap.CrmMarketingActualCost}</span></td>-->
+			<td><span class="tableheadtext">${uiLabelMap.CommonThru}</span></td>			
 			<td><span class="tableheadtext">Select</span></td>
 		</tr>
 		<#list campaignsListIt as campaignsListItem>
@@ -40,10 +37,7 @@
 			<td><a class="linktext" href="viewMarketingCampaign?marketingCampaignId=${campaignsListItem.marketingCampaignId}">${campaignsListItem.campaignName} (${campaignsListItem.marketingCampaignId})</a></td>
 			<td><span class="tabletext">${campaignsListItem.description?default("")}</span></td>
 			<td><span class="tabletext"><@displayDate date=campaignsListItem.fromDate?default("") /></span></td>
-			<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>
-			<#--<td><span class="tabletext"><@displayCurrency currencyUomId=campaignsListItem.currencyUomId amount=campaignsListItem.budgetedCost?default("") /></span></td>-->
-			<#--<td><span class="tabletext"><@displayCurrency currencyUomId=campaignsListItem.currencyUomId amount=campaignsListItem.estimatedCost?default("") /></span></td>-->
-			<#--<td><span class="tabletext"><@displayCurrency currencyUomId=campaignsListItem.currencyUomId amount=campaignsListItem.actualCost?default("") /></span></td>-->
+			<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>			
 			<td><span class="tabletext">			
 				<#if campaignsListItem.statusId?exists && campaignsListItem.templateId?exists && (campaignsListItem.statusId == "MKTG_CAMP_INPROGRESS") >
 				<input type="checkbox" name="select" value="${campaignsListItem.marketingCampaignId}" />
