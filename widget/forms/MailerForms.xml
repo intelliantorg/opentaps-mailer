@@ -12,7 +12,7 @@
         <field name="fromEmailAddress" title="${uiLabelMap.fromEmailAddress}" position="2"><display/></field>
         <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1"><display/></field>
         <field name="templateId" title="${uiLabelMap.templateId}" position="2"><display/></field>
-        <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1">
+       <!-- <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1">
             <display type="currency" currency="${marketingCampaign.currencyUomId}"/>
         </field>
         <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="2">
@@ -20,7 +20,7 @@
         </field>
         <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}" position="1">
             <display type="currency" currency="${marketingCampaign.currencyUomId}"/>
-        </field>
+        </field> --> 
         <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display/></field>
     </form>
     
@@ -57,7 +57,7 @@
         </field>
         <field name="fromDate" red-when="never" title="${uiLabelMap.CommonFrom}"><display/></field>
         <field name="thruDate" red-when="never" title="${uiLabelMap.CommonThru}"><display/></field>
-        <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}">
+        <!-- <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}">
             <display type="currency" currency="${currencyUomId}"/>
         </field>
         <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}">
@@ -65,7 +65,7 @@
         </field>
         <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}">
             <display type="currency" currency="${currencyUomId}"/>
-        </field>
+        </field> -->
         <field name="ss" title="${uiLabelMap.CommonSelect}"><check /></field>
     </form>
     
@@ -90,7 +90,7 @@
                 </entity-options>
             </drop-down>
         </field>
-        <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1"><text size="20" maxlength="20"/></field>
+       <!-- <field name="budgetedCost" title="${uiLabelMap.CrmMarketingBudgetedCost}" position="1"><text size="20" maxlength="20"/></field>
         <field name="currencyUomId" title="${uiLabelMap.CommonCurrency}" position="2">
             <drop-down allow-empty="true" current="selected"  no-current-selected-key="${configProperties.defaultCurrencyUomId}">
                 <entity-options description="${uomId} - ${description}" entity-name="Uom" key-field-name="uomId">
@@ -98,9 +98,9 @@
                     <entity-order-by field-name="description"/>
                 </entity-options>
             </drop-down>
-        </field>
-        <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="1"><text size="20" maxlength="20"/></field>
-        <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}" position="1"><text size="20" maxlength="20"/></field>
+        </field> --> 
+       <!-- <field name="estimatedCost" title="${uiLabelMap.CrmMarketingEstimatedCost}" position="1"><text size="20" maxlength="20"/></field> --> 
+        <!-- <field name="actualCost" title="${uiLabelMap.CrmMarketingActualCost}" position="1"><text size="20" maxlength="20"/></field> --> 
         <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><textarea/></field>
 
         <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
