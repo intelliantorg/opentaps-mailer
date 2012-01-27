@@ -226,7 +226,8 @@
 
                         <container style="subSectionBlock">
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>
-                            <include-form name="ListContactListParties" location="component://crmsfa/widget/crmsfa/forms/marketing/ContactListForms.xml"/>
+                            <!-- <include-form name="ListContactListParties" location="component://crmsfa/widget/crmsfa/forms/marketing/ContactListForms.xml"/> -->
+                            <include-form name="ListContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
                         </container>
                     </decorator-section>
                 </decorator-screen>

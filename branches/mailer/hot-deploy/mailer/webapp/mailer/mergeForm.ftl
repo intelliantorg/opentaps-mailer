@@ -129,6 +129,7 @@
       <span class="formLabelRequired">${uiLabelMap.LabelScheduledAt}</span>
       <span class="formInputSpan">
         <input type="text" class="inputBox smallTextfield required digits" name="scheduleAt" size="50" value="${(mergeForm.subject)?if_exists}" maxlength="255"/>
+        <span>[No of days]</span>
       </span>
     </div>
 

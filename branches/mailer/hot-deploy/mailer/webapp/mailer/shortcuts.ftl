@@ -4,10 +4,10 @@
     </div>
     <div class="screenlet-body">
       <ul class="shortcuts">
-        <li><a href="<@ofbizUrl>createMarketingCampaignForm</@ofbizUrl>">${uiLabelMap.CrmCreateMarketingCampaign}</a></li>
         <li><a href="<@ofbizUrl>findMarketingCampaigns</@ofbizUrl>">${uiLabelMap.CrmFindMarketingCampaigns}</a></li>
-        <li><a href="<@ofbizUrl>createContactListForm</@ofbizUrl>">${uiLabelMap.CrmCreateContactList}</a></li>
         <li><a href="<@ofbizUrl>findContactLists</@ofbizUrl>">${uiLabelMap.CrmFindContactLists}</a></li>
+        <li><a href="<@ofbizUrl>createMarketingCampaignForm</@ofbizUrl>">${uiLabelMap.CrmCreateMarketingCampaign}</a></li>
+        <li><a href="<@ofbizUrl>createContactListForm</@ofbizUrl>">${uiLabelMap.CrmCreateContactList}</a></li>
         <#if (security.hasEntityPermission("CRMSFA_CAMP", "_CREATE", session))>
         	<li><a href="<@ofbizUrl>manageMergeForms</@ofbizUrl>">${uiLabelMap.CrmFormLetterTemplates}</a></li>
         </#if>

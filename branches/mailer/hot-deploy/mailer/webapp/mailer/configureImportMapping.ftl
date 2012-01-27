@@ -20,7 +20,16 @@
 									<@display class="tableheadtext requiredField" text=uiLabelMap.ImportSampleFile />
 								</div>
 								<div class="fieldContainer">
-									<@inputFile name="uploadedFile" class="inputBox required" />
+									<@inputFile name="uploadedFile" class="inputBox required" /><br>
+									<span>Supported file type : MS excel (.xls)</span>
+								</div>
+							</div>
+							<div class="rowContainer">
+								<div class="label">
+									<@display class="tableheadtext" text=uiLabelMap.LabelTreatFirstRowAsHeader />
+								</div>
+								<div class="fieldContainer">
+									<input type="checkbox" name="isFirstRowHeader" value="true"/>
 								</div>
 							</div>
 						<#else>

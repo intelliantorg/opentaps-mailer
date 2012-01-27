@@ -30,7 +30,9 @@
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelTemplateId />
 							</div>
 							<div class="fieldContainer">
-								<@inputText name="templateId" size=35 class="inputBox required" />	
+								<#assign orderBy = Static["org.ofbiz.base.util.UtilMisc"].toList("description")>
+								<#assign templateItems = delegator.findAll("MergeForm",orderBy)>
+								<@inputSelect name="templateId" list=templateItems key="mergeFormId" displayField="description" required=true />								
 							</div>
 						</div>
 						<div class="rowContainer">
@@ -44,18 +46,18 @@
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelContactList />
 							</div>
 							<div class="fieldContainer">
-								<@inputText name="contactListId" size=35 class="inputBox required" />
+								<#assign orderBy = Static["org.ofbiz.base.util.UtilMisc"].toList("contactListName")>
+								<#assign templateItems = delegator.findAll("ContactList",orderBy)>
+								<@inputSelect name="contactListId" list=templateItems key="contactListId" displayField="contactListName" required=true />								
 							</div>
 						</div>
-						<div class="rowContainer">						 
-							
+						<div class="rowContainer">
 							<div class="label">
 								<@display class="tableheadtext" text=uiLabelMap.CommonDescription />
 							</div>
 							<div class="fieldContainer">
 								<@inputTextarea name="description" rows=4 cols=33 />
-							</div>
-							
+							</div>							
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
 							</div>
@@ -65,7 +67,6 @@
 								<#assign statusItems = delegator.findByAnd("StatusItem", selectMap, orderBy)>
 								<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
 							</div>
-						</div>						
 						</div>
 						<div class="rowContainer">
 							<!-- <div class="label">

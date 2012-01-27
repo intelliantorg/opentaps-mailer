@@ -60,7 +60,16 @@
         <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
-        <field name="templateId" widget-style="inputBox required" title-style="requiredField" title="${uiLabelMap.LabelTemplateId}" position="2"><text/></field>
+        <!-- <field name="templateId" widget-style="inputBox required" title-style="requiredField" title="${uiLabelMap.LabelTemplateId}" position="2"><text/></field> -->
+        <field name="templateId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.LabelTemplateId}" position="2">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="MergeForm" key-field-name="mergeFormId" description="${description}">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+ 
+        
         <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
@@ -180,6 +189,7 @@
         <field name="numberOfMembers" title="${uiLabelMap.CrmNumberOfMembers}">
             <display/>
         </field>
+        <!-- 
         <field name="calculate3605Postage" title="" widget-style="buttontext" 
             use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
             <hyperlink description="${uiLabelMap.CrmCalculate3605Postage}" target="calculate3605Postage?contactListId=${contactList.contactListId}"/>
@@ -192,6 +202,81 @@
             use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
             <hyperlink description="${uiLabelMap.CrmReportUSPSHeader}" target="viewUSPSSortResult?contactListId=${contactList.contactListId}"/>
         </field>
+        -->
     </form>
     
+     <form name="ListContactListParties" type="multi" separate-columns="false" use-row-submit="true"
+        title="Contact List Parties"  default-title-style="tableheadtext" target="${listContactListPartiesTarget}?contactListId=${parameters.contactListId}"
+        default-widget-style="tabletext" default-tooltip-style="tabletext"
+        default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"
+        paginate-target="${listSortTarget}" paginate-target-anchor="ListContactListParties" 
+        paginate-size-field="contactListPartiesSize" paginate-index-field="contactListPartiesIndex"
+        list-name="contactListParties">
+
+        <!-- display the name as a link to viewAccount, viewContact or viewLead according to the role type -->
+        <field name="partyId" title="${uiLabelMap.CommonName}" widget-style="linktext"
+            header-link="${listSortTarget}?contactListId=${parameters.contactListId}&amp;contactListPartyOrderBy=name&amp;${findParams}#ListContactListParties" 
+            header-link-style="orderByHeaderLink">
+            <display description="${bsh:com.opensourcestrategies.crmsfa.party.PartyHelper.createViewPageLink(partyId, delegator, externalLoginKey);}"/>
+        </field>
+        <!-- for adding member -->
+        <field name="statusId" use-when="isRemoveForm!=true"><hidden value="CLPT_ACCEPTED"/></field>
+        <field name="preferredContactMechId" use-when="isRemoveForm!=true"><hidden value="${contactMechId}"/></field>
+
+        <!-- for removing member (with partyId) -->
+        <field name="contactMechId" use-when="isRemoveForm==true"><hidden/></field>
+        <field name="fromDate" use-when="isRemoveForm==true"><hidden value="${memberFromDate}"/></field>
+        <field name="thruDate" use-when="isRemoveForm==true"><hidden value="${nowTimestamp}"/></field>
+
+        <!-- TODO: the description should be generated using a Java helper, which in turn relies on localized formatters -->
+        <field name="infoString" title="${contactMechColumnName}"
+            header-link="${listSortTarget}?contactListId=${parameters.contactListId}&amp;contactListPartyOrderBy=description&amp;${findParams}#ListContactListParties" 
+            header-link-style="orderByHeaderLink">
+            <display description="${bsh:
+                if (&quot;EMAIL_ADDRESS&quot;.equals(contactMechTypeId)) return infoString; 
+                if (&quot;TELECOM_NUMBER&quot;.equals(contactMechTypeId)) return &quot;(&quot;+areaCode+&quot;) &quot;+contactNumber;
+                if (! &quot;POSTAL_ADDRESS&quot;.equals(contactMechTypeId)) return null;
+                buff = new StringBuffer();
+                if (address1 != null) buff.append(address1).append(&quot;, &quot;);
+                if (city != null) buff.append(city).append(&quot;, &quot;);
+                if (stateProvinceGeoId != null) buff.append(stateProvinceGeoId).append(' ');
+                if (postalCode != null) buff.append(postalCode);
+                return buff.toString();}"/>
+        </field>
+
+		
+        <!-- convenience log a call shortcut -->
+        <!-- <field name="logCall" title=" " use-when="isPhoneList==true&amp;&amp;isRemoveForm==true" widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CrmLogCall}"
+                target="logTaskForm?partyId=${partyId}&amp;workEffortPurposeTypeId=WEPT_TASK_PHONE_CALL"/>
+        </field> -->
+        <!-- convenience write email shortcut -->
+        <!-- <field name="writeEmail" title=" " use-when="isEmailList==true&amp;&amp;isRemoveForm==true" widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CrmWriteEmail}"
+                target="writeEmail?contactMechIdTo=${contactMechId}&amp;internalPartyId=${partyId}&amp;donePage=viewContactList&amp;contactListId=${contactListId}"/>
+        </field> -->
+        <!-- above fields will misalign Select column for address, so force aligment with a dummy field -->
+        <!-- <field name="dummyField" title=" " use-when="isAddressList==true||isRemoveForm==false">
+            <display description=" "/>
+        </field> -->
+
+        <!-- add a create order link for the removable party list -->
+        <!-- <field name="createOrder" title=" " widget-style="buttontext" use-when="isRemoveForm==true">
+            <hyperlink description="${uiLabelMap.OpentapsCreateOrder}" target="newOrder?partyId=${partyId}"/>
+        </field> -->
+        <!-- another dummy field to compensate for create order column -->
+        <!-- <field name="dummyField2" title="  " use-when="isRemoveForm==false">
+            <display description=" "/>
+        </field> -->
+
+        <field name="_rowSubmit" title="${uiLabelMap.CommonSelect}" use-when="hasUpdatePermission!=void&amp;&amp;hasUpdatePermission==true"><check/></field>
+
+        <!-- since the form action could be to add or remove selected, the button name must be set in a .bsh file (no other method seems to work) -->
+        <!-- 
+        <field name="submitButton" title="${listFormSubmitButtonName}" widget-style="smallSubmit" 
+            use-when="hasUpdatePermission!=void&amp;&amp;hasUpdatePermission==true">
+            <submit/>
+        </field>
+        -->
+    </form>    
 </forms>
