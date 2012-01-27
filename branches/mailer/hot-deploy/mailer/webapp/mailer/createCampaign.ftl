@@ -48,12 +48,20 @@
 							</div>
 						</div>
 						<div class="rowContainer">
-							<div class="label">
+							<!-- <div class="label">
 								<@display class="tableheadtext" text=uiLabelMap.CrmMarketingBudgetedCost />
 							</div>
 							<div class="fieldContainer">
 								<@inputText name="budgetedCost" size=35 />
+							</div> --> 
+							
+							<div class="label">
+								<@display class="tableheadtext" text=uiLabelMap.CommonDescription />
 							</div>
+							<div class="fieldContainer">
+								<@inputTextarea name="description" rows=4 cols=33 />
+							</div>
+							
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
 							</div>
@@ -64,27 +72,27 @@
 								<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
 							</div>
 						</div>
-						<div class="rowContainer">
+						<!-- <div class="rowContainer">
 							<div class="label">
 								<span class="tableheadtext">${uiLabelMap.CrmMarketingEstimatedCost}</span>
 							</div>
 							<div class="fieldContainer">
 								<@inputText name="estimatedCost" size=35 />
-							</div>
-							<div class="label">
+							</div> -->
+							<!-- <div class="label">
 								<@display class="tableheadtext" text=uiLabelMap.CommonCurrency />
 							</div>
 							<div class="fieldContainer" style="padding: 2px;">
 								<@inputCurrencySelect name="currencyUomId" defaultCurrencyUomId=configProperties.defaultCurrencyUomId useDescription=true />
-							</div>
+							</div> -->
 						</div>
 						<div class="rowContainer">
-							<div class="label">
+							<!-- <div class="label">
 								<@display class="tableheadtext" text=uiLabelMap.CommonDescription />
 							</div>
 							<div class="fieldContainer">
 								<@inputTextarea name="description" rows=4 cols=33 />
-							</div>
+							</div> -->
 						</div>						
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
