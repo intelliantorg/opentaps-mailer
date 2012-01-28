@@ -20,7 +20,7 @@
 									<@display class="tableheadtext requiredField" text=uiLabelMap.ImportSampleFile />
 								</div>
 								<div class="fieldContainer">
-									<@inputFile name="uploadedFile" class="inputBox required" /><br>
+									<@inputFile name="uploadedFile" class="inputBox" /><br>
 									<span>Supported file type : MS excel (.xls)</span>
 								</div>
 							</div>
@@ -34,6 +34,7 @@
 							</div>
 						<#else>
 							<@inputHidden name="contentId" value="${contentId}"/>
+							<@inputHidden name="isFirstRowHeader" value="${isFirstRowHeader}"/>
 							<div class="rowContainer">
 								<div class="label">
 									<@display class="tableheadtext requiredField" text=uiLabelMap.CommonName />
@@ -53,20 +54,23 @@
 							<div class="rowContainer">
 								<div class="label">&nbsp;</div>
 								<div class="fieldContainer">
-									<ul>
+									<div>
 										<#list lhsColumns as lhsColumn>
 											<input type="hidden" name="entityColName_${lhsColumn_index}" value='${lhsColumn.get("entityColName")}'>
-											<li>
-												${lhsColumn.get("entityColDesc")}
-												<select class="dropDown" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
-													<option value='_NA_'>--select--</option>
-													<#list rhsColumns as rhsColumn>
-														<option value='${rhsColumn}'>Column Index ${rhsColumn}</option>
-													</#list>
-												</select>
-											</li>
+											<div>
+												<div style="width:150px; float:left;">${lhsColumn.get("entityColDesc")}:</div>
+												<div style="float:left;">
+													<select class="dropDown" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
+														<option value='_NA_'>--select--</option>
+														<#list rhsColumns as rhsColumn>
+															<option value='${rhsColumn}'>Column Index ${rhsColumn}</option>
+														</#list>
+													</select>
+												</div>
+												<br style="clear:both" />
+											</div>
 										</#list>
-									</ul>
+									</div>
 								</div>
 							</div>
 						</#if>

@@ -12,12 +12,14 @@
     <tr class="listTableHeader" style="border:none">
       <td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.LabelName}</td>
       <td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CommonDescription}</td>
+      <td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.IsFirstRowHeader}</td>
       <td>&nbsp;</td>
     </tr>
     <#list listOfMappings as listOfMapping>
       <tr class="${tableRowClass(listOfMapping_index)}">
         <@displayLinkCell href="updateImportMappingForm?importMapperId=${listOfMapping.importMapperId}" text=listOfMapping.importMapperName/>
         <td>${listOfMapping.description?default("")}</td>
+        <td>${listOfMapping.isFirstRowHeader?default("")}</td>
         <td style="text-align:right"><@displayLink href="updateImportMappingForm?importMapperId=${listOfMapping.importMapperId}" text=uiLabelMap.CommonEdit/></td>
       </tr>
     </#list>

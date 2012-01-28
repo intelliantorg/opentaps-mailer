@@ -25,7 +25,10 @@ multiPartMap = FastMap.newInstance();
  * Ideally this enitre uploaded data file extraction should have been picked from org.ofbiz.content.layout.LayoutWorker()
  * The need to extract entity name prevents taking this approach.   
  */
+
+
 isMultiPart = FileUpload.isMultipartContent(request);
+
 if (isMultiPart) {
     DiskFileUpload upload = new DiskFileUpload();
     if (encoding != null) {
@@ -120,6 +123,11 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 	
 	rhsColumns = UtilImport.readExcelIndices(fileAndPath, 0);
 	context.put("rhsColumns", rhsColumns);
+	if(multiPartMap.get("isFirstRowHeader") != null){
+		context.put("isFirstRowHeader",multiPartMap.get("isFirstRowHeader"));
+	}else{
+		context.put("isFirstRowHeader","false");
+	}
 } else {
 	Debug.logWarning("fileAndPath was empty !", module);
 }
