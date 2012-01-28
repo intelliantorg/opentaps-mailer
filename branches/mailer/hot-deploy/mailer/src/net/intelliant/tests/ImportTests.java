@@ -108,6 +108,7 @@ public class ImportTests extends OpentapsTestCase {
 		createData.put("ofbizEntityName", "MailerRecipient");
 		createData.put("contentId", createContentData(userLogin));
 		createData.put("description", "Des-" + timeStamp);
+		createData.put("isFirstRowHeader", "false");
 
 		return createData;
 	}
@@ -140,6 +141,7 @@ public class ImportTests extends OpentapsTestCase {
 		assertEquals(mailerImportMapperGV.get("ofbizEntityName"), inputs.get("ofbizEntityName"));
 		assertEquals(mailerImportMapperGV.get("contentId"), inputs.get("contentId"));
 		assertEquals(mailerImportMapperGV.get("description"), inputs.get("description"));
+		assertEquals(mailerImportMapperGV.get("isFirstRowHeader"), "N");
 	}
 
 	// To test inserted data is expected or not?
@@ -177,6 +179,7 @@ public class ImportTests extends OpentapsTestCase {
 		// Update import mapper.
 		Map<String, Object> updateInputs = getCreateImportMapperData(admin);
 		updateInputs.put("importMapperId", importMapperId);
+		updateInputs.put("isFirstRowHeader", "Y");
 		updateInputs.remove("ofbizEntityName");
 		updateInputs.remove("contentId");
 
@@ -206,6 +209,7 @@ public class ImportTests extends OpentapsTestCase {
 		GenericValue mailerImportMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
 		assertEquals(mailerImportMapperGV.get("importMapperName"), inputs.get("importMapperName"));
 		assertEquals(mailerImportMapperGV.get("description"), inputs.get("description"));
+		assertEquals(mailerImportMapperGV.get("isFirstRowHeader"), "Y");
 	}
 	
 	private void testUpdateImportColumnMapperData(String importMapperId, Map<String, Object> createInputs, Map<String, Object> updateInputs) throws GenericEntityException {

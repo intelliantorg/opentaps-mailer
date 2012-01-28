@@ -98,6 +98,7 @@ public class ImportServices {
 
 		String importMapperName = (String) context.get("importMapperName");
 		String description = (String) context.get("description");
+		String isFirstRowHeader = (String) context.get("isFirstRowHeader");
 
 		Map<String, Object> entityColName = (Map) context.get("entityColName");
 		Map<String, Object> importFileColIdx = (Map) context.get("importFileColIdx");
@@ -106,7 +107,7 @@ public class ImportServices {
 		System.out.println("Import fil col indx : " + importFileColIdx);
 
 		try {
-			updateMailerImportMapping(delegator, importMapperId, importMapperName, description, userLoginId);
+			updateMailerImportMapping(delegator, importMapperId, importMapperName, description, isFirstRowHeader, userLoginId);
 			updateMailerImportColumnMapping(delegator, importMapperId, userLogin, entityColName, importFileColIdx);
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "Error updating MailerImportMapping", locale), module);
@@ -114,12 +115,13 @@ public class ImportServices {
 		return ServiceUtil.returnSuccess();
 	}
 
-	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String userLoginId) throws GenericEntityException {
+	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String isFirstRowHeader, String userLoginId) throws GenericEntityException {
 		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
 
 		if (!(mailerImportMapper.get("importMapperName").equals(importMapperName) && mailerImportMapper.get("description").equals(description))) {
 			mailerImportMapper.set("importMapperName", importMapperName);
 			mailerImportMapper.set("description", description);
+			mailerImportMapper.set("isFirstRowHeader", isFirstRowHeader);
 			mailerImportMapper.set("lastModifiedByUserLogin", userLoginId);
 			mailerImportMapper.store();
 		}
