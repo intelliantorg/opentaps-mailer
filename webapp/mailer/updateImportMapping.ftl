@@ -41,6 +41,16 @@
 							<div class="fieldContainer">
 								<@inputTextarea name="description" rows=4 cols=35 default="${importMapping.description?if_exists}"/>
 							</div>
+							<div class="label">
+								<@display class="tableheadtext" text=uiLabelMap.IsFirstRowHeader />
+							</div>
+							<div class="fieldContainer">		
+								<#assign yes = Static["org.ofbiz.base.util.UtilMisc"].toMap("value", "Y", "name", "Yes")>							
+								<#assign no = Static["org.ofbiz.base.util.UtilMisc"].toMap("value", "N", "name", "No")>
+								<#assign isFirstRowHeader = [yes, no]>								
+								<@inputSelect name="isFirstRowHeader" default=importMapping.isFirstRowHeader list=isFirstRowHeader displayField="name" key="value" />            
+								
+							</div>
 						</div>
 						<!-- <div style="clear:both; height:30px;"></div> -->
 						<#if lhsColumns?has_content>
