@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.fileupload.FileItem;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
@@ -40,7 +41,7 @@ public class MarketingCampaignServices {
 		Locale locale = (Locale) context.get("locale");
 		String contactListId = (String) context.get("contactListId");
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
-		try {
+		try {			
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);

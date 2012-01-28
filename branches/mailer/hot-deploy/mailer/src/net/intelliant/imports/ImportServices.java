@@ -1,6 +1,5 @@
 package net.intelliant.imports;
 
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -33,11 +32,17 @@ public class ImportServices {
 		String description = (String) context.get("description");
 		String entityName = (String) context.get("ofbizEntityName");
 		String contentId = (String) context.get("contentId");
+		
+		String isFirstRowHeaderStr = (String) context.get("isFirstRowHeader");
+		System.out.println("isFirstRowHeaderStr - "+isFirstRowHeaderStr);
+		boolean isFirstRowHeader = Boolean.parseBoolean(isFirstRowHeaderStr);
+
 		String importMapperId = dctx.getDelegator().getNextSeqId("MailerImportMapper");
 		Map<String, Object> inputs = UtilMisc.toMap("importMapperId", importMapperId, "importMapperName", importMapperName, "description", description);
 		inputs.put("ofbizEntityName", entityName);
 		inputs.put("contentId", contentId);
 		inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
+		inputs.put("isFirstRowHeader", isFirstRowHeader?"Y":"N");
 		try {
 			dctx.getDelegator().makeValue("MailerImportMapper", inputs).create();
 			ModelService service = dctx.getModelService("mailer.configureImportColumnsMapping");

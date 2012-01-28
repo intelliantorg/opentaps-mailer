@@ -118,6 +118,7 @@
     	<field name="ofbizEntityName" type="id-ne"/>
     	<field name="description" type="description"/>
     	<field name="contentId" type="id-ne"/>
+    	<field name="isFirstRowHeader" type="indicator"/>
     	<field name="createdByUserLogin" type="id-vlong"/>
       	<field name="lastModifiedByUserLogin" type="id-vlong"/>
     	<prim-key field="importMapperId"/>
