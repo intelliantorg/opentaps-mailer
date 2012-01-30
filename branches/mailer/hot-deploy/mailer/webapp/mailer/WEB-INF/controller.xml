@@ -78,7 +78,7 @@
 	<request-map uri="updateMarketingCampaign">
 		<security https="true" auth="true" />
 		<event type="service" invoke="mailer.updateMarketingCampaign" />
-		<response name="success" type="view" value="viewMarketingCampaign" />
+		<response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId" allowed-attributes="marketingCampaignId" />
 		<response name="error" type="view" value="updateMarketingCampaignForm" />
 	</request-map>
 	
