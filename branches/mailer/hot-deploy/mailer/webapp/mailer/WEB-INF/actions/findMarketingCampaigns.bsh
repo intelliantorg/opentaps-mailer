@@ -34,8 +34,8 @@ if (statusId != null && !statusId.equals("")) {
 //if (searchConditions.size() == 0) return;
 searchConditionList = new EntityConditionList(searchConditions, EntityOperator.AND);
 
-listIt = delegator.findListIteratorByCondition("MMCandMCandStatusItem", searchConditionList, null, 
-        null,  // fields to select
+listIt = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAndStatusItem", searchConditionList, null, 
+        null,  
         orderBy, // fields to order by
         // the first true here is for "specifyTypeAndConcur"
         // the second true is for a distinct select.  Apparently this is the only way the entity engine can do a distinct query
