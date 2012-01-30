@@ -7,7 +7,7 @@
       <span class="formLabelRequired">Contact List file</span>
       <span class="formInputSpan">
         <input type="file" class="inputBox required" name="uploadedFile" size="50" maxlength="100"/><br>
-		<span>Supported file type : MS excel (.xls)</span>
+		<span>Supported file type : .xls</span>
       </span>
     </div>
     <div class="formRow">

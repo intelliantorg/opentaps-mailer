@@ -118,7 +118,7 @@ public class ImportServices {
 	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String isFirstRowHeader, String userLoginId) throws GenericEntityException {
 		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
 
-		if (!(mailerImportMapper.get("importMapperName").equals(importMapperName) && mailerImportMapper.get("description").equals(description))) {
+		if (!(mailerImportMapper.get("importMapperName").equals(importMapperName) && mailerImportMapper.get("description").equals(description) && mailerImportMapper.get("isFirstRowHeader").equals(isFirstRowHeader))) {
 			mailerImportMapper.set("importMapperName", importMapperName);
 			mailerImportMapper.set("description", description);
 			mailerImportMapper.set("isFirstRowHeader", isFirstRowHeader);
