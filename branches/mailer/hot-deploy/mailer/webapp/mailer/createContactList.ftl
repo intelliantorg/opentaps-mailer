@@ -13,16 +13,6 @@
 							<div class="fieldContainer">
 								<@inputText name="contactListName" size=35 class="inputBox required"/>
 							</div>
-						</div>
-						<div class="rowContainer">
-							<div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.LabelMarketingCampaign />
-							</div>
-							<div class="fieldContainer">
-								<@inputSelect name="marketingCampaignId" list=marketingCampaignList displayField="campaignName" key="marketingCampaignId" required=false />
-							</div>
-						</div>
-						<div class="rowContainer">
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelContactType />
 							</div>
@@ -40,6 +30,12 @@
 							</div>
 							<div class="fieldContainer">
 								<@inputTextarea name="description" rows=4 cols=33 />
+							</div>
+							<div class="label">
+								<@display class="tableheadtext" text=uiLabelMap.LabelMarketingCampaign />
+							</div>
+							<div class="fieldContainer">
+								<@inputSelect name="marketingCampaignId" list=marketingCampaignList displayField="campaignName" key="marketingCampaignId" required=false />
 							</div>
 						</div>
 						<div class="rowContainer">
