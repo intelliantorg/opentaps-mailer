@@ -131,18 +131,18 @@ public class MarketingCampaignServices {
 		try {
 			List marketingCampaignContactLists = dctx.getDelegator().findByCondition("MailerMarketingCampaignAndContactList", conditions, null, UtilMisc.toList("fromDate"));
 			if (UtilValidate.isEmpty(marketingCampaignContactLists)) {
-				addContactListToCampaign(dctx.getDelegator(), userLogin, contactListId, marketingCampaignId, null);
+				addContactListToCampaign(dctx.getDelegator(), userLogin, contactListId, marketingCampaignId, null);				
 			} else {
 				if (Debug.infoOn()) {
 					Debug.logInfo("Contact List - " + contactListId + " already associated with campaign - " + marketingCampaignId, module);
 				}
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaingExists", locale), module);
 			}
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), module);
 		}
 		return serviceResults;
 	}
-
 	/**
 	 * Removes a contact list from a Marketing campaign with its tracking code
 	 * by expiring those entities - expire the MarketingCampaignContactList
