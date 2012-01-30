@@ -62,7 +62,7 @@ public class ContactListServices {
 			if ("EXCEL".equalsIgnoreCase(fileFormat)) {
 				GenericValue mailerImportMapper = dctx.getDelegator().findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
 
-				insertIntoMailerRecipient(dctx.getDelegator(), userLogin.getString("userLoginId"), mailerImportMapper.getString("ofbizEntityName"), String.valueOf(context.get("contactListId")), excelFilePath, importMapperId);
+				insertIntoMailerRecipient(dctx.getDelegator(), userLogin.getString("userLoginId"), mailerImportMapper.getString("ofbizEntityName"), String.valueOf(context.get("contactListId")), excelFilePath, importMapperId, String.valueOf(context.get("isFirstRowHeader")));
 			} else {
 				return UtilMessage.createAndLogServiceError("[" + fileFormat + "] is not a supported file format.", MODULE);
 			}
@@ -80,7 +80,7 @@ public class ContactListServices {
 	}
 
 	// Completed
-	protected static StatusReportOfImportContactList insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, String contactListId, String excelFilePath, String columnMapperId) throws GenericEntityException, FileNotFoundException, IOException {
+	protected static StatusReportOfImportContactList insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, String contactListId, String excelFilePath, String columnMapperId, String isFirstRowHeader) throws GenericEntityException, FileNotFoundException, IOException {
 		Map<String, Integer> columnMapper = getColumnMapper(delegator, columnMapperId);
 
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
@@ -94,6 +94,11 @@ public class ContactListServices {
 		int successfulInsertion = 0;
 		int failedInsertion = 0;
 		Map<Integer, String> fullReport = new LinkedHashMap<Integer, String>();
+		
+		// Skips first row (Header row).
+		if(isFirstRowHeader.equalsIgnoreCase("Y")){
+			excelRowIterator.hasNext();
+		}
 		while (excelRowIterator.hasNext()) {
 			try {
 				TransactionUtil.begin();
