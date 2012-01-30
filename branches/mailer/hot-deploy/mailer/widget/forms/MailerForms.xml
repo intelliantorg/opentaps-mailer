@@ -63,8 +63,8 @@
         <!-- <field name="templateId" widget-style="inputBox required" title-style="requiredField" title="${uiLabelMap.LabelTemplateId}" position="2"><text/></field> -->
         <field name="templateId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.LabelTemplateId}" position="2">
             <drop-down allow-empty="false">
-                <entity-options entity-name="MergeForm" key-field-name="mergeFormId" description="${description}">
-                    <entity-order-by field-name="description"/>
+                <entity-options entity-name="MergeForm" key-field-name="mergeFormId" description="${mergeFormName}">
+                    <entity-order-by field-name="mergeFormName"/>
                 </entity-options>
             </drop-down>
         </field>
@@ -127,6 +127,25 @@
         </field>
 
         <field name="submitButton" title="${uiLabelMap.CrmFindContactLists}" widget-style="smallSubmit"><submit/></field>
+    </form>
+    
+    <form name="updateContactListForm" type="single" title="Create Contact List" default-map-name="contactList" target="updateContactList"
+        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
+
+        <field name="contactListId"><hidden/></field>
+        <field name="contactListName" title="${uiLabelMap.LabelName}" title-style="requiredField"><text/></field>
+        <field name="marketingCampaignId" title="${uiLabelMap.LabelMarketingCampaign}">
+            <drop-down allow-empty="false" current="selected">
+                <entity-options description="${campaignName}" entity-name="MarketingCampaign">
+                    <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
+                    <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_COMPLETED"/>
+                    <entity-order-by field-name="campaignName"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><textarea/></field>
+
+        <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
     
     <form name="ListContactLists" type="list" separate-columns="true" 
