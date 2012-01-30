@@ -1,5 +1,6 @@
 import org.ofbiz.entity.condition.*;
 import org.ofbiz.entity.util.EntityUtil;
+import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.base.util.UtilMisc;
 import org.opentaps.common.util.UtilCommon;
 
@@ -12,8 +13,10 @@ if (mailerMarketingCampaign == null) {
     return;
 }
 templateId = marketingCampaign.get("templateId");
-template =  delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
-context.put("templateName", template.getString("mergeFormName"));
+if (UtilValidate.isNotEmpty(templateId)) {
+	template =  delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
+	context.put("templateName", template.getString("mergeFormName"));
+}
 
 context.put("marketingCampaign", marketingCampaign);
 
