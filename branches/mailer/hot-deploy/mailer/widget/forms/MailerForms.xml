@@ -86,7 +86,7 @@
                 <option key="TELECOM_NUMBER" description="Phone Number"/>
             </drop-down>
         </field>
-        <field name="description" title="${uiLabelMap.CommonDescription}"><textarea/></field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><textarea rows="4" cols="33" /></field>
 
         <field name="submitButton" title="${uiLabelMap.CrmCreateContactList}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form> 
@@ -112,8 +112,8 @@
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
         <field name="contactListId"><hidden/></field>
-        <field name="contactListName" title="${uiLabelMap.LabelName}" title-style="requiredField"><text/></field>
-        <field name="marketingCampaignId" title="${uiLabelMap.LabelMarketingCampaign}">
+        <field name="contactListName" title="${uiLabelMap.LabelName}" title-style="requiredField" position="1"><text/></field>
+        <field name="marketingCampaignId" title="${uiLabelMap.LabelMarketingCampaign}" position="2">
             <drop-down allow-empty="false" current="selected">
                 <entity-options description="${campaignName}" entity-name="MarketingCampaign">
                     <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
@@ -122,7 +122,7 @@
                 </entity-options>
             </drop-down>
         </field>
-        <field name="description" title="${uiLabelMap.CommonDescription}"><textarea/></field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><textarea rows="4" cols="33" /></field>
 
         <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
@@ -180,27 +180,13 @@
     <form name="viewContactList" type="single" title="View Contact List" default-map-name="contactList"
         default-title-style="tableheadtext" default-widget-style="tabletext" default-tooltip-style="tabletext">
         <field name="contactListName" title="${uiLabelMap.CommonName}" position="1"><display/></field>
-        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" position="1">
+        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" position="2">
             <display-entity entity-name="ContactMechType"/>
         </field>
-        <field name="description" title="${uiLabelMap.CommonDescription}"><display/></field>
-        <field name="numberOfMembers" title="${uiLabelMap.CrmNumberOfMembers}">
+        <field name="description" title="${uiLabelMap.CommonDescription}" position="1"><display/></field>
+        <field name="numberOfMembers" title="${uiLabelMap.CrmNumberOfMembers}" position="2">
             <display/>
         </field>
-        <!-- 
-        <field name="calculate3605Postage" title="" widget-style="buttontext" 
-            use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
-            <hyperlink description="${uiLabelMap.CrmCalculate3605Postage}" target="calculate3605Postage?contactListId=${contactList.contactListId}"/>
-        </field>
-        <field name="sortUSPSBusinessMail" title="" widget-style="buttontext"
-            use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
-            <hyperlink description="${uiLabelMap.CrmSortUSPSBusinessMail}" target="sortUSPSBusinessMail?contactListId=${contactList.contactListId}"/>
-        </field>
-        <field name="viewUSPSSortResult" title="" widget-style="buttontext" 
-            use-when="&quot;POSTAL_ADDRESS&quot;.equals(contactList.get(&quot;contactMechTypeId&quot;))">
-            <hyperlink description="${uiLabelMap.CrmReportUSPSHeader}" target="viewUSPSSortResult?contactListId=${contactList.contactListId}"/>
-        </field>
-        -->
     </form>
     
      <form name="ListContactListParties" type="multi" separate-columns="false" use-row-submit="true"
