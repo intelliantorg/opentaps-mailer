@@ -30,7 +30,7 @@
 
         <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit"><submit/></field>
     </form>
-    
+
     <form name="ListMarketingCampaigns" type="list" separate-columns="true" 
         title="MarketingCampaigns"  default-title-style="tableheadtext" target=""
         default-widget-style="tabletext" default-tooltip-style="tabletext"
@@ -50,7 +50,7 @@
         <field name="thruDate" red-when="never" title="${uiLabelMap.CommonThru}"><display/></field>       
         <field name="ss" title="${uiLabelMap.CommonSelect}"><check /></field>
     </form>
-    
+
     <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 

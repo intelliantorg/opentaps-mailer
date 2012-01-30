@@ -137,7 +137,34 @@
                 </decorator-screen>
             </widgets>
         </section>
-    </screen>    
+    </screen>
+    
+    <screen name="updateContactListScreen">
+        <section>
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
+            <actions>
+                <set field="pageTitleLabel" value="UpdateContactListHeader"/>
+                <set field="sectionHeaderUiLabel" value="UpdateContactListHeader"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewContactList.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container style="form">
+                            <include-form name="updateContactListForm" location="component://mailer/widget/forms/MailerForms.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+            <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">${uiLabelMap.CrmErrorPermissionDenied}</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
+        </section>
+    </screen>
     
     <screen name="viewMarketingCampaign">
         <section>
