@@ -30,9 +30,7 @@
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelTemplateId />
 							</div>
 							<div class="fieldContainer">
-								<#assign orderBy = Static["org.ofbiz.base.util.UtilMisc"].toList("mergeFormName")>
-								<#assign templateItems = delegator.findAll("MergeForm",orderBy)>
-								<@inputSelect name="templateId" list=templateItems key="mergeFormId" displayField="mergeFormName" required=true />								
+								<@inputSelect name="templateId" list=mergeFormList key="mergeFormId" displayField="mergeFormName" required=false  class="dropDown required" />						
 							</div>
 						</div>
 						<div class="rowContainer">

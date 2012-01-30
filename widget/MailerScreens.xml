@@ -28,6 +28,9 @@
                 	<order-by field-name="sequenceId"/>
                 </entity-and>
                 -->
+				<entity-condition entity-name="MergeForm" list="mergeFormList" list-name="mergeFormList">
+                    <order-by field-name="mergeFormName"/>
+                </entity-condition>
 			</actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
