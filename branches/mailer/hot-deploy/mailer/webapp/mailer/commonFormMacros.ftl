@@ -30,3 +30,19 @@
 	<#if id == ""><#assign idVal = name><#else><#assign idVal = id></#if>
   	<input id="${getIndexedName(idVal, index)}" name="${getIndexedName(name, index)}" type="file" size="${size}" maxlength="${maxlength}" class="${class}" onChange="${onChange}" <#if tabIndex?has_content>tabindex="${tabIndex}"</#if>/>
 </#macro>
+
+<#macro inputSelect name list key="" displayField="" default="" index=-1 required=true defaultOptionText="" onChange="" id="" ignoreParameters=false errorField="" tabIndex="" class="dropDown">
+  <#if key == ""><#assign listKey = name><#else><#assign listKey = key></#if>
+  <#if id == ""><#assign idVal = name><#else><#assign idVal = id></#if>
+  <#assign defaultValue = getDefaultValue(name, default, index, ignoreParameters)>
+  <select id="${getIndexedName(idVal, index)}" name="${getIndexedName(name, index)}" class="${class}" onChange="${onChange}" <#if tabIndex?has_content>tabindex="${tabIndex}"</#if>>
+    <#if !required><option value="">${defaultOptionText}</option></#if>
+    <#list list as option>
+      <#if option.get(listKey) == defaultValue || listKey == defaultValue><#assign selected = "selected=\"selected\""><#else><#assign selected = ""></#if>
+      <option ${selected} value="${option.get(listKey)}">
+        <#if displayField==""><#nested option><#else>${option.get(displayField)?if_exists}</#if>
+      </option>
+    </#list>
+  </select>
+  <#if errorField?has_content><@displayError name=errorField index=index /></#if>
+</#macro>
