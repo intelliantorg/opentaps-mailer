@@ -39,3 +39,6 @@ select.error, input.error{
 input.smallTextfield{
 	width:100px;
 }
+.smallSubmit{
+	cursor: pointer;
+}
