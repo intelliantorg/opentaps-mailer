@@ -1,11 +1,19 @@
-<#if hasUpdatePermission?exists>
-	<#if marketingCampaign.statusId?exists && marketingCampaign.templateId?exists>
-		<#if marketingCampaign.statusId == "MKTG_CAMP_INPROGRESS">
-			<#assign writeEmail = "<a class='subMenuButton' href='writeEmail?emailType=MKTG_CAMPAIGN&marketingCampaignId=" + marketingCampaign.marketingCampaignId + "&donePage=viewMarketingCampaign'>" + uiLabelMap.ButtonEmail + "</a>">
-			<#assign printlLink = "<a class='subMenuButton' href='#'>" + uiLabelMap.ButtonPrint + "</a>">
-		</#if>
+<#if marketingCampaign.statusId?exists && marketingCampaign.templateId?exists>
+	<#if marketingCampaign.statusId == "MKTG_CAMP_INPROGRESS">
+		<#assign writeEmail>
+			<a class='subMenuButton' href='writeEmail?emailType=MKTG_CAMPAIGN&marketingCampaignId=${marketingCampaign.marketingCampaignId}&donePage=viewMarketingCampaign'>
+				${uiLabelMap.ButtonEmail}
+			</a>
+		</#assign>
+		<#assign printlLink>
+			<a class='subMenuButton' href='#'>${uiLabelMap.ButtonPrint}</a>
+		</#assign>
 	</#if>
-	<#assign updateLink = "<a class='subMenuButton' href='updateMarketingCampaignForm?marketingCampaignId=" + marketingCampaign.marketingCampaignId + "'>" + uiLabelMap.ButtonEdit + "</a>">	
+</#if>
+<#if hasUpdatePermission?exists>
+	<#assign updateLink>
+		<a class='subMenuButton' href='updateMarketingCampaignForm?marketingCampaignId=${marketingCampaign.marketingCampaignId}'>${uiLabelMap.ButtonEdit}</a>
+	</#assign>	
 </#if>
 
 <div class="subSectionHeader">
