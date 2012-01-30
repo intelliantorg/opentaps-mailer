@@ -60,16 +60,13 @@
         <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
-        <!-- <field name="templateId" widget-style="inputBox required" title-style="requiredField" title="${uiLabelMap.LabelTemplateId}" position="2"><text/></field> -->
         <field name="templateId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.LabelTemplateId}" position="2">
             <drop-down allow-empty="false">
                 <entity-options entity-name="MergeForm" key-field-name="mergeFormId" description="${mergeFormName}">
                     <entity-order-by field-name="mergeFormName"/>
                 </entity-options>
             </drop-down>
-        </field>
- 
-        
+        </field>        
         <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
@@ -80,10 +77,10 @@
                     <entity-order-by field-name="sequenceId"/>
                 </entity-options>
             </drop-down>
-        </field>     
-       
-        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><textarea/></field>
-
+        </field>      
+        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}">
+        	<textarea rows="4" cols="33" />
+        </field>
         <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
     
