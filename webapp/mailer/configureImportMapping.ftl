@@ -21,7 +21,7 @@
 								</div>
 								<div class="fieldContainer">
 									<@inputFile name="uploadedFile" class="inputBox" /><br>
-									<span>Supported file type : MS excel (.xls)</span>
+									<span>Supported file type : .xls</span>
 								</div>
 							</div>
 							<div class="rowContainer">
