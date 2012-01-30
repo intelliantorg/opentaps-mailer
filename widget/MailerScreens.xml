@@ -52,8 +52,8 @@
 	<screen name="findMarketingCampaigns">
         <section>
             <actions>
-                <set field="pageTitleLabel" value="FindCampaignsHeader"/>
-                <set field="sectionHeaderUiLabel" value="FindCampaignsHeader"/>
+                <set field="pageTitleLabel" value="CrmFindMarketingCampaigns"/>
+                <set field="sectionHeaderUiLabel" value="CrmFindMarketingCampaigns"/>
                 <set field="parameters.listIteratorNameToUse" value="campaignsListIt"/> <!-- iterator for list of accounts -->
                 <set field="listSortTarget" value="findMarketingCampaigns"/>
                 <set field="findMarketingCampaignsTarget" value="findMarketingCampaigns"/>
@@ -70,7 +70,6 @@
                         </container>
                         <container style="subSectionBlock">
                             <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.CrmMarketingCampaigns}</label></container>
-                            <!-- <include-form name="ListMarketingCampaigns" location="component://mailer/widget/forms/MailerForms.xml"/> -->
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/findMarketingCampaignListing.ftl"/></html></platform-specific>
                         </container>
                     </decorator-section>
