@@ -34,9 +34,7 @@ if (contactMechTypeId != null) {
     searchConditions.add(new EntityExpr("contactMechTypeId", EntityOperator.EQUALS, contactMechTypeId));
     findParams += "&contactMechTypeId=" + contactMechTypeId;
 }
-if (searchConditions.size() == 0 && !"Y".equals(UtilCommon.getParameter(request, "lookup"))) {
-    return;
-}
+
 searchConditionList = new EntityConditionList(searchConditions, EntityOperator.AND);
 
 listIt = delegator.findListIteratorByCondition("ContactList", searchConditionList, null, 
