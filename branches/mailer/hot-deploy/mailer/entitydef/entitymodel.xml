@@ -4,6 +4,7 @@
     <title>Entity definitions for mailer</title>    
     <author>IntelliAnt</author>
 
+	<!-- Entity definitions and extensions -->
     <entity entity-name="MailerMarketingCampaign" package-name="net.intelliant.mailer" title="Mailer Marketing Campaign Entity">
     	<field name="marketingCampaignId" type="id-ne"/>
     	<field name="fromEmailAddress" type="id-long" not-null="true"/>
@@ -17,26 +18,6 @@
       	</relation>
     </entity> 
 
-    <view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
-        <member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
-        <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
-        <alias-all entity-alias="MC"/>
-        <alias-all entity-alias="MMC"/>
-        <view-link entity-alias="MC" rel-entity-alias="MMC" rel-optional="true">
-            <key-map field-name="marketingCampaignId"/>
-        </view-link>
-    </view-entity>
-
-    <view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAndStatusItem" package-name="net.intelliant.mailer">
-        <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaignAndMarketingCampaignAppl"/>
-        <member-entity entity-alias="SI" entity-name="StatusItem"/>
-        <alias-all entity-alias="MMC"/>
-        <alias-all entity-alias="SI"/>
-        <view-link entity-alias="MMC" rel-entity-alias="SI" rel-optional="true">
-            <key-map field-name="statusId"/>
-        </view-link>
-    </view-entity>
-    
     <entity entity-name="MailerMarketingCampaignAndContactList" package-name="net.intelliant.mailer" title="Associate contact lists to mailer marketing campaigns">
         <field name="campaignListId" type="id-ne"/>
         <field name="marketingCampaignId" type="id-ne"/>
@@ -54,18 +35,6 @@
         </relation>
     </entity>
     
-	<view-entity entity-name="MailerMarketingCampaignAndContactListDetails" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
-		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
-		<member-entity entity-alias="CL" entity-name="ContactList"/>
-		<alias-all entity-alias="CL">
-			<exclude field="marketingCampaignId" />
-		</alias-all>
-		<alias-all entity-alias="MMCCL" />
-		<view-link entity-alias="MMCCL" rel-entity-alias="CL">
-			<key-map field-name="contactListId"/>
-		</view-link>
-	</view-entity> 
-	
 	<extend-entity entity-name="MergeForm">
 		<field name="scheduleAt" type="id"/>
 	</extend-entity>
@@ -140,4 +109,37 @@
         	<key-map field-name="importMapperId"/>
       	</relation>
    	</entity>
+   	
+   	<!-- Views entities -->
+   	<view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
+        <member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
+        <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
+        <alias-all entity-alias="MC"/>
+        <alias-all entity-alias="MMC"/>
+        <view-link entity-alias="MC" rel-entity-alias="MMC" rel-optional="true">
+            <key-map field-name="marketingCampaignId"/>
+        </view-link>
+    </view-entity>
+
+    <view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAndStatusItem" package-name="net.intelliant.mailer">
+        <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaignAndMarketingCampaignAppl"/>
+        <member-entity entity-alias="SI" entity-name="StatusItem"/>
+        <alias-all entity-alias="MMC"/>
+        <alias-all entity-alias="SI"/>
+        <view-link entity-alias="MMC" rel-entity-alias="SI" rel-optional="true">
+            <key-map field-name="statusId"/>
+        </view-link>
+    </view-entity>
+    
+	<view-entity entity-name="MailerMarketingCampaignAndContactListDetails" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
+		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
+		<member-entity entity-alias="CL" entity-name="ContactList"/>
+		<alias-all entity-alias="CL">
+			<exclude field="marketingCampaignId" />
+		</alias-all>
+		<alias-all entity-alias="MMCCL" />
+		<view-link entity-alias="MMCCL" rel-entity-alias="CL">
+			<key-map field-name="contactListId"/>
+		</view-link>
+	</view-entity>  	
 </entitymodel>
