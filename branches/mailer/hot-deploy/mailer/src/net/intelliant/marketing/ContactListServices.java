@@ -33,7 +33,6 @@ public class ContactListServices {
 
 	/**
 	 * Gets the path for uploaded files.
-	 * 
 	 * @return a <code>String</code> value
 	 */
 	private static String getUploadPath() {
@@ -41,11 +40,8 @@ public class ContactListServices {
 	}
 
 	public static Map<String, Object> importContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
-		System.out.println("The inputs >> " + context);
 		String fileFormat = "EXCEL";
 		String fileName = (String) context.get("_uploadedFile_fileName");
-		// String mimeTypeId = (String)
-		// context.get("_uploadedFile_contentType");
 
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperId = (String) context.get("importMapperId");
@@ -79,15 +75,11 @@ public class ContactListServices {
 		return ServiceUtil.returnSuccess();
 	}
 
-	// Completed
-	protected static StatusReportOfImportContactList insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, String contactListId, String excelFilePath, String columnMapperId, String isFirstRowHeader) throws GenericEntityException, FileNotFoundException, IOException {
+	private static StatusReportOfImportContactList insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, String contactListId, String excelFilePath, String columnMapperId, String isFirstRowHeader) throws GenericEntityException, FileNotFoundException, IOException {
 		Map<String, Integer> columnMapper = getColumnMapper(delegator, columnMapperId);
-
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
-
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
-
 		String recipientId = null;
 
 		int index = 0;
@@ -95,8 +87,7 @@ public class ContactListServices {
 		int failedInsertion = 0;
 		Map<Integer, String> fullReport = new LinkedHashMap<Integer, String>();
 		
-		// Skips first row (Header row).
-		if(isFirstRowHeader.equalsIgnoreCase("Y")){
+		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			excelRowIterator.hasNext();
 		}
 		while (excelRowIterator.hasNext()) {
@@ -105,9 +96,9 @@ public class ContactListServices {
 
 				recipientId = insertIntoMailerRecipient(delegator, userLoginId, entityName, excelRowIterator.next(), columnMapper);
 				fetchCampaignForMailerCampaignStatus(delegator, contactListId, recipientId);
-
 				fullReport.put(index++, "Successful");
 				successfulInsertion++;
+
 				TransactionUtil.commit();
 			} catch (GenericEntityException gee) {
 				TransactionUtil.rollback();
@@ -117,17 +108,13 @@ public class ContactListServices {
 			}
 		}
 		StatusReportOfImportContactList report = new StatusReportOfImportContactList(successfulInsertion, failedInsertion, fullReport);
-		// System.out.println(report.toString());
 		return report;
 	}
 
-	// Completed
-	protected static String insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Integer> columnMapper) throws GenericEntityException {
-		Map<String, Object> rowData = null;
-
+	private static String insertIntoMailerRecipient(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Integer> columnMapper) throws GenericEntityException {
 		String entityPrimaryKeyField = delegator.getModelEntity(entityName).getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
-		rowData = UtilMisc.toMap(entityPrimaryKeyField, entityPrimaryKey);
+		Map<String, Object> rowData = UtilMisc.toMap(entityPrimaryKeyField, entityPrimaryKey);
 		rowData.put("importedOnDateTime", new Timestamp(new Date().getTime()));
 		rowData.put("importedByUserLogin", userLoginId);
 		
@@ -135,49 +122,40 @@ public class ContactListServices {
 		for (String key : keys) {
 			rowData.put(key, excelRowData.getCell(Short.parseShort(String.valueOf(columnMapper.get(key)))).toString());
 		}
-		// System.out.println("Column mapper >> "+columnMapper);
-		// System.out.println("The rowData >> " + rowData);
 		delegator.create(entityName, rowData);
 		return entityPrimaryKey;
 	}
 
-	// Completed
-	protected static Map<String, Integer> getColumnMapper(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
+	private static Map<String, Integer> getColumnMapper(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
 		Map<String, Integer> data = new LinkedHashMap<String, Integer>();
 		List<GenericValue> columnToIndexMappings = delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", columnMapperId));
 		// Converting list to map.
 		for (GenericValue columnToIndexMapping : columnToIndexMappings) {
 			data.put(String.valueOf(columnToIndexMapping.get("entityColName")), Integer.parseInt(String.valueOf(columnToIndexMapping.get("importFileColIdx"))));
 		}
-		// System.out.println("ID : "+columnMapperId+"\nData : "+data);
 		return data;
 	}
 
-	// Work on Progress
-	protected static void fetchCampaignForMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
-		List<GenericValue> mmcacl = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("contactListId", contactListId));
+	private static void fetchCampaignForMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
+		List<GenericValue> rows = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("contactListId", contactListId));
 
-		String marketingCampaignId = null;
-		for (GenericValue mmcaclDatum : mmcacl) {
-			marketingCampaignId = String.valueOf(mmcaclDatum.get("marketingCampaignId"));
-
+		for (GenericValue row : rows) {
+			String marketingCampaignId = String.valueOf(row.get("marketingCampaignId"));
 			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-
 			GenericValue mailerMarketingCampaign = marketingCampaign.getRelatedOne("MailerMarketingCampaign").getRelatedOne("MergeForm");
 			String scheduleAt = String.valueOf(mailerMarketingCampaign.get("scheduleAt"));
-
 			insertIntoMailerCampaignStatus(delegator, contactListId, recipientId, marketingCampaignId, scheduleAt);
 		}
 	}
 
-	protected static void insertIntoMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId, String marketingCampaignId, String scheduleAt) throws GenericEntityException {
-		String campaignStatusId = delegator.getNextSeqId("MailerCampaignStatus");
-		Map columns = UtilMisc.toMap("campaignStatusId", campaignStatusId, "recipientId", recipientId);
-		columns.put("contactListId", contactListId);
-		columns.put("marketingCampaignId", marketingCampaignId);
-		columns.put("printStatusId", "MAILER_SCHEDULED");
-		columns.put("emailStatusId", "MAILER_SCHEDULED");
-		columns.put("scheduledForDate", new Timestamp(new Date().getTime()));
-		delegator.create("MailerCampaignStatus", columns);
+	private static void insertIntoMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId, String marketingCampaignId, String scheduleAt) throws GenericEntityException {
+		Map row = UtilMisc.toMap("campaignStatusId", delegator.getNextSeqId("MailerCampaignStatus"));
+		row.put("recipientId", recipientId);
+		row.put("contactListId", contactListId);
+		row.put("marketingCampaignId", marketingCampaignId);
+		row.put("printStatusId", "MAILER_SCHEDULED");
+		row.put("emailStatusId", "MAILER_SCHEDULED");
+		row.put("scheduledForDate", new Timestamp(new Date().getTime()));
+		delegator.create("MailerCampaignStatus", row);
 	}
 }
