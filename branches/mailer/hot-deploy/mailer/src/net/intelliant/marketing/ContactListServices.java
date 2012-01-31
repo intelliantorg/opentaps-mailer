@@ -162,18 +162,22 @@ public class ContactListServices {
 			marketingCampaignId = String.valueOf(mmcaclDatum.get("marketingCampaignId"));
 
 			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-			String statusId = String.valueOf(marketingCampaign.get("statusId"));
 
 			GenericValue mailerMarketingCampaign = marketingCampaign.getRelatedOne("MailerMarketingCampaign").getRelatedOne("MergeForm");
 			String scheduleAt = String.valueOf(mailerMarketingCampaign.get("scheduleAt"));
 
-			System.out.println("\nmarketingCampaignId:" + marketingCampaignId + "\nstatusId:" + statusId + "\nscheduleAt:" + scheduleAt);
-			insertIntoMailerCampaignStatus(delegator, contactListId, recipientId, marketingCampaignId, statusId, scheduleAt);
+			insertIntoMailerCampaignStatus(delegator, contactListId, recipientId, marketingCampaignId, scheduleAt);
 		}
 	}
 
-	protected static void insertIntoMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId, String marketingCampaignId, String statusId, String scheduleAt) throws GenericEntityException {
+	protected static void insertIntoMailerCampaignStatus(GenericDelegator delegator, String contactListId, String recipientId, String marketingCampaignId, String scheduleAt) throws GenericEntityException {
 		String campaignStatusId = delegator.getNextSeqId("MailerCampaignStatus");
-		delegator.create("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId, "recipientId", recipientId, "contactListId", contactListId, "marketingCampaignId", marketingCampaignId, "statusId", statusId, "scheduledForDate", new Timestamp(new Date().getTime())));
+		Map columns = UtilMisc.toMap("campaignStatusId", campaignStatusId, "recipientId", recipientId);
+		columns.put("contactListId", contactListId);
+		columns.put("marketingCampaignId", marketingCampaignId);
+		columns.put("printStatusId", "MAILER_SCHEDULED");
+		columns.put("emailStatusId", "MAILER_SCHEDULED");
+		columns.put("scheduledForDate", new Timestamp(new Date().getTime()));
+		delegator.create("MailerCampaignStatus", columns);
 	}
 }
