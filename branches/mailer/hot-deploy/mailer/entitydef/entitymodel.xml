@@ -64,9 +64,11 @@
     	<field name="recipientId" type="id-ne"/>
     	<field name="contactListId" type="id-ne"/> <!-- indicates customer was added as part of this contact list -->
     	<field name="marketingCampaignId" type="id-ne"/>
-    	<field name="statusId" type="id-ne"/>
     	<field name="scheduledForDate" type="date"/>
-    	<field name="actualExecutionDateTime" type="date-time"/>
+		<field name="printStatusId" type="id-ne"/>
+    	<field name="printedDateTime" type="date-time"/>
+    	<field name="emailStatusId" type="id-ne"/>
+    	<field name="emailedDateTime" type="date-time"/>
     	<prim-key field="campaignStatusId"/>
     	<relation type="one" fk-name="MCS_TO_MKTGCPN" rel-entity-name="MarketingCampaign">
         	<key-map field-name="marketingCampaignId"/>
@@ -74,8 +76,11 @@
       	<relation type="one" fk-name="MCS_TO_MC" rel-entity-name="MailerRecipient">
         	<key-map field-name="recipientId"/>
       	</relation>
-      	<relation type="one" fk-name="MCS_TO_SI" rel-entity-name="StatusItem">
-        	<key-map field-name="statusId"/>
+      	<relation type="one" fk-name="MCS_TO_PSI" rel-entity-name="StatusItem">
+        	<key-map field-name="printStatusId" rel-field-name="statusId"/>
+      	</relation>
+      	<relation type="one" fk-name="MCS_TO_ESI" rel-entity-name="StatusItem">
+        	<key-map field-name="emailStatusId" rel-field-name="statusId"/>
       	</relation>
       	<relation type="one" fk-name="MCS_TO_CL" rel-entity-name="ContactList">
             <key-map field-name="contactListId"/>
