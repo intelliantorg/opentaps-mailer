@@ -22,9 +22,9 @@
     <test-suite loader="main" location="testdef/tests.xml"/>
     <webapp 
     	name="mailer"
-        title="Mailer application"
+        title="Mailer"
         server="default-server"
         location="webapp/mailer"
         mount-point="/mailer"
-        app-bar-display="false"/>    
+        app-bar-display="true"/>    
 </ofbiz-component>
