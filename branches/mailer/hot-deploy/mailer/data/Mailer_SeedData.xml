@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+	<StatusType description="Mailer MC Status" hasTable="N" parentTypeId="" statusTypeId="MAILER_MC_STATUS"/>
+	<StatusItem description="Scheduled" sequenceId="01" statusCode="MAILER_SCHEDULED" statusId="MAILER_SCHEDULED" statusTypeId="MAILER_MC_STATUS"/>
+	<StatusItem description="Completed" sequenceId="02" statusCode="MAILER_COMPLETED" statusId="MAILER_COMPLETED" statusTypeId="MAILER_MC_STATUS"/>
+	<StatusItem description="Held" sequenceId="03" statusCode="MAILER_HOLD" statusId="MAILER_HOLD" statusTypeId="MAILER_MC_STATUS"/>
+</entity-engine-xml>
