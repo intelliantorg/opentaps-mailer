@@ -81,10 +81,13 @@
     <service name="mailer.importContactList" engine="java" location="net.intelliant.marketing.ContactListServices" 
     		invoke="importContactList" auth="true">
        <description>Import Contact List</description>
+       <attribute name="importMapperId" type="String" mode="IN"/>
        <attribute name="contactListId" type="String" mode="IN"/>
        <attribute name="uploadedFile" type="org.ofbiz.entity.util.ByteWrapper" mode="IN"/>      
        <attribute name="_uploadedFile_fileName" type="String" mode="IN"/>
        <attribute name="_uploadedFile_contentType" type="String" mode="IN"/>
-       <attribute name="importMapperId" type="String" mode="IN"/>
+       <attribute name="totalCount" type="Integer" mode="OUT" optional="true"/>
+       <attribute name="failureCount" type="Integer" mode="OUT" optional="true"/>
+       <attribute name="failureReport" type="Map" mode="OUT" optional="true"/>
     </service>
 </services>
