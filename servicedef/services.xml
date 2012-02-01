@@ -51,8 +51,7 @@
         <attribute name="importFileColIdx" type="Map" string-map-prefix="importFileColIdx_" mode="IN" optional="false"/>
     </service>
     
-    <service name="mailer.createContactList" default-entity-name="ContactList" engine="simple"
-            location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="createContactList" auth="true">
+    <service name="mailer.createContactList" default-entity-name="ContactList" engine="simple" location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="createContactList" auth="true">
         <description>Create a ContactList record</description>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
@@ -60,15 +59,13 @@
         <override name="contactListName" optional="false"/>
     </service>
     
-    <service name="mailer.updateContactList" default-entity-name="ContactList" engine="simple"
-            location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="updateContactList" auth="true">
+    <service name="mailer.updateContactList" default-entity-name="ContactList" engine="simple" location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="updateContactList" auth="true">
         <description>Update a ContactList record</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
         
-    <service name="mailer.createMergeForm" engine="java" default-entity-name="MergeForm"
-            location="net.intelliant.marketing.MergeFormServices" invoke="createMergeForm" auth="true">
+    <service name="mailer.createMergeForm" engine="java" default-entity-name="MergeForm" location="net.intelliant.marketing.MergeFormServices" invoke="createMergeForm" auth="true">
         <description>Create merge form</description>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
         <auto-attributes include="pk" mode="OUT" optional="true"/>        
@@ -78,8 +75,7 @@
         <attribute name="privateForm" type="String" mode="IN" optional="true"/>
     </service>
 
-    <service name="mailer.importContactList" engine="java" location="net.intelliant.marketing.ContactListServices" 
-    		invoke="importContactList" auth="true">
+    <service name="mailer.importContactList" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="importContactList" auth="true">
        <description>Import Contact List</description>
        <attribute name="importMapperId" type="String" mode="IN"/>
        <attribute name="contactListId" type="String" mode="IN"/>
@@ -89,5 +85,11 @@
        <attribute name="totalCount" type="Integer" mode="OUT" optional="true"/>
        <attribute name="failureCount" type="Integer" mode="OUT" optional="true"/>
        <attribute name="failureReport" type="Map" mode="OUT" optional="true"/>
+    </service>
+    
+	<service name="mailer.scheduleCampaignsForListMembers" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="scheduleCampaignsForListMembers" auth="true">
+		<description>Schedule campaigns for contact list members, to be invoked when contact list is associated with campaign.</description>
+        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
+        <attribute name="contactListId" type="String" mode="IN" optional="false"/>
     </service>
 </services>

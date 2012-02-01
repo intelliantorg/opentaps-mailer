@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
@@ -43,7 +42,7 @@ public class MarketingCampaignServices {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
 			}
 			ModelService service = dctx.getModelService("createMarketingCampaign");
-			Map<String, Object> inputs = service.makeValid(context, "IN");
+			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
 			inputs.put("statusId", "MKTG_CAMP_PLANNED");
 			LocalDispatcher dispatcher = dctx.getDispatcher();
 			serviceResults = dispatcher.runSync(service.name, inputs);
@@ -60,7 +59,7 @@ public class MarketingCampaignServices {
 			mailerMarketingCampaign.create();
 
 			service = dctx.getModelService("mailer.addContactListToCampaign");
-			inputs = service.makeValid(context, "IN");
+			inputs = service.makeValid(context, ModelService.IN_PARAM);
 			inputs.put("marketingCampaignId", marketingCampaignId);
 			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
@@ -83,7 +82,7 @@ public class MarketingCampaignServices {
 			}
 			
 			ModelService service = dctx.getModelService("updateMarketingCampaign");
-			Map<String, Object> inputs = service.makeValid(context, "IN");
+			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
 			LocalDispatcher dispatcher = dctx.getDispatcher();
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
@@ -123,11 +122,19 @@ public class MarketingCampaignServices {
 				inputs.put("fromDate", UtilDateTime.nowTimestamp());
 				inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
 				GenericValue mailerMarketingCampaignContactList = dctx.getDelegator().makeValue("MailerMarketingCampaignAndContactList", inputs);
-				mailerMarketingCampaignContactList.create();			
+				mailerMarketingCampaignContactList.create();
+				
+				ModelService service = dctx.getModelService("mailer.scheduleCampaignsForListMembers");
+				inputs = service.makeValid(context, ModelService.IN_PARAM);
+				inputs.put("marketingCampaignId", marketingCampaignId);
+				inputs.put("contactListId", contactListId);
+				dctx.getDispatcher().runSync(service.name, inputs);
 			} else {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaingExists", locale), module);
 			}
 		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), module);
+		} catch (GenericServiceException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), module);
 		}
 		return serviceResults;
