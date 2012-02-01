@@ -160,7 +160,7 @@ public class ContactListServices {
 				// scheduledForDate = Do something here.
 			}
 			GenericValue rowToInsertGV = delegator.makeValue("MailerCampaignStatus");
-			rowToInsertGV.put("campaignStatusId", delegator.getNextSeqId("MailerCampaignStatus"));
+			rowToInsertGV.put("campaignStatusId", delegator.getNextSeqId(rowToInsertGV.getEntityName()));
 			rowToInsertGV.put("recipientId", recipientId);
 			rowToInsertGV.put("contactListId", contactListId);
 			rowToInsertGV.put("marketingCampaignId", marketingCampaignId);
@@ -169,7 +169,7 @@ public class ContactListServices {
 			rowToInsertGV.put("scheduledForDate", scheduledForDate);
 			rowsToInsert.add(rowToInsertGV);
 		}
-		if (UtilValidate.isNotEmpty(rowsToInsert) && rowsToInsert.size() > 0) {
+		if (UtilValidate.isNotEmpty(rowsToInsert)) {
 			delegator.storeAll(rowsToInsert);
 		}
 	}
