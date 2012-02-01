@@ -153,8 +153,8 @@ public class ContactListServices {
 		for (GenericValue row : rows) {
 			String marketingCampaignId = String.valueOf(row.get("marketingCampaignId"));
 			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-			GenericValue mailerMarketingCampaign = marketingCampaign.getRelatedOne("MailerMarketingCampaign").getRelatedOne("MergeForm");
-			String scheduleAt = String.valueOf(mailerMarketingCampaign.get("scheduleAt"));
+			GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MailerMarketingCampaign").getRelatedOne("MergeForm");
+			String scheduleAt = configuredTemplate.getString("scheduleAt");
 			Timestamp scheduledForDate = UtilDateTime.nowTimestamp();
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
 				// scheduledForDate = Do something here.
