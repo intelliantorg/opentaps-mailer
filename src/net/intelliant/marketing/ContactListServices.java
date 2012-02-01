@@ -53,7 +53,7 @@ public class ContactListServices {
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperId = (String) context.get("importMapperId");
 		String excelFilePath = getUploadPath() + fileName;
-
+		String contactListId = (String) context.get("contactListId");
 		// save the file to the system using the ofbiz service
 		Map<String, Object> input = UtilMisc.toMap("dataResourceId", null, "binData", context.get("uploadedFile"), "dataResourceTypeId", "LOCAL_FILE", "objectInfo", excelFilePath);
 		try {
@@ -64,7 +64,7 @@ public class ContactListServices {
 			// for now we only support EXCEL format
 			if ("EXCEL".equalsIgnoreCase(fileFormat)) {
 				GenericValue mailerImportMapper = dctx.getDelegator().findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-				return createRecords(dctx.getDelegator(), userLogin.getString("userLoginId"), mailerImportMapper.getString("ofbizEntityName"), String.valueOf(context.get("contactListId")), excelFilePath, importMapperId, String.valueOf(context.get("isFirstRowHeader")));
+				return createRecords(dctx.getDelegator(), mailerImportMapper, userLogin.getString("userLoginId"), contactListId, excelFilePath);
 			} else {
 				return UtilMessage.createAndLogServiceError("[" + fileFormat + "] is not a supported file format.", MODULE);
 			}
@@ -80,32 +80,36 @@ public class ContactListServices {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Map<String, Object> createRecords(GenericDelegator delegator, String userLoginId, String entityName, String contactListId, String excelFilePath, String columnMapperId, String isFirstRowHeader) throws GenericEntityException, FileNotFoundException, IOException {
+	private static Map<String, Object> createRecords(GenericDelegator delegator, GenericValue mailerImportMapper, String userLoginId, String contactListId, String excelFilePath) throws GenericEntityException, FileNotFoundException, IOException {
 		int rowIndex = 0;
 		int totalCount = 0;
 		int failureCount = 0;
-
+		String ofbizEntityName = mailerImportMapper.getString("ofbizEntityName");
+		String importMapperId = mailerImportMapper.getString("importMapperId");
+		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
 		Map<Integer, String> failureReport = new LinkedHashMap<Integer, String>();
-		Map<String, Integer> columnMappings = getColumnMappings(delegator, columnMapperId);
+		Map<String, Integer> columnMappings = getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();		
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
-			excelRowIterator.next();
-			rowIndex++;
+			if (excelRowIterator.hasNext()) {
+				excelRowIterator.next();
+				rowIndex++;
+			}
 		}
 		while (excelRowIterator.hasNext()) {
 			try {
 				TransactionUtil.begin();
 
-				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, entityName, excelRowIterator.next(), columnMappings);
+				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
+				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createAndScheduleCampaigns(delegator, contactListId, recipientId);
 				totalCount++;
 
 				TransactionUtil.commit();
 			} catch (GenericEntityException gee) {
 				TransactionUtil.rollback();
-				Debug.logError(gee, MODULE);
 				failureReport.put(rowIndex++, "Reason - " + gee.getMessage());
 				failureCount++;
 			}
@@ -142,6 +146,10 @@ public class ContactListServices {
 		}
 		return data;
 	}
+	
+	private static void createCLRecipientRelation(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
+		delegator.create("MailerRecipientContactList", UtilMisc.toMap("contactListId", contactListId, "recipientId", recipientId));
+	}
 
 	@SuppressWarnings("unchecked")
 	private static void createAndScheduleCampaigns(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
@@ -151,9 +159,20 @@ public class ContactListServices {
 		List<GenericValue> rows = delegator.findByCondition("MailerMarketingCampaignAndContactList", conditions, selectColumns, UtilMisc.toList("fromDate"));
 
 		for (GenericValue row : rows) {
-			String marketingCampaignId = String.valueOf(row.get("marketingCampaignId"));
-			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-			GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MailerMarketingCampaign").getRelatedOne("MergeForm");
+			GenericValue rowToInsertGV = createAndScheduleCampaign(delegator, row.getString("marketingCampaignId"), contactListId, recipientId);
+			if (UtilValidate.isNotEmpty(rowToInsertGV)) {
+				rowsToInsert.add(rowToInsertGV);
+			}
+		}
+		if (UtilValidate.isNotEmpty(rowsToInsert)) {
+			delegator.storeAll(rowsToInsert);
+		}
+	}
+	
+	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId) throws GenericEntityException {
+		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
+		if (UtilValidate.isEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
 			Timestamp scheduledForDate = UtilDateTime.nowTimestamp();
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
@@ -167,10 +186,10 @@ public class ContactListServices {
 			rowToInsertGV.put("printStatusId", "MAILER_SCHEDULED");
 			rowToInsertGV.put("emailStatusId", "MAILER_SCHEDULED");
 			rowToInsertGV.put("scheduledForDate", scheduledForDate);
-			rowsToInsert.add(rowToInsertGV);
+			return rowToInsertGV;
+		} else {
+			Debug.logError("No configured template for Marketing campaign [" + marketingCampaignId + "]", MODULE);
 		}
-		if (UtilValidate.isNotEmpty(rowsToInsert)) {
-			delegator.storeAll(rowsToInsert);
-		}
+		return null;
 	}
 }
