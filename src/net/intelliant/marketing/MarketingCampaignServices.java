@@ -125,9 +125,6 @@ public class MarketingCampaignServices {
 				GenericValue mailerMarketingCampaignContactList = dctx.getDelegator().makeValue("MailerMarketingCampaignAndContactList", inputs);
 				mailerMarketingCampaignContactList.create();			
 			} else {
-				if (Debug.infoOn()) {
-					Debug.logInfo("Contact List - " + contactListId + " already associated with campaign - " + marketingCampaignId, module);
-				}
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaingExists", locale), module);
 			}
 		} catch (GenericEntityException e) {
