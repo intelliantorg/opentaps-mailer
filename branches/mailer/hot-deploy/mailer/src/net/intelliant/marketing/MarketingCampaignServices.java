@@ -39,8 +39,6 @@ public class MarketingCampaignServices {
 		GenericDelegator delegator = dctx.getDelegator();
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
-		String contactListId = (String) context.get("contactListId");
-		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		try {			
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
@@ -63,7 +61,10 @@ public class MarketingCampaignServices {
 			GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", inputs);
 			mailerMarketingCampaign.create();
 
-			addContactListToCampaign(delegator, userLogin, contactListId, marketingCampaignId, null);
+			service = dctx.getModelService("mailer.addContactListToCampaign");
+			inputs = service.makeValid(context, "IN");
+			inputs.put("marketingCampaignId", marketingCampaignId);
+			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
 		} catch (GenericServiceException e) {
@@ -104,18 +105,6 @@ public class MarketingCampaignServices {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static void addContactListToCampaign(GenericDelegator delegator, GenericValue userLogin, String contactListId, String marketingCampaignId, Timestamp now) throws GenericEntityException {
-		if (now == null) {
-			now = UtilDateTime.nowTimestamp();
-		}
-		String campaignListId = delegator.getNextSeqId("MailerMarketingCampaignAndContactList");
-		Map<String, Object> inputs = UtilMisc.toMap("campaignListId", campaignListId, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId, "fromDate", now);
-		inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
-		GenericValue mailerMarketingCampaignContactList = delegator.makeValue("MailerMarketingCampaignAndContactList", inputs);
-		mailerMarketingCampaignContactList.create();
-	}
-
 	/** Add contact list to campaign. */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> addContactListToCampaign(DispatchContext dctx, Map<String, Object> context) {
@@ -131,7 +120,12 @@ public class MarketingCampaignServices {
 		try {
 			List marketingCampaignContactLists = dctx.getDelegator().findByCondition("MailerMarketingCampaignAndContactList", conditions, null, UtilMisc.toList("fromDate"));
 			if (UtilValidate.isEmpty(marketingCampaignContactLists)) {
-				addContactListToCampaign(dctx.getDelegator(), userLogin, contactListId, marketingCampaignId, null);				
+				String campaignListId = dctx.getDelegator().getNextSeqId("MailerMarketingCampaignAndContactList");
+				Map<String, Object> inputs = UtilMisc.toMap("campaignListId", campaignListId, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId);
+				inputs.put("fromDate", UtilDateTime.nowTimestamp());
+				inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
+				GenericValue mailerMarketingCampaignContactList = dctx.getDelegator().makeValue("MailerMarketingCampaignAndContactList", inputs);
+				mailerMarketingCampaignContactList.create();			
 			} else {
 				if (Debug.infoOn()) {
 					Debug.logInfo("Contact List - " + contactListId + " already associated with campaign - " + marketingCampaignId, module);
