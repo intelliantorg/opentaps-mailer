@@ -143,6 +143,7 @@ public class MarketingCampaignServices {
 		}
 		return serviceResults;
 	}
+	
 	/**
 	 * Removes a contact list from a Marketing campaign with its tracking code
 	 * by expiring those entities - expire the MarketingCampaignContactList
@@ -153,22 +154,17 @@ public class MarketingCampaignServices {
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		Locale locale = (Locale) context.get("locale");
 		String campaignListId = (String) context.get("campaignListId");
-		Timestamp now = UtilDateTime.nowTimestamp();
-
 		try {
 			GenericValue marketingCampaignContactList = delegator.findByPrimaryKey("MailerMarketingCampaignAndContactList", UtilMisc.toMap("campaignListId", campaignListId));
 			if (UtilValidate.isEmpty(marketingCampaignContactList)) {
 				return UtilMessage.createAndLogServiceError("CrmErrorMarketingCampaignContactListNotFound", UtilMisc.toMap("campaignListId", campaignListId), locale, module);
 			}
-			if (UtilValidate.isEmpty(marketingCampaignContactList.get("thruDate"))) {
-				marketingCampaignContactList.set("thruDate", now);
-				marketingCampaignContactList.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
-				delegator.store(marketingCampaignContactList);
-			}
-
-			return ServiceUtil.returnSuccess();
+			marketingCampaignContactList.set("thruDate", UtilDateTime.nowTimestamp());
+			marketingCampaignContactList.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
+			delegator.store(marketingCampaignContactList);
 		} catch (GenericEntityException e2) {
 			return UtilMessage.createAndLogServiceError(e2, module);
 		}
+		return ServiceUtil.returnSuccess();
 	}
 }
