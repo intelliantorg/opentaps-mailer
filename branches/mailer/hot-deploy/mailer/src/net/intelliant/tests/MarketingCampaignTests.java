@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilMisc;
+import org.ofbiz.entity.GenericEntityException;
+import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.util.EntityUtil;
 import org.opentaps.tests.OpentapsTestCase;
 
@@ -21,12 +23,11 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		super.tearDown();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void testCreateMarketingCampaign() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String fromEmailAddress = "email@email.com";
 		String templateId = "10000";
-		String contactListId = "10000";
+		String contactListId = createContactList();
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
@@ -49,6 +50,15 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 
 		List<?> contactListsForMMC = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		assertNotEmpty("There must be atleast one active relation between MC and CL", EntityUtil.filterByDate(contactListsForMMC));
+		
+		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertEmpty("There must ZERO scheduled campaings", scheduledCampaigns);
+		
+		contactListId = createContactListWithTwoRecipients();
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		
+		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "printStatusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
 	}
 
 	private String createMarketingCampaign(String campaignName, String fromEmailAddress, String templateId, String contactListId, Double budgetedCost, Double estimatedCost, String currencyUomId) {
@@ -72,7 +82,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String fromEmailAddress = "email@email.com";
 		String templateId = "XYZ";
-		String contactListId = "10000";
+		String contactListId = createContactList();
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
@@ -88,15 +98,34 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 
 		runAndAssertServiceError("mailer.createMarketingCampaign", inputs);
 	}
+	
+	public void testAddContactListToMarketingCampaign() throws GeneralException {
+		Long currTime = System.currentTimeMillis();
+		String campaignName = "Campaign_" + currTime;
+		String fromEmailAddress = "email_" + currTime + "@email.com";
+		String templateId = "10000";
+		String contactListId = createContactList();
+		Double budgetedCost = Math.random() * 100000;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
+		String currencyUomId = "INR";
+		
+		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		
+		contactListId = createContactListWithTwoRecipients();
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		
+		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "printStatusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+	}
 
 	public void testUpdateMarketingCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = "10000";
-		String contactListId = "10000";
+		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
-		Double estimatedCost = budgetedCost>1000?budgetedCost-900:budgetedCost-1;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
 		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
@@ -105,7 +134,6 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		campaignName = "Campaign_" + currTime;
 		fromEmailAddress = "email_" + currTime + "@email.com";
 		templateId = "10000";
-		contactListId = "10000";
 		budgetedCost = 12050.0;
 		estimatedCost = 11550.50;
 		currencyUomId = "INR";
@@ -133,5 +161,29 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		assertNotNull(results);
 		assertEquals(results.get("fromEmailAddress"), fromEmailAddress);
 		assertEquals(results.get("templateId"), templateId);
+	}
+	
+	private String createContactList() throws GenericEntityException {
+		GenericValue contactListTypeGV = EntityUtil.getFirst(delegator.findAll("ContactListType"));
+		Map<String, Object> inputs = UtilMisc.toMap("contactListTypeId", contactListTypeGV.getString("contactListTypeId"));
+		inputs.put("userLogin", admin);
+		inputs.put("contactListName", "CL " + System.currentTimeMillis());
+
+		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createContactList", inputs);
+		return (String) results.get("contactListId");
+	}
+	
+	private String createContactListWithTwoRecipients() throws GenericEntityException {
+		String contactListId = createContactList();
+		/** Manually recipients and the associate them with contact list. */
+		String recipientId = delegator.getNextSeqId("MailerRecipient");
+		delegator.create("MailerRecipient", UtilMisc.toMap("recipientId", recipientId));
+		delegator.create("MailerRecipientContactList", UtilMisc.toMap("recipientId", recipientId, "contactListId", contactListId));
+		
+		recipientId = delegator.getNextSeqId("MailerRecipient");
+		delegator.create("MailerRecipient", UtilMisc.toMap("recipientId", recipientId));
+		delegator.create("MailerRecipientContactList", UtilMisc.toMap("recipientId", recipientId, "contactListId", contactListId));
+		
+		return contactListId;
 	}
 }
