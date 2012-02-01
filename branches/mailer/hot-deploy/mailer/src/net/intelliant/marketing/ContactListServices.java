@@ -172,7 +172,7 @@ public class ContactListServices {
 	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId) throws GenericEntityException {
 		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
-		if (UtilValidate.isEmpty(configuredTemplate)) {
+		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
 			Timestamp scheduledForDate = UtilDateTime.nowTimestamp();
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
@@ -191,5 +191,32 @@ public class ContactListServices {
 			Debug.logError("No configured template for Marketing campaign [" + marketingCampaignId + "]", MODULE);
 		}
 		return null;
+	}
+	
+	public static Map<String, Object> scheduleCampaignsForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
+		String contactListId = (String) context.get("contactListId");
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
+		List<GenericValue> rowsToInsert = FastList.newInstance();
+		try {
+			List<GenericValue> members = dctx.getDelegator().findByAnd("MailerRecipientContactList", UtilMisc.toMap("contactListId", contactListId));
+			if (UtilValidate.isNotEmpty(members)) {
+				for (GenericValue member : members) {
+					GenericValue rowToInsertGV = createAndScheduleCampaign(dctx.getDelegator(), marketingCampaignId, contactListId, member.getString("recipientId"));
+					if (UtilValidate.isNotEmpty(rowToInsertGV)) {
+						rowsToInsert.add(rowToInsertGV);
+					}
+				}
+				if (UtilValidate.isNotEmpty(rowsToInsert)) {
+					dctx.getDelegator().storeAll(rowsToInsert);
+				}
+			} else {
+				if (Debug.infoOn()) {
+					Debug.logInfo("No recipients found for contact list [" + contactListId + "]", MODULE);
+				}
+			}
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError("Encountered errors while scheduling campaigns.", MODULE);
+		}
+		return ServiceUtil.returnSuccess();
 	}
 }
