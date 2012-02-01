@@ -115,6 +115,19 @@
       	</relation>
    	</entity>
    	
+   	<entity entity-name="MailerRecipientContactList" package-name="net.intelliant.mailer" title="Maintains relation between Mailer recipient and CL">
+    	<field name="contactListId" type="id-ne"/>
+    	<field name="recipientId" type="id-ne"/>    	
+      	<relation type="one" fk-name="MRCL_TO_CL" rel-entity-name="ContactList">
+        	<key-map field-name="contactListId"/>
+      	</relation>
+    	<relation type="one" fk-name="MRCL_TO_MR" rel-entity-name="MailerRecipient">
+        	<key-map field-name="recipientId"/>
+      	</relation>
+    	<prim-key field="recipientId"/>
+    	<prim-key field="contactListId"/>
+   	</entity>
+   	
    	<!-- Views entities -->
    	<view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
         <member-entity entity-alias="MC" entity-name="MarketingCampaign"/>

@@ -10,4 +10,5 @@
 	<entity-group group="org.ofbiz" entity="MailerCampaignStatus" />
 	<entity-group group="org.ofbiz" entity="MailerImportMapper" />
 	<entity-group group="org.ofbiz" entity="MailerImportColumnMapper" />
+	<entity-group group="org.ofbiz" entity="MailerRecipientContactList" />	
 </entitygroup>
