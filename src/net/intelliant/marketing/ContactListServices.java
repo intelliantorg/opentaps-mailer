@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javolution.util.FastList;
@@ -81,9 +82,7 @@ public class ContactListServices {
 
 	@SuppressWarnings("unchecked")
 	private static Map<String, Object> createRecords(GenericDelegator delegator, GenericValue mailerImportMapper, String userLoginId, String contactListId, String excelFilePath) throws GenericEntityException, FileNotFoundException, IOException {
-		int rowIndex = 0;
-		int totalCount = 0;
-		int failureCount = 0;
+		int rowIndex = 0, totalCount = 0, failureCount = 0;
 		String ofbizEntityName = mailerImportMapper.getString("ofbizEntityName");
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
@@ -106,12 +105,12 @@ public class ContactListServices {
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createAndScheduleCampaigns(delegator, contactListId, recipientId);
 				totalCount++;
-
-				TransactionUtil.commit();
 			} catch (GenericEntityException gee) {
 				TransactionUtil.rollback();
 				failureReport.put(rowIndex++, "Reason - " + gee.getMessage());
 				failureCount++;
+			} finally {
+				TransactionUtil.commit();
 			}
 		}
 		Map<String, Object> results = ServiceUtil.returnSuccess(); 
@@ -121,19 +120,20 @@ public class ContactListServices {
 		return results;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException {
 		String entityPrimaryKeyField = delegator.getModelEntity(entityName).getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
-		Map<String, Object> rowData = UtilMisc.toMap(entityPrimaryKeyField, entityPrimaryKey);
-		rowData.put("importedOnDateTime", UtilDateTime.nowTimestamp());
-		rowData.put("importedByUserLogin", userLoginId);
+		GenericValue rowToInsertGV = delegator.makeValue(entityName);
+		rowToInsertGV.put(entityPrimaryKeyField, entityPrimaryKey);
+		rowToInsertGV.put("importedOnDateTime", UtilDateTime.nowTimestamp());
+		rowToInsertGV.put("importedByUserLogin", userLoginId);
 		
-		Set<String> keys = columnMapper.keySet();
-		for (String key : keys) {
-			rowData.put(key, excelRowData.getCell(Short.parseShort(String.valueOf(columnMapper.get(key)))).toString());
+		Set<Entry<String, Object>> entries = columnMapper.entrySet();
+		for (Map.Entry<String, Object> entry : entries) {
+			String configuredColumn = entry.getValue().toString();
+			rowToInsertGV.put(entry.getKey(), excelRowData.getCell(Short.parseShort(configuredColumn)).toString().trim());
 		}
-		delegator.create(entityName, rowData);
+		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
 		return entityPrimaryKey;
 	}
 	
