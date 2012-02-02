@@ -1,17 +1,18 @@
-import javolution.util.FastList;
-
 import net.intelliant.imports.UtilImport;
+
+import javolution.util.FastList;
+import javolution.util.FastMap;
 
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericValue;
 
-String importMapperId = parameters.importMapperId;
+importMapperId = parameters.importMapperId;
 
-FastList mailerImportColumnMapperList = delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId));
-GenericValue importMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
+importMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
+mailerImportColumnMapperList = importMapperGV.getRelatedByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId));
 
-Map<String,Integer> selectedColumnIndexMap = new HashMap<String,Integer>();
+selectedColumnIndexMap = FastMap.newInstance();
 for(GenericValue mailerImportColumnMapper : mailerImportColumnMapperList){
 	selectedColumnIndexMap.putAt(mailerImportColumnMapper.entityColName,mailerImportColumnMapper.importFileColIdx);
 }
@@ -27,10 +28,10 @@ if(UtilValidate.isNotEmpty(filePath)){
 	lhsColumns = UtilImport.getEntityColumns(context.nameOfEntity, entityColumnsToIgnore);
 	context.put("lhsColumns", lhsColumns);
 	
-	selectedIndexes = new ArrayList<Integer>();
+	selectedIndexes = FastList.newInstance();
 	for(String colName : lhsColumns){
 		index = selectedColumnIndexMap.get(colName.entityColName);
-		selectedIndexes.add((index!=null)?index:-1);
+		selectedIndexes.add((index != null) ? index : -1);
 	}
 	context.put("selectedIndex", selectedIndexes);
 	
