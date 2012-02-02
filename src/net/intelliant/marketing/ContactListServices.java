@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javolution.util.FastList;
+import net.intelliant.imports.UtilImport;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -88,7 +88,7 @@ public class ContactListServices {
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
 		Map<Integer, String> failureReport = new LinkedHashMap<Integer, String>();
-		Map<String, Integer> columnMappings = getColumnMappings(delegator, importMapperId);
+		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();		
@@ -122,7 +122,7 @@ public class ContactListServices {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Integer> columnMapper) throws GenericEntityException {
+	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException {
 		String entityPrimaryKeyField = delegator.getModelEntity(entityName).getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
 		Map<String, Object> rowData = UtilMisc.toMap(entityPrimaryKeyField, entityPrimaryKey);
@@ -135,16 +135,6 @@ public class ContactListServices {
 		}
 		delegator.create(entityName, rowData);
 		return entityPrimaryKey;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Map<String, Integer> getColumnMappings(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
-		Map<String, Integer> data = new HashMap<String, Integer>();
-		List<GenericValue> columnToIndexMappings = delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", columnMapperId));
-		for (GenericValue columnToIndexMapping : columnToIndexMappings) {
-			data.put(String.valueOf(columnToIndexMapping.get("entityColName")), Integer.parseInt(String.valueOf(columnToIndexMapping.get("importFileColIdx"))));
-		}
-		return data;
 	}
 	
 	private static void createCLRecipientRelation(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
