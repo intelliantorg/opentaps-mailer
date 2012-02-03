@@ -3,12 +3,14 @@
 <entitygroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/entitygroup.xsd">
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaign" />
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndMarketingCampaignAppl" />
-	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndMarketingCampaignAndStatusItem" />
+	<entity-group group="org.ofbiz" entity="MMCandMCandStatusItem" />
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndContactList" />
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndContactListDetails" />
 	<entity-group group="org.ofbiz" entity="MailerRecipient" />
 	<entity-group group="org.ofbiz" entity="MailerCampaignStatus" />
 	<entity-group group="org.ofbiz" entity="MailerImportMapper" />
 	<entity-group group="org.ofbiz" entity="MailerImportColumnMapper" />
-	<entity-group group="org.ofbiz" entity="MailerRecipientContactList" />	
+	<entity-group group="org.ofbiz" entity="MailerRecipientContactList" />
+	<entity-group group="org.ofbiz" entity="MailerRecipientContactListCount" />
+	<entity-group group="org.ofbiz" entity="MailerRecipientContactListMerged" />
 </entitygroup>

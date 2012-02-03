@@ -90,6 +90,8 @@
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="findContactLists" />
 	</request-map>
+	
+	
 	<request-map uri="manageMergeForms">
 		<security https="true" auth="true" />
 		<response name="success" type="view" value="manageMergeForms" />
@@ -125,6 +127,16 @@
     	<event type="service" invoke="mailer.updateContactList" />
 		<response name="success" type="request-redirect-filterparam" value="viewContactList" allowed-params="contactListId" allowed-attributes="contactListId" />
 	</request-map>
+	<request-map uri="addContactListPartiesForm">
+    	<security https="true" auth="true"/>
+    	<response name="success" type="view" value="addContactListPartiesScreen"/>
+	</request-map>
+    <request-map uri="addContactListParties">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="mailer.createContactListParty"/>
+        <response name="error" type="view" value="addContactListPartiesScreen"/>
+        <response name="success" type="view" value="addContactListPartiesScreen"/>
+    </request-map>	
 	
 	<request-map uri="addContactListToMailerMarketingCampaign">
 		<security https="true" auth="true" />
@@ -199,6 +211,7 @@
 	<view-map name="findContactLists" type="screen" page="component://mailer/widget/MailerScreens.xml#findContactLists" />
 	<view-map name="viewContactList" type="screen" page="component://mailer/widget/MailerScreens.xml#viewContactList" />
 	<view-map name="updateContactListScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#updateContactListScreen" />
+	<view-map name="addContactListPartiesScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#addContactListPartiesScreen" />
 
 	<view-map name="manageMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#manageMergeForms" />
 	<view-map name="editMergeForms" type="screen" page="component://mailer/widget/MailerScreens.xml#editMergeForms" />

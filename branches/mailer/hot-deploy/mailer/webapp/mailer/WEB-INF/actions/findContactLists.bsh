@@ -5,9 +5,10 @@ import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.entity.util.EntityFindOptions;
 import org.ofbiz.entity.util.EntityUtil;
 import org.opentaps.common.util.UtilCommon;
+import net.intelliant.marketing.MarketingHelper;
 
 listIteratorNameToUse = parameters.get("listIteratorNameToUse");
-
+System.out.println("### - list itr Name : "+listIteratorNameToUse);
 // order by
 orderParam = UtilCommon.getParameter(request, "contactListsOrderBy");
 if (orderParam == null) {
@@ -37,7 +38,7 @@ if (contactMechTypeId != null) {
 
 searchConditionList = new EntityConditionList(searchConditions, EntityOperator.AND);
 
-listIt = delegator.findListIteratorByCondition("ContactList", searchConditionList, null, 
+listIt = delegator.findListIteratorByCondition("MailerRecipientContactListCount", searchConditionList, null, 
         null,  // fields to select
         orderBy, // fields to order by
         // the first true here is for "specifyTypeAndConcur"
