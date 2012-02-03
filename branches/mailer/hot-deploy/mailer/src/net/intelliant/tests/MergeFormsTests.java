@@ -42,7 +42,6 @@ public class MergeFormsTests extends OpentapsTestCase {
 		inputs.put("showInSelect", showInSelect);
 
 		Map<String, Object> results = runAndAssertServiceSuccess("mailer.createMergeForm", inputs);
-		System.out.println(module + " - RESULT : " + results);
 		mergeFormId = (String) results.get("mergeFormId");
 
 		results = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));

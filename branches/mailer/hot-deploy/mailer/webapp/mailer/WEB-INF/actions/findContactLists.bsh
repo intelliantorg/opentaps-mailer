@@ -8,7 +8,7 @@ import org.opentaps.common.util.UtilCommon;
 import net.intelliant.marketing.MarketingHelper;
 
 listIteratorNameToUse = parameters.get("listIteratorNameToUse");
-System.out.println("### - list itr Name : "+listIteratorNameToUse);
+
 // order by
 orderParam = UtilCommon.getParameter(request, "contactListsOrderBy");
 if (orderParam == null) {
