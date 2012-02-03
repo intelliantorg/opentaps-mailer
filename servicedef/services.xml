@@ -57,14 +57,21 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
         <override name="contactListTypeId" optional="false"/>
         <override name="contactListName" optional="false"/>
-    </service>
-    
+    </service>    
     <service name="mailer.updateContactList" default-entity-name="ContactList" engine="simple" location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="updateContactList" auth="true">
         <description>Update a ContactList record</description>
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
-        
+    <service name="mailer.createContactListParty" default-entity-name="ContactListParty" engine="simple"
+            location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="createContactListParty" auth="true">
+        <description>Add Party to ContactList</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fromDate" optional="true"/>
+        <override name="statusId" optional="false"/>
+    </service>
+    
     <service name="mailer.createMergeForm" engine="java" default-entity-name="MergeForm" location="net.intelliant.marketing.MergeFormServices" invoke="createMergeForm" auth="true">
         <description>Create merge form</description>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>

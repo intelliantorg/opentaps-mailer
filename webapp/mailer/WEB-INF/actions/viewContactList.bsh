@@ -1,4 +1,5 @@
 import org.ofbiz.base.util.UtilMisc;
+import org.ofbiz.entity.util.EntityUtil;
 import com.opensourcestrategies.crmsfa.marketing.MarketingHelper;
 
 contactListId = parameters.get("contactListId");
@@ -8,7 +9,10 @@ if (contactList == null) {
     return;
 }
 
-numberOfMembers = new Double(MarketingHelper.countContactListMembers(contactListId, delegator));
+contactListExp = EntityUtil.getFirst(delegator.findByAnd("MailerRecipientContactListCount", UtilMisc.toMap("contactListId", contactListId)));
+
+//numberOfMembers = new Double(MarketingHelper.countContactListMembers(contactListId, delegator));
+numberOfMembers = contactListExp.get("recipientId");
 numberOfUSAMembers = new Double(MarketingHelper.countContactListMembersByCountry(contactListId, "USA", delegator));
 
 contactListCombined = contactList.getAllFields();
@@ -22,4 +26,3 @@ userLogin = request.getAttribute("userLogin");
 if (security.hasEntityPermission("CRMSFA_CAMP", "_UPDATE", userLogin)) {
     context.put("hasUpdatePermission", true);
 }
-

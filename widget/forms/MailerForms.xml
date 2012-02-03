@@ -189,7 +189,7 @@
         </field>
     </form>
     
-     <form name="ListContactListParties" type="multi" separate-columns="false" use-row-submit="true"
+    <form name="ListContactListParties" type="multi" separate-columns="false" use-row-submit="true"
         title="Contact List Parties"  default-title-style="tableheadtext" target="${listContactListPartiesTarget}?contactListId=${parameters.contactListId}"
         default-widget-style="tabletext" default-tooltip-style="tabletext"
         default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"

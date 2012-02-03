@@ -44,7 +44,7 @@
     	<!-- 
     		Some customer information will be placed here including
     		<field name="dateOfOperation" type="date"/>
-    	-->
+    	--> 
     	<field name="firstName" type="name">
     		<description>First Name</description>
     	</field>
@@ -57,8 +57,50 @@
     	<field name="importedOnDateTime" type="date-time"/>
     	<field name="importedByUserLogin" type="id-vlong"/>
     	<prim-key field="recipientId"/>
+   	</entity>   	
+   	<entity entity-name="MailerRecipientContactList" package-name="net.intelliant.mailer" title="Mailer recipient">
+    	<field name="contactListId" type="email"/>
+    	<field name="recipientId" type="id-ne"/>
+    	
+      	<relation type="one" fk-name="MRCL_TO_CL" rel-entity-name="ContactList">
+        	<key-map field-name="contactListId"/>
+      	</relation>
+    	<relation type="one" fk-name="MRCL_TO_MR" rel-entity-name="MailerRecipient">
+        	<key-map field-name="recipientId"/>
+      	</relation>
+    	<prim-key field="recipientId"/>
+    	<prim-key field="contactListId"/>
    	</entity>
-	
+	<view-entity entity-name="MailerRecipientContactListCount" 
+				 package-name="com.opensourcestrategies.crmsfa.marketing"
+                 title="Counts the number of Contact List members">	
+        <member-entity entity-alias="CL" entity-name="ContactList"/>
+        <member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>       
+        <alias entity-alias="CL" name="contactListName" group-by="contactListName"/>       
+        <alias entity-alias="CL" name="contactListId" group-by="true"/>
+        <alias entity-alias="MRCL" name="recipientId" function="count"/> 
+        <view-link entity-alias="CL" rel-entity-alias="MRCL" rel-optional="true">
+            <key-map field-name="contactListId" rel-field-name="contactListId"/>
+        </view-link>
+	</view-entity>
+	<view-entity entity-name="MailerRecipientContactListMerged" 
+				 package-name="com.opensourcestrategies.crmsfa.marketing"
+                 title="Merged MailerRecipient and ContactList entities">	
+        <member-entity entity-alias="CL" entity-name="ContactList"/>	
+        <member-entity entity-alias="MR" entity-name="MailerRecipient"/>
+        <member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>
+        <alias-all entity-alias="CL"/>
+        <alias-all entity-alias="MR"/>
+        <alias-all entity-alias="MRCL"/>
+        
+        <view-link entity-alias="MRCL" rel-entity-alias="CL" rel-optional="true">
+            <key-map field-name="contactListId" rel-field-name="contactListId"/>
+        </view-link>
+        <view-link entity-alias="MRCL" rel-entity-alias="MR" rel-optional="true">
+            <key-map field-name="recipientId" rel-field-name="recipientId"/>
+        </view-link>
+	</view-entity>
+
 	<entity entity-name="MailerCampaignStatus" package-name="net.intelliant.mailer" title="To track campaign status">
     	<field name="campaignStatusId" type="id-ne"/>
     	<field name="recipientId" type="id-ne"/>
@@ -86,7 +128,7 @@
             <key-map field-name="contactListId"/>
         </relation>
     </entity> 
-    
+
     <entity entity-name="MailerImportMapper" package-name="net.intelliant.mailer" title="Mailer import mapper">
     	<field name="importMapperId" type="id-ne"/>
     	<field name="importMapperName" type="id-ne"/>
@@ -101,7 +143,7 @@
         	<key-map field-name="contentId"/>
       	</relation>
    	</entity>
-   	
+
    	<entity entity-name="MailerImportColumnMapper" package-name="net.intelliant.mailer" title="Stores mapping of XLS columns with entity columns">
    		<field name="importColumnMapperId" type="id-ne"/>
     	<field name="importMapperId" type="id-ne"/>

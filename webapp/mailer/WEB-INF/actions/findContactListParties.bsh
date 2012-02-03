@@ -1,10 +1,3 @@
-/*
- * This scrip performs a find on PartyContactInfoAndContactList
- * using input parameters or reasonable defaults.  It will also
- * determine what form to use for display.  The intent is to
- * be able to use this for both viewing the members of a contact
- * list and adding new contact list members in batch.
- */
 
 module="findContactListParties.bsh";
 
@@ -205,4 +198,15 @@ searchConditionList = new EntityConditionList(searchConditions, EntityOperator.A
 members = delegator.findListIteratorByCondition(entityName, searchConditionList,  null, fieldsToSelect, orderBy,
         new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true));
 context.put("contactListParties", members);
+System.out.println();
 
+/* This part is appended for customization */
+searchConditions1 = new ArrayList();
+searchConditions1.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactList.get("contactListId")));
+searchConditionList1 = new EntityConditionList(searchConditions1, EntityOperator.AND);
+
+orderBy1 = UtilMisc.toList("firstName", "lastName", "emailAddress");
+fieldsToSelect1 = UtilMisc.toListArray(new String[] {"recipientId", "firstName", "lastName", "emailAddress", "importedOnDateTime", "importedByUserLogin"});
+members1 = delegator.findListIteratorByCondition("MailerRecipientContactListMerged", searchConditionList1,  null, fieldsToSelect1, orderBy1,
+        new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true));
+context.put("contactListPartiesX", members1);
