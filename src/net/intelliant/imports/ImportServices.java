@@ -34,7 +34,6 @@ public class ImportServices {
 		String contentId = (String) context.get("contentId");
 		
 		String isFirstRowHeaderStr = (String) context.get("isFirstRowHeader");
-		System.out.println("isFirstRowHeaderStr - "+isFirstRowHeaderStr);
 		boolean isFirstRowHeader = Boolean.parseBoolean(isFirstRowHeaderStr);
 
 		String importMapperId = dctx.getDelegator().getNextSeqId("MailerImportMapper");
@@ -89,7 +88,6 @@ public class ImportServices {
 	}
 
 	public static Map<String, Object> updateImportMapping(DispatchContext dctx, Map<String, Object> context) {
-		// System.out.println("Data : "+context);
 		GenericDelegator delegator = dctx.getDelegator();
 		Locale locale = (Locale) context.get("locale");
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
@@ -102,10 +100,7 @@ public class ImportServices {
 
 		Map<String, Object> entityColName = (Map) context.get("entityColName");
 		Map<String, Object> importFileColIdx = (Map) context.get("importFileColIdx");
-
-		System.out.println("Ent col nm : " + entityColName);
-		System.out.println("Import fil col indx : " + importFileColIdx);
-
+		
 		try {
 			updateMailerImportMapping(delegator, importMapperId, importMapperName, description, isFirstRowHeader, userLoginId);
 			updateMailerImportColumnMapping(delegator, importMapperId, userLogin, entityColName, importFileColIdx);

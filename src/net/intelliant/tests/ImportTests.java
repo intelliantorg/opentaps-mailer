@@ -72,9 +72,6 @@ public class ImportTests extends OpentapsTestCase {
 		String tokenizedPath = "hot-deploy/mailer/src/net/intelliant/tests/xls/import_sample.xls";
 		String excelFilePath = ofbizHome + tokenizedPath.replaceAll("/", File.separator);
 
-		System.out.println("File path : " + excelFilePath);
-		System.out.println("File name : " + getFileName(excelFilePath));
-
 		// Creating DataResource entity entry.
 		String dataResourceId = delegator.getNextSeqId("DataResource");
 		Map<String, Object> input = UtilMisc.toMap("dataResourceId", dataResourceId);

@@ -198,7 +198,6 @@ searchConditionList = new EntityConditionList(searchConditions, EntityOperator.A
 members = delegator.findListIteratorByCondition(entityName, searchConditionList,  null, fieldsToSelect, orderBy,
         new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true));
 context.put("contactListParties", members);
-System.out.println();
 
 /* This part is appended for customization */
 searchConditions1 = new ArrayList();
