@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,7 +23,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
-import org.ofbiz.base.util.UtilParse;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
@@ -96,6 +96,9 @@ public class ContactListServices {
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
+		
+		Map<String,String> columneTypes = UtilImport.getEntityColumnsMap(ofbizEntityName, Arrays.asList(new String[]{"lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin"}));
+		
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
 				excelRowIterator.next();
@@ -106,7 +109,7 @@ public class ContactListServices {
 			try {
 				TransactionUtil.begin();
 
-				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
+				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings, columneTypes);
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createAndScheduleCampaigns(delegator, contactListId, recipientId);
 				totalCount++;
@@ -125,7 +128,7 @@ public class ContactListServices {
 		return results;
 	}
 
-	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException {
+	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper, Map<String, String> columneTypes) throws GenericEntityException {
 		String entityPrimaryKeyField = delegator.getModelEntity(entityName).getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
 		GenericValue rowToInsertGV = delegator.makeValue(entityName);
@@ -140,7 +143,10 @@ public class ContactListServices {
 			HSSFCell excelCell = excelRowData.getCell(columnIndex);
 			String cellValue = excelCell != null ? excelCell.toString() : "";
 
-			rowToInsertGV.put(entry.getKey(), cellValue);
+			String columnName = entry.getKey();
+			
+			System.out.println(columnName+" : "+columneTypes.get(columnName));
+			rowToInsertGV.put(columnName, cellValue);
 		}
 		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
 		return entityPrimaryKey;
