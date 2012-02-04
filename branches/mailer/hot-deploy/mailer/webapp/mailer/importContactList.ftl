@@ -3,6 +3,13 @@
 <div class="form">
   <form id="importContactListForm" method="post" action="<@ofbizUrl>importContactList</@ofbizUrl>" name="importContactListForm" style="margin: 0;" enctype="multipart/form-data">
   	<input type="hidden" name="contactListId" value="${parameters.contactListId}" />
+  	<#if parameters.totalCount?exists && parameters.failureCount?exists && parameters.failureReport?exists >
+  	<div>
+  		<div>Total records found in excel : ${parameters.totalCount}</div>
+  		<div>Failure count : ${parameters.failureCount}</div>
+  	</div>
+  	</#if>
+  	
     <div class="formRow">
       <span class="formLabelRequired">Contact List file</span>
       <span class="formInputSpan">
