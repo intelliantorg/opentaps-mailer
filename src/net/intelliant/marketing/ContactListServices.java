@@ -15,12 +15,14 @@ import java.util.Set;
 import javolution.util.FastList;
 import net.intelliant.imports.UtilImport;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
+import org.ofbiz.base.util.UtilParse;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
@@ -40,6 +42,7 @@ public class ContactListServices {
 
 	/**
 	 * Gets the path for uploaded files.
+	 * 
 	 * @return a <code>String</code> value
 	 */
 	private static String getUploadPath() {
@@ -77,6 +80,8 @@ public class ContactListServices {
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (IOException e) {
 			return UtilMessage.createAndLogServiceError(e, MODULE);
+		} catch (Exception e) {
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		}
 	}
 
@@ -90,7 +95,7 @@ public class ContactListServices {
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
-		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();		
+		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
 				excelRowIterator.next();
@@ -113,7 +118,7 @@ public class ContactListServices {
 				TransactionUtil.commit();
 			}
 		}
-		Map<String, Object> results = ServiceUtil.returnSuccess(); 
+		Map<String, Object> results = ServiceUtil.returnSuccess();
 		results.put("totalCount", totalCount);
 		results.put("failureCount", failureCount);
 		results.put("failureReport", failureReport);
@@ -127,16 +132,20 @@ public class ContactListServices {
 		rowToInsertGV.put(entityPrimaryKeyField, entityPrimaryKey);
 		rowToInsertGV.put("importedOnDateTime", UtilDateTime.nowTimestamp());
 		rowToInsertGV.put("importedByUserLogin", userLoginId);
-		
+
 		Set<Entry<String, Object>> entries = columnMapper.entrySet();
+
 		for (Map.Entry<String, Object> entry : entries) {
-			String configuredColumn = entry.getValue().toString();
-			rowToInsertGV.put(entry.getKey(), excelRowData.getCell(Short.parseShort(configuredColumn)).toString().trim());
+			short columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
+			HSSFCell excelCell = excelRowData.getCell(columnIndex);
+			String cellValue = excelCell != null ? excelCell.toString() : "";
+
+			rowToInsertGV.put(entry.getKey(), cellValue);
 		}
 		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
 		return entityPrimaryKey;
 	}
-	
+
 	private static void createCLRecipientRelation(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
 		delegator.create("MailerRecipientContactList", UtilMisc.toMap("contactListId", contactListId, "recipientId", recipientId));
 	}
@@ -158,9 +167,12 @@ public class ContactListServices {
 			delegator.storeAll(rowsToInsert);
 		}
 	}
-	
+
 	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId) throws GenericEntityException {
 		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		
+		System.out.println("\nMarketing campaign : "+marketingCampaign+"\nmarketingCampaignId : "+marketingCampaignId);
+		
 		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
@@ -182,7 +194,7 @@ public class ContactListServices {
 		}
 		return null;
 	}
-	
+
 	public static Map<String, Object> scheduleCampaignsForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");

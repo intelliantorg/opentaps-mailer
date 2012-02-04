@@ -112,8 +112,10 @@ public class ImportServices {
 
 	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String isFirstRowHeader, String userLoginId) throws GenericEntityException {
 		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-
-		if (!(mailerImportMapper.get("importMapperName").equals(importMapperName) && mailerImportMapper.get("description").equals(description) && mailerImportMapper.get("isFirstRowHeader").equals(isFirstRowHeader))) {
+		
+		if (!(UtilValidate.areEqual(mailerImportMapper.get("importMapperName"),importMapperName) && 
+			  UtilValidate.areEqual(mailerImportMapper.get("description"),description) && 
+			  UtilValidate.areEqual(mailerImportMapper.get("isFirstRowHeader"),isFirstRowHeader))) {
 			mailerImportMapper.set("importMapperName", importMapperName);
 			mailerImportMapper.set("description", description);
 			mailerImportMapper.set("isFirstRowHeader", isFirstRowHeader);
@@ -129,8 +131,8 @@ public class ImportServices {
 		Set<String> keys = entityColName.keySet();
 		for (String key : keys) {
 			mailerImportColumnMapper = EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", entityColName.get(key))));
-
-			if (!((String) mailerImportColumnMapper.get("importFileColIdx")).equals((String) importFileColIdx.get(key))) {
+			
+			if (!(UtilValidate.areEqual(mailerImportColumnMapper.get("importFileColIdx"),importFileColIdx.get(key)))) {
 				if (UtilValidate.isNotEmpty(mailerImportColumnMapper)) {
 					mailerImportColumnMapper.set("lastModifiedByUserLogin", userLogin.get("userLoginId"));
 					mailerImportColumnMapper.set("importFileColIdx", importFileColIdx.get(key));

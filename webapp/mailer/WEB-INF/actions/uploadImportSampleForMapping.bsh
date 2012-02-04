@@ -120,8 +120,16 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 	entityColumnsToIgnore = UtilMisc.toList("lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin");
 	lhsColumns = UtilImport.getEntityColumns(multiPartMap.get("ofbizEntityName"), entityColumnsToIgnore);
 	context.put("lhsColumns", lhsColumns);
+		
+	isFirstRowHeader = multiPartMap.get("isFirstRowHeader");
 	
-	rhsColumns = UtilImport.readExcelIndices(fileAndPath, 0);
+	if(UtilValidate.isNotEmpty(isFirstRowHeader)){
+		rhsColumns = UtilImport.readExcelHeaders(fileAndPath, 0);		
+	}else{
+		rhsColumns = UtilImport.readExcelIndices(fileAndPath, 0);
+	}
+	
+	
 	context.put("rhsColumns", rhsColumns);
 	if(multiPartMap.get("isFirstRowHeader") != null){
 		context.put("isFirstRowHeader",multiPartMap.get("isFirstRowHeader"));

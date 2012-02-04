@@ -25,9 +25,10 @@ import org.ofbiz.entity.model.ModelEntity;
 import org.ofbiz.entity.model.ModelField;
 import org.ofbiz.entity.model.ModelReader;
 
-public class UtilImport {	
-	private UtilImport() {}
-	
+public class UtilImport {
+	private UtilImport() {
+	}
+
 	public static List<Map<String, Object>> getEntityColumns(String entityName, List<String> entityColumnsToIgnore) throws GenericEntityException {
 		if (UtilValidate.isEmpty(entityName)) {
 			return null;
@@ -40,25 +41,25 @@ public class UtilImport {
 		Iterator<ModelField> fieldIterator = modelEntity.getFieldsIterator();
 		List<Map<String, Object>> entityColumns = new ArrayList<Map<String, Object>>();
 		while (fieldIterator.hasNext()) {
-		    ModelField field = fieldIterator.next();
-		    String fieldDesc = field.getDescription();
-		    if (UtilValidate.isEmpty(fieldDesc)) {
-		    	fieldDesc = field.getName();
-		    }
-		    if (!entityColumnsToIgnore.contains(field.getName()) && !field.getIsPk()) {
-		    	entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc));
-		    }
+			ModelField field = fieldIterator.next();
+			String fieldDesc = field.getDescription();
+			if (UtilValidate.isEmpty(fieldDesc)) {
+				fieldDesc = field.getName();
+			}
+			if (!entityColumnsToIgnore.contains(field.getName()) && !field.getIsPk()) {
+				entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc));
+			}
 		}
-		return entityColumns;		
+		return entityColumns;
 	}
-	
+
 	public static List<Integer> readExcelIndices(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
 		List<Integer> columnIndices = new ArrayList<Integer>();
 		File file = new File(excelFilePath);
 		if (file != null && file.canRead()) {
 			POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(file));
 			HSSFWorkbook wb = new HSSFWorkbook(fs);
-//			HSSFSheet sheet = wb.getSheet(wb.getActiveSheetIndex());
+			// HSSFSheet sheet = wb.getSheet(wb.getActiveSheetIndex());
 			HSSFSheet sheet = wb.getSheetAt(sheetIndex);
 			if (sheet != null) {
 				HSSFRow firstRow = sheet.getRow(sheet.getFirstRowNum());
@@ -67,18 +68,43 @@ public class UtilImport {
 					Iterator<?> cells = firstRow.cellIterator();
 					while (cells.hasNext()) {
 						HSSFCell cell = (HSSFCell) cells.next();
-						columnIndices.add(Integer.valueOf(cell.getCellNum())); // this gives the cells with data.
+						columnIndices.add(Integer.valueOf(cell.getCellNum()));
 					}
 				}
 			}
 		}
 		return columnIndices;
 	}
-	
+
+	public static List<String> readExcelHeaders(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
+		List<String> columnIndices = new ArrayList<String>();
+		File file = new File(excelFilePath);
+		if (file != null && file.canRead()) {
+			POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(file));
+			HSSFWorkbook wb = new HSSFWorkbook(fs);
+			HSSFSheet sheet = wb.getSheetAt(sheetIndex);
+
+			if (sheet != null) {
+				HSSFRow firstRow = sheet.getRow(sheet.getFirstRowNum());
+				if (firstRow != null) {
+					Iterator<?> cells = firstRow.cellIterator();
+					while (cells.hasNext()) {
+						HSSFCell cell = (HSSFCell) cells.next();
+						if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+							columnIndices.add(cell.toString());
+						} else {
+							columnIndices.add("N/A - "+Integer.valueOf(cell.getCellNum())); 
+						}
+					}
+				}
+			}
+		}
+		return columnIndices;
+	}
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> getColumnMappings(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
-		Map<String, Object> data = FastMap.<String, Object>newInstance();
+		Map<String, Object> data = FastMap.<String, Object> newInstance();
 		List<GenericValue> columnToIndexMappings = delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", columnMapperId));
 		for (GenericValue columnToIndexMapping : columnToIndexMappings) {
 			data.put(columnToIndexMapping.getString("entityColName"), columnToIndexMapping.getString("importFileColIdx"));

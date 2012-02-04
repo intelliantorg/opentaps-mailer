@@ -63,7 +63,7 @@
 													<select class="dropDown" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
 														<option value='_NA_'>--select--</option>
 														<#list rhsColumns as rhsColumn>
-															<option value='${rhsColumn}'>Column Index ${rhsColumn}</option>
+															<option value='${rhsColumn}'>${rhsColumn}</option>
 														</#list>
 													</select>
 												</div>
