@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,12 +49,24 @@ public class UtilImport {
 				fieldDesc = field.getName();
 			}
 			if (!entityColumnsToIgnore.contains(field.getName()) && !field.getIsPk()) {
-				entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc));
+				entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc,"entityColType",field.getType()));
 			}
 		}
 		return entityColumns;
 	}
-
+	public static Map<String,String> getEntityColumnsMap(String entityName, List<String> entityColumnsToIgnore) throws GenericEntityException{
+		List<Map<String,Object>> columns = getEntityColumns(entityName, entityColumnsToIgnore);
+		Map<String,String> columnTypes = new HashMap<String, String>();
+				
+		for(Map<String, Object> data : columns){
+			String colName = (String) data.get("entityColName");
+			String colType = (String) data.get("entityColType");
+			columnTypes.put(colName, colType);
+		}
+		
+		return columnTypes;
+	}
+	
 	public static List<Integer> readExcelIndices(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
 		List<Integer> columnIndices = new ArrayList<Integer>();
 		File file = new File(excelFilePath);

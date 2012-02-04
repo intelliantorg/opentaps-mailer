@@ -55,7 +55,7 @@
     	</field>
     	<field name="phoneNo" type="tel-number">
     	 	<description>Phone No</description>
-    	</field>    	
+    	</field>
     	<field name="mobileNo" type="tel-number">
     	 	<description>Mobile No</description>
     	</field>   	
