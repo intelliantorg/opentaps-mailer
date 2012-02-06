@@ -26,7 +26,6 @@ multiPartMap = FastMap.newInstance();
  * The need to extract entity name prevents taking this approach.   
  */
 
-
 isMultiPart = FileUpload.isMultipartContent(request);
 
 if (isMultiPart) {
@@ -120,7 +119,7 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 	entityColumnsToIgnore = UtilMisc.toList("lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin");
 	lhsColumns = UtilImport.getEntityColumns(multiPartMap.get("ofbizEntityName"), entityColumnsToIgnore);
 	context.put("lhsColumns", lhsColumns);
-		
+	
 	isFirstRowHeader = multiPartMap.get("isFirstRowHeader");
 	if (multiPartMap.get("isFirstRowHeader") != null) {
 		isFirstRowHeader = false;
@@ -132,7 +131,7 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 		rhsColumns = UtilImport.readExcelHeaderValues(fileAndPath, 0);		
 	} else {
 		rhsColumns = UtilImport.readExcelHeaderIndices(fileAndPath, 0);
-	}	
+	}
 	context.put("rhsColumns", rhsColumns);
 } else {
 	Debug.logWarning("fileAndPath was empty !", module);
