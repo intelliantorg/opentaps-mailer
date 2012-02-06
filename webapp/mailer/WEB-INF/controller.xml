@@ -106,7 +106,12 @@
         <response name="success" type="view" value="manageMergeForms"/>
         <response name="error" type="view" value="editMergeForms"/>
     </request-map>
-
+	<request-map uri="updateMergeForm">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateMergeForm"/>
+        <response name="success" type="view" value="manageMergeForms"/>
+        <response name="error" type="view" value="editMergeForms"/>
+    </request-map>
 	
 	<request-map uri="createContactList">
 		<security https="true" auth="true" />
