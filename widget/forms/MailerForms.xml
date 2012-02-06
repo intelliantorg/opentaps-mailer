@@ -160,7 +160,8 @@
             <display-entity entity-name="ContactMechType"/>
         </field>
         <field name="" title="${uiLabelMap.CrmNumberOfMembers}" use-when="contactListId!=null">
-            <display description="${bsh:com.opensourcestrategies.crmsfa.marketing.MarketingHelper.countContactListMembers(contactListId, delegator)}"/>
+            <!-- <display description="${bsh:com.opensourcestrategies.crmsfa.marketing.MarketingHelper.countContactListMembers(contactListId, delegator)}"/> -->
+            <display description="${recipientId}" />
         </field>
 
         <field name="remove" title="" widget-style="buttontext" use-when="contactListId!=null">
