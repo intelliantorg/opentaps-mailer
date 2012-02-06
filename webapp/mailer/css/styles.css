@@ -42,3 +42,7 @@ input.smallTextfield{
 .smallSubmit{
 	cursor: pointer;
 }
+
+div.reportPanel{
+	font-size: 11px;	
+}

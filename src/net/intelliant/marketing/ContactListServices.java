@@ -5,9 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import javolution.util.FastList;
 import net.intelliant.imports.UtilImport;
+import net.intelliant.imports.bean.EntityFieldStatus;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -91,13 +93,15 @@ public class ContactListServices {
 		String ofbizEntityName = mailerImportMapper.getString("ofbizEntityName");
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
-		Map<Integer, String> failureReport = new LinkedHashMap<Integer, String>();
+		Map<String, String> failureReport = new HashMap<String, String>();
+		List<String[]> failureReport1 = new ArrayList<String[]>();
+		
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
 		
-		Map<String,String> columneTypes = UtilImport.getEntityColumnsMap(ofbizEntityName, Arrays.asList(new String[]{"lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin"}));
+		Map<String,EntityFieldStatus> columneTypes = UtilImport.getEntityColumnsMap(ofbizEntityName, Arrays.asList(new String[]{"lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin"}));
 		
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
@@ -108,14 +112,15 @@ public class ContactListServices {
 		while (excelRowIterator.hasNext()) {
 			try {
 				TransactionUtil.begin();
-
+				rowIndex++;
+				
 				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings, columneTypes);
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createAndScheduleCampaigns(delegator, contactListId, recipientId);
 				totalCount++;
 			} catch (GenericEntityException gee) {
 				TransactionUtil.rollback();
-				failureReport.put(rowIndex++, "Reason - " + gee.getMessage());
+				failureReport.put(String.valueOf(rowIndex), gee.getMessage());
 				failureCount++;
 			} finally {
 				TransactionUtil.commit();
@@ -128,7 +133,7 @@ public class ContactListServices {
 		return results;
 	}
 
-	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper, Map<String, String> columneTypes) throws GenericEntityException {
+	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper, Map<String, EntityFieldStatus> columneTypes) throws GenericEntityException {
 		String entityPrimaryKeyField = delegator.getModelEntity(entityName).getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
 		GenericValue rowToInsertGV = delegator.makeValue(entityName);
@@ -145,7 +150,23 @@ public class ContactListServices {
 
 			String columnName = entry.getKey();
 			
-			System.out.println(columnName+" : "+columneTypes.get(columnName));
+			EntityFieldStatus entityFieldStatus = columneTypes.get(columnName); 
+			
+			if(entityFieldStatus.isNotNull()){
+				if(!UtilValidate.isNotEmpty(cellValue)){
+					throw new GenericEntityException(" '"+entityFieldStatus.getName()+"' field is empty.");
+				}
+			}
+			if(entityFieldStatus.getType().equals("email")){
+				if(!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isEmail(cellValue))){
+					throw new GenericEntityException(" '"+cellValue+"' is not a valid email id");
+				}
+			}else if(columneTypes.get(columnName).equals("tel-number")){
+				if(!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(cellValue))){
+					throw new GenericEntityException(" '"+cellValue+"' is not a valid phone no");
+				}
+			}
+			
 			rowToInsertGV.put(columnName, cellValue);
 		}
 		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
