@@ -81,6 +81,15 @@
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
         <attribute name="privateForm" type="String" mode="IN" optional="true"/>
     </service>
+    <service name="mailer.updateMergeForm" engine="java" default-entity-name="MergeForm" location="net.intelliant.marketing.MergeFormServices" invoke="updateMergeForm" auth="true">
+        <description>Create merge form</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>        
+        <attribute name="mergeFormName" type="String" mode="IN" optional="false"/>
+        <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
+        <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
+        <attribute name="privateForm" type="String" mode="IN" optional="true"/>
+    </service>
 
     <service name="mailer.importContactList" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="importContactList" auth="true">
        <description>Import Contact List</description>

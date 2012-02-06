@@ -48,12 +48,11 @@ public class MergeFormServices {
         String mergeFormId = (String) context.get("mergeFormId");
         Boolean privateForm = "Y".equals((String) context.get("privateForm"));
         Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
-        GenericValue mergeForm = null;
-      
-        /* My play ground [START] */
+       
+        System.out.println("Context : "+context+"\nMap : "+newMergeFormMap);
         
-        /* My play ground [END] */
-                
+        GenericValue mergeForm = null;
+                      
         try {
             mergeForm = delegator.findByPrimaryKey("MergeForm", newMergeFormMap);
             //delegator.findByAnd(entityName, fields)
