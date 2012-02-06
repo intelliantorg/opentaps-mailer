@@ -424,7 +424,7 @@
                 <set field="pageTitleLabel" value="ImportContactListHeader"/>
                 <set field="sectionHeaderUiLabel" value="ImportContactListHeader"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/importContactList.groovy"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/importContactList.bsh"/>
             </actions>
             <widgets>
             	<decorator-screen name="main-section-decorator">

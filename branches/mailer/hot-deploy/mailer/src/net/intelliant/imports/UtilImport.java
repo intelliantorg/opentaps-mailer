@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
+import net.intelliant.imports.bean.EntityFieldStatus;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -44,28 +46,28 @@ public class UtilImport {
 		while (fieldIterator.hasNext()) {
 			ModelField field = fieldIterator.next();
 			String fieldDesc = field.getDescription();
+
 			if (UtilValidate.isEmpty(fieldDesc)) {
 				fieldDesc = field.getName();
 			}
 			if (!entityColumnsToIgnore.contains(field.getName()) && !field.getIsPk()) {
-				entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc,"entityColType",field.getType()));
+				entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc,"entityColType",field.getType(), "isNotNull", field.getIsNotNull()));
 			}
 		}
 		return entityColumns;
 	}
-	public static Map<String,String> getEntityColumnsMap(String entityName, List<String> entityColumnsToIgnore) throws GenericEntityException{
+	public static Map<String,EntityFieldStatus> getEntityColumnsMap(String entityName, List<String> entityColumnsToIgnore) throws GenericEntityException{
 		List<Map<String,Object>> columns = getEntityColumns(entityName, entityColumnsToIgnore);
-		Map<String,String> columnTypes = new HashMap<String, String>();
-				
+		Map<String,EntityFieldStatus> columnTypes = new HashMap<String, EntityFieldStatus>();
+
 		for(Map<String, Object> data : columns){
 			String colName = (String) data.get("entityColName");
-			String colType = (String) data.get("entityColType");
-			columnTypes.put(colName, colType);
+			columnTypes.put(colName, new EntityFieldStatus(colName, (String) data.get("entityColType"), ((Boolean)data.get("isNotNull")).booleanValue()));			
 		}
-		
+
 		return columnTypes;
 	}
-	
+
 	public static List<String> readExcelFirstRow(String excelFilePath, boolean isFirstRowHeader, int sheetIndex) throws FileNotFoundException, IOException {
 		List<String> columnIndices = new ArrayList<String>();
 		File file = new File(excelFilePath);
