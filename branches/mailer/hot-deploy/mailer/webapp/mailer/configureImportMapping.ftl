@@ -34,7 +34,7 @@
 							</div>
 						<#else>
 							<@inputHidden name="contentId" value="${contentId}"/>
-							<@inputHidden name="isFirstRowHeader" value="${isFirstRowHeader}"/>
+							<@inputHidden name="isFirstRowHeader" value='${isFirstRowHeader?string}'/>
 							<div class="rowContainer">
 								<div class="label">
 									<@display class="tableheadtext requiredField" text=uiLabelMap.CommonName />
