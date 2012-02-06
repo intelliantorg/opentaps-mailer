@@ -90,7 +90,7 @@
         
       </span>
     </div>
-
+	<#--
     <#if mergeFormId?has_content>
     <div class="formRow">
       <span class="formLabel">${uiLabelMap.FormFieldTitle_categoryName}</span>
@@ -108,9 +108,9 @@
       </span>
     </div>
     <#else>
-      <#-- TODO: implement categories for new template, possibly using Javscript to set the list of initial categories -->
+      <#-- TODO: implement categories for new template, possibly using Javscript to set the list of initial categories
     </#if >
-
+	-->    
     <div class="formRow">
       <span class="formLabel">${uiLabelMap.CommonDescription}</span>
       <span class="formInputSpan">
