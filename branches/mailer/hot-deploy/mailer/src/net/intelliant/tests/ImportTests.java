@@ -67,14 +67,14 @@ public class ImportTests extends OpentapsTestCase {
 			List<String> expectedIndices = new ArrayList<String>();
 			expectedIndices.add("col1");
 			expectedIndices.add("col2");
-			List<String> actualIndices = UtilImport.readExcelHeaders(excelFilePath, 0);
+			List<String> actualIndices = UtilImport.readExcelHeaderValues(excelFilePath, 0);
 			assertEquals(expectedIndices, actualIndices);
 
 			expectedIndices = new ArrayList<String>();
 			expectedIndices.add("col3");
 			expectedIndices.add("col5");
 			expectedIndices.add("col4");
-			actualIndices = UtilImport.readExcelHeaders(excelFilePath, 1);
+			actualIndices = UtilImport.readExcelHeaderValues(excelFilePath, 1);
 			assertEquals(expectedIndices, actualIndices);
 		} catch (FileNotFoundException e) {
 			fail(e.getMessage());
