@@ -102,6 +102,7 @@
         <member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>       
         <alias entity-alias="CL" name="contactListName" group-by="contactListName"/>       
         <alias entity-alias="CL" name="contactListId" group-by="true"/>
+        <alias entity-alias="CL" name="contactMechTypeId" />
         <alias entity-alias="MRCL" name="recipientId" function="count"/> 
         <view-link entity-alias="CL" rel-entity-alias="MRCL" rel-optional="true">
             <key-map field-name="contactListId" rel-field-name="contactListId"/>
@@ -217,7 +218,7 @@
     
 	<view-entity entity-name="MailerMarketingCampaignAndContactListDetails" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
 		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
-		<member-entity entity-alias="CL" entity-name="ContactList"/>
+		<member-entity entity-alias="CL" entity-name="MailerRecipientContactListCount"/>
 		<alias-all entity-alias="CL">
 			<exclude field="marketingCampaignId" />
 		</alias-all>

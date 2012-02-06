@@ -20,7 +20,7 @@
 									<@display class="tableheadtext requiredField" text=uiLabelMap.ImportSampleFile />
 								</div>
 								<div class="fieldContainer">
-									<@inputFile name="uploadedFile" class="inputBox" /><br>
+									<@inputFile name="uploadedFile" class="inputBox required" /><br>
 									<span>Supported file type : .xls</span>
 								</div>
 							</div>
