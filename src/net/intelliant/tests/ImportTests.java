@@ -37,17 +37,44 @@ public class ImportTests extends OpentapsTestCase {
 		String tokenizedPath = "hot-deploy/mailer/src/net/intelliant/tests/xls/import_sample.xls";
 		String excelFilePath = ofbizHome + tokenizedPath.replaceAll("/", File.separator);
 		try {
-			List<Integer> expectedIndices = new ArrayList<Integer>();
-			expectedIndices.add(0);
-			expectedIndices.add(1);
-			List<Integer> actualIndices = UtilImport.readExcelIndices(excelFilePath, 0);
+			List<String> expectedIndices = new ArrayList<String>();
+			expectedIndices.add("0");
+			expectedIndices.add("1");
+			List<String> actualIndices = UtilImport.readExcelHeaderIndices(excelFilePath, 0);
 			assertEquals(expectedIndices, actualIndices);
 
-			expectedIndices = new ArrayList<Integer>();
-			expectedIndices.add(1);
-			expectedIndices.add(2);
-			expectedIndices.add(3);
-			actualIndices = UtilImport.readExcelIndices(excelFilePath, 1);
+			expectedIndices = new ArrayList<String>();
+			expectedIndices.add("1");
+			expectedIndices.add("2");
+			expectedIndices.add("3");
+			actualIndices = UtilImport.readExcelHeaderIndices(excelFilePath, 1);
+			assertEquals(expectedIndices, actualIndices);
+		} catch (FileNotFoundException e) {
+			fail(e.getMessage());
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	public void testReadExcelHeaders() throws GeneralException {
+		String ofbizHome = System.getProperty("ofbiz.home");
+		if (!ofbizHome.endsWith(File.separator)) {
+			ofbizHome += File.separator;
+		}
+		String tokenizedPath = "hot-deploy/mailer/src/net/intelliant/tests/xls/import_sample.xls";
+		String excelFilePath = ofbizHome + tokenizedPath.replaceAll("/", File.separator);
+		try {
+			List<String> expectedIndices = new ArrayList<String>();
+			expectedIndices.add("col1");
+			expectedIndices.add("col2");
+			List<String> actualIndices = UtilImport.readExcelHeaders(excelFilePath, 0);
+			assertEquals(expectedIndices, actualIndices);
+
+			expectedIndices = new ArrayList<String>();
+			expectedIndices.add("col3");
+			expectedIndices.add("col5");
+			expectedIndices.add("col4");
+			actualIndices = UtilImport.readExcelHeaders(excelFilePath, 1);
 			assertEquals(expectedIndices, actualIndices);
 		} catch (FileNotFoundException e) {
 			fail(e.getMessage());
@@ -105,7 +132,7 @@ public class ImportTests extends OpentapsTestCase {
 		createData.put("ofbizEntityName", "MailerRecipient");
 		createData.put("contentId", createContentData(userLogin));
 		createData.put("description", "Des-" + timeStamp);
-		createData.put("isFirstRowHeader", "false");
+		createData.put("isFirstRowHeader", false);
 
 		return createData;
 	}

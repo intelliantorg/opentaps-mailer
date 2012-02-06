@@ -122,20 +122,18 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 	context.put("lhsColumns", lhsColumns);
 		
 	isFirstRowHeader = multiPartMap.get("isFirstRowHeader");
-	
-	if(UtilValidate.isNotEmpty(isFirstRowHeader)){
-		rhsColumns = UtilImport.readExcelHeaders(fileAndPath, 0);		
-	}else{
-		rhsColumns = UtilImport.readExcelIndices(fileAndPath, 0);
-	}
-	
-	
-	context.put("rhsColumns", rhsColumns);
 	if (multiPartMap.get("isFirstRowHeader") != null) {
-		context.put("isFirstRowHeader", multiPartMap.get("isFirstRowHeader"));
+		isFirstRowHeader = false;
 	} else {
-		context.put("isFirstRowHeader", false);
+		isFirstRowHeader = true;
 	}
+	context.put("isFirstRowHeader", isFirstRowHeader);
+	if (isFirstRowHeader) {
+		rhsColumns = UtilImport.readExcelHeaderValues(fileAndPath, 0);		
+	} else {
+		rhsColumns = UtilImport.readExcelHeaderIndices(fileAndPath, 0);
+	}	
+	context.put("rhsColumns", rhsColumns);
 } else {
 	Debug.logWarning("fileAndPath was empty !", module);
 }

@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -67,8 +66,8 @@ public class UtilImport {
 		return columnTypes;
 	}
 	
-	public static List<Integer> readExcelIndices(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
-		List<Integer> columnIndices = new ArrayList<Integer>();
+	public static List<String> readExcelFirstRow(String excelFilePath, boolean isFirstRowHeader, int sheetIndex) throws FileNotFoundException, IOException {
+		List<String> columnIndices = new ArrayList<String>();
 		File file = new File(excelFilePath);
 		if (file != null && file.canRead()) {
 			POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(file));
@@ -82,38 +81,28 @@ public class UtilImport {
 					Iterator<?> cells = firstRow.cellIterator();
 					while (cells.hasNext()) {
 						HSSFCell cell = (HSSFCell) cells.next();
-						columnIndices.add(Integer.valueOf(cell.getCellNum()));
-					}
-				}
-			}
-		}
-		return columnIndices;
-	}
-
-	public static List<String> readExcelHeaders(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
-		List<String> columnIndices = new ArrayList<String>();
-		File file = new File(excelFilePath);
-		if (file != null && file.canRead()) {
-			POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(file));
-			HSSFWorkbook wb = new HSSFWorkbook(fs);
-			HSSFSheet sheet = wb.getSheetAt(sheetIndex);
-
-			if (sheet != null) {
-				HSSFRow firstRow = sheet.getRow(sheet.getFirstRowNum());
-				if (firstRow != null) {
-					Iterator<?> cells = firstRow.cellIterator();
-					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
-						if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-							columnIndices.add(cell.toString());
+						if (isFirstRowHeader) {
+							if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+								columnIndices.add(cell.toString());
+							} else {
+								columnIndices.add("N/A - " + cell.getCellNum()); 
+							}
 						} else {
-							columnIndices.add("N/A - "+Integer.valueOf(cell.getCellNum())); 
+							columnIndices.add(String.valueOf(cell.getCellNum()));
 						}
 					}
 				}
 			}
 		}
 		return columnIndices;
+	}
+	
+	public static List<String> readExcelHeaderIndices(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
+		return readExcelFirstRow(excelFilePath, false, sheetIndex);
+	}
+
+	public static List<String> readExcelHeaderValues(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
+		return readExcelFirstRow(excelFilePath, true, sheetIndex);
 	}
 
 	@SuppressWarnings("unchecked")
