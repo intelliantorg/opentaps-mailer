@@ -30,7 +30,7 @@
         <attribute name="importMapperName" type="String" mode="IN" optional="false"/>
         <attribute name="ofbizEntityName" type="String" mode="IN" optional="false"/>
         <attribute name="contentId" type="String" mode="IN" optional="false"/>
-        <attribute name="isFirstRowHeader" type="String" mode="IN" optional="false"/>
+        <attribute name="isFirstRowHeader" type="Boolean" mode="IN" optional="false"/>
         <attribute name="description" type="String" mode="IN" optional="true"/>
         <attribute name="entityColName" type="Map" string-map-prefix="entityColName_" mode="IN" optional="true"/>
         <attribute name="importFileColIdx" type="Map" string-map-prefix="importFileColIdx_" mode="IN" optional="true"/>
