@@ -74,7 +74,7 @@ public class ImportServices {
 			if (UtilValidate.isNotEmpty(importFileColIdxValue)) {
 				inputs.put("importMapperId", importMapperId);
 				inputs.put("entityColName", entityColNames.get(key));
-				inputs.put("importFileColIdx", importFileColIdxValue);
+				inputs.put("importFileColIdx", UtilValidate.isEmpty(importFileColIdxValue)?"_NA_":importFileColIdxValue);
 				inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
 				try {
 					dctx.getDelegator().makeValue("MailerImportColumnMapper", inputs).create();

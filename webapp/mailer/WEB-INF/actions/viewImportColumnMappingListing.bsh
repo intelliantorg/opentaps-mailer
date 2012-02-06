@@ -7,14 +7,16 @@ import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericValue;
 
-importMapperId = parameters.importMapperId;
+importMapperId = parameters.get("importMapperId");
+nameOfEntity = context.get("nameOfEntity");
 
 importMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
+isFirstRowHeader = importMapperGV.get("isFirstRowHeader"); 
 mailerImportColumnMapperList = importMapperGV.getRelated("MailerImportColumnMapper");
 
 selectedColumnIndexMap = FastMap.newInstance();
 for (GenericValue mailerImportColumnMapper : mailerImportColumnMapperList) {
-	selectedColumnIndexMap.putAt(mailerImportColumnMapper.entityColName, mailerImportColumnMapper.importFileColIdx);
+	selectedColumnIndexMap.put(mailerImportColumnMapper.get("entityColName"), mailerImportColumnMapper.get("importFileColIdx"));
 }
 
 dataResourceGV = importMapperGV.getRelatedOne("Content").getRelatedOne("DataResource");
@@ -25,16 +27,21 @@ if (UtilValidate.isNotEmpty(dataResourceGV)) {
 
 if (UtilValidate.isNotEmpty(filePath)) {
 	entityColumnsToIgnore = UtilMisc.toList("lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin");
-	lhsColumns = UtilImport.getEntityColumns(context.nameOfEntity, entityColumnsToIgnore);
+	lhsColumns = UtilImport.getEntityColumns(nameOfEntity, entityColumnsToIgnore);
+	
 	context.put("lhsColumns", lhsColumns);
 
 	selectedIndexes = FastList.newInstance();
-	for (String colName : lhsColumns) {
-		index = selectedColumnIndexMap.get(colName.entityColName);
+	for (Map colName : lhsColumns) {
+		index = selectedColumnIndexMap.get(colName.get("entityColName"));
 		selectedIndexes.add((index != null) ? index : -1);
 	}
 	context.put("selectedIndex", selectedIndexes);
-
-	rhsColumns = UtilImport.readExcelHeaderIndices(filePath, 0);
+	
+	if(isFirstRowHeader != null && isFirstRowHeader.equals("Y")){
+		rhsColumns = UtilImport.readExcelHeaderValues(filePath, 0);
+	}else{
+		rhsColumns = UtilImport.readExcelHeaderIndices(filePath, 0);
+	}
 	context.put("rhsColumns", rhsColumns);
 }

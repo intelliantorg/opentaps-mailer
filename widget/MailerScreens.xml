@@ -387,7 +387,7 @@
                 <set field="sectionHeaderUiLabel" value="Update Mapping"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.groovy"/>                
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.bsh"/>                
             </actions>
             <widgets>
             	<decorator-screen name="main-section-decorator">
@@ -406,7 +406,7 @@
                 <set field="sectionHeaderUiLabel" value="Update Mapping"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.groovy"/>                
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.bsh"/>                
             </actions>
             <widgets>
             	<decorator-screen name="main-section-decorator">
