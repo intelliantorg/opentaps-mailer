@@ -1,9 +1,12 @@
 package net.intelliant.marketing;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
@@ -11,16 +14,22 @@ import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
+import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityConditionList;
 import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityOperator;
+import org.ofbiz.entity.util.EntityFindOptions;
+import org.ofbiz.entity.util.EntityListIterator;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.GenericServiceException;
 import org.ofbiz.service.LocalDispatcher;
 import org.ofbiz.service.ModelService;
 import org.ofbiz.service.ServiceUtil;
+import org.opentaps.common.template.freemarker.FreemarkerUtil;
 import org.opentaps.common.util.UtilMessage;
+
+import freemarker.template.TemplateException;
 
 public class MarketingCampaignServices {
 	public static final String module = MarketingCampaignServices.class.getName();
@@ -141,8 +150,8 @@ public class MarketingCampaignServices {
 	}
 	
 	/**
-	 * Removes a contact list from a Marketing campaign with its tracking code
-	 * by expiring those entities - expire the MarketingCampaignContactList
+	 * Removes a contact list from a Marketing campaign
+	 * by expiring those entities - expire the MailerMarketingCampaignAndContactList
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> removeContactListFromMarketingCampaign(DispatchContext dctx, Map<String, Object> context) {
@@ -160,6 +169,137 @@ public class MarketingCampaignServices {
 			delegator.store(marketingCampaignContactList);
 		} catch (GenericEntityException e2) {
 			return UtilMessage.createAndLogServiceError(e2, module);
+		}
+		return ServiceUtil.returnSuccess();
+	}
+
+	/**
+	 * Will be used to schedule e-mails.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> executeEmailMailers(DispatchContext dctx, Map<String, Object> context) {
+		GenericDelegator delegator = dctx.getDelegator();
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
+		EntityListIterator iterator = null;
+		try {
+			GenericValue campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+//			find out the from address
+			String fromEmailAddress = campaignGV.getString("fromEmailAddress");
+//			find out the template
+			GenericValue templateGV = campaignGV.getRelatedOne("MergeForm");
+			if (UtilValidate.isNotEmpty(templateGV)) {
+//				TODO do some changes on the template
+				String emailSubject = templateGV.getString("subject");
+				String emailBodyTemplate = templateGV.getString("mergeFormText");
+				if (Debug.infoOn()) {
+					Debug.logInfo("This the email subject - " + emailSubject, module);
+					Debug.logInfo("This the email template body - " + emailBodyTemplate, module);
+				}
+	            EntityCondition conditions = new EntityConditionList( 
+            		UtilMisc.toList(
+        				new EntityExpr("emailStatusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"),
+        				new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId),
+                        new EntityExpr("scheduledForDate", EntityOperator.LESS_THAN_EQUAL_TO, UtilDateTime.nowTimestamp())
+            		), EntityOperator.AND);
+	            if (Debug.infoOn()) {
+	            	Debug.logInfo("This the mailer recipient conditions >> " + conditions, module);
+	            }
+		        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
+		        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
+		        GenericValue mailerCampaignStatusGV = null;
+//				Iterate over each scheduled mailer,
+		        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
+		        	String campaignStatusId = mailerCampaignStatusGV.getString("campaignStatusId");
+//		        	TODO use a view instead of finding related one.
+		        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
+		        	StringWriter writer = new StringWriter();
+//		        	and prepare email content,
+		        	FreemarkerUtil.renderTemplateWithTags("relatedRecipientGV#" + relatedRecipientGV.getString("recipientId"), emailBodyTemplate, relatedRecipientGV.getAllFields(), writer, false, false);
+		            String emailBodyContent = writer.toString();
+//		        	TODO prepare Comm. Event, and send email.
+					ModelService service = dctx.getModelService("createCommunicationEvent");
+	                Map<String, Object> serviceInputs = service.makeValid(context, "IN");
+	                serviceInputs.put("entryDate", UtilDateTime.nowTimestamp());
+	                serviceInputs.put("communicationEventTypeId", "EMAIL_COMMUNICATION");
+	                serviceInputs.put("subject", emailSubject);
+	                serviceInputs.put("contentMimeTypeId", "text/html");
+	                serviceInputs.put("content", emailBodyContent);
+	                serviceInputs.put("fromString", fromEmailAddress);
+//	              	TODO USE recipient email address.
+	                serviceInputs.put("toString", fromEmailAddress);
+	                serviceInputs.put("partyIdFrom", "_NA_");
+	                Map<String, Object> serviceResults = dctx.getDispatcher().runSync("createCommunicationEvent", serviceInputs);
+	                if (ServiceUtil.isError(serviceResults)) {
+	                    return UtilMessage.createAndLogServiceError(serviceResults, module);
+	                }
+	                String communicationEventId = (String) serviceResults.get("communicationEventId");
+	                service = dctx.getModelService("mailer.sendEmailMailer");
+	                serviceInputs = service.makeValid(context, "IN");
+	                serviceInputs.put("communicationEventId", communicationEventId);
+	                serviceInputs.put("campaignStatusId", campaignStatusId);
+	                dctx.getDispatcher().runAsync(service.name, serviceInputs);
+	            }
+			}
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} catch (TemplateException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} catch (IOException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} catch (GenericServiceException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} finally {
+			if (iterator != null) {
+				try {
+					iterator.close();
+				} catch (GenericEntityException e) {
+					iterator = null;
+				}
+			}
+		}
+		return ServiceUtil.returnSuccess();
+	}
+	
+	/**
+	 * Will be used to send e-mails.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> sendEmailMailer(DispatchContext dctx, Map<String, Object> context) {
+		Map<String,Object> serviceResults = null; 
+		GenericValue userLogin = (GenericValue) context.get("userLogin");
+		String communicationEventId = (String) context.get("communicationEventId");
+		String campaignStatusId = (String) context.get("campaignStatusId");
+		GenericValue commEventGV;
+		try {
+			commEventGV = dctx.getDelegator().findByPrimaryKey("CommunicationEvent", UtilMisc.toMap("communicationEventId", communicationEventId));
+			ModelService service = dctx.getModelService("sendMail");
+			Map<String, Object> serviceInputs = service.makeValid(context, "IN");
+	        serviceInputs.put("partyId", "_NA_");
+	        serviceInputs.put("sendFrom", commEventGV.getString("fromString"));
+	        serviceInputs.put("subject", commEventGV.getString("subject"));
+	        serviceInputs.put("body", commEventGV.getString("content"));
+	        serviceInputs.put("contentType", commEventGV.getString("contentMimeTypeId"));
+	        serviceInputs.put("sendTo", commEventGV.getString("toString"));
+	        serviceInputs.put("userLogin", userLogin);
+			if (Debug.infoOn()) {
+				Debug.logInfo("Executing sendMail with following parameters - " + serviceInputs, module);
+			}
+	        serviceResults = dctx.getDispatcher().runSync(service.name, serviceInputs);
+		} catch (GenericEntityException e) {
+			serviceResults = UtilMessage.createAndLogServiceError(e, module);
+		} catch (GenericServiceException e) {
+			serviceResults = UtilMessage.createAndLogServiceError(e, module);
+		}    	
+		try {
+			GenericValue mailerMarketingCampaignGV = dctx.getDelegator().findByPrimaryKey("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId));
+	        if (!ServiceUtil.isError(serviceResults)) {
+	        	mailerMarketingCampaignGV.setString("emailStatusId", "MAILER_COMPLETED");
+	        	mailerMarketingCampaignGV.store();
+	        } else {
+//	        	TODO do something for error.
+	        }
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
 		}
 		return ServiceUtil.returnSuccess();
 	}

@@ -108,4 +108,15 @@
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>
     </service>
+    
+    <service name="mailer.executeEmailMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="executeEmailMailers" auth="true">
+    	<description>Will be used to execute scheduled e-mails.</description>
+        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
+    </service>
+    
+    <service name="mailer.sendEmailMailer" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="sendEmailMailer" auth="true">
+    	<description>Will be used to actual send e-mails.</description>
+        <attribute name="communicationEventId" type="String" mode="IN" optional="false"/>
+        <attribute name="campaignStatusId" type="String" mode="IN" optional="false"/>
+    </service>
 </services>
