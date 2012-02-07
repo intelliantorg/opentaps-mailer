@@ -186,8 +186,7 @@
 	<request-map uri="updateImportMapping">	
     	<security https="true" auth="true"/>
 		<event type="service" invoke="mailer.updateImportMapping"/>
-    	<!-- <response name="success" type="view" value="updateImportMappingScreen"/> -->
-        <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params="importMapperId"/>
+        <response name="success" type="request-redirect-filterparam" value="updateImportMappingForm" allowed-params="importMapperId"/>
     	<!-- <response name="error" type="view" value="updateImportMappingScreen"/> -->
 	</request-map>	
 	
