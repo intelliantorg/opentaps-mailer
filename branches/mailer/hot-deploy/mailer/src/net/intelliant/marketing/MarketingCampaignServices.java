@@ -27,6 +27,7 @@ import org.ofbiz.service.LocalDispatcher;
 import org.ofbiz.service.ModelService;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.template.freemarker.FreemarkerUtil;
+import org.opentaps.common.util.UtilCommon;
 import org.opentaps.common.util.UtilMessage;
 
 import freemarker.template.TemplateException;
@@ -178,6 +179,7 @@ public class MarketingCampaignServices {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> executeEmailMailers(DispatchContext dctx, Map<String, Object> context) {
+		Locale locale = (Locale) context.get("locale");
 		GenericDelegator delegator = dctx.getDelegator();
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		EntityListIterator iterator = null;
@@ -216,7 +218,7 @@ public class MarketingCampaignServices {
 //		        	and prepare email content,
 		        	FreemarkerUtil.renderTemplateWithTags("relatedRecipientGV#" + relatedRecipientGV.getString("recipientId"), emailBodyTemplate, relatedRecipientGV.getAllFields(), writer, false, false);
 		            String emailBodyContent = writer.toString();
-//		        	TODO prepare Comm. Event, and send email.
+//		        	prepare Comm. Event, and send email.
 					ModelService service = dctx.getModelService("createCommunicationEvent");
 	                Map<String, Object> serviceInputs = service.makeValid(context, "IN");
 	                serviceInputs.put("entryDate", UtilDateTime.nowTimestamp());
@@ -239,6 +241,8 @@ public class MarketingCampaignServices {
 	                serviceInputs.put("campaignStatusId", campaignStatusId);
 	                dctx.getDispatcher().runAsync(service.name, serviceInputs);
 	            }
+			} else {
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorNoTemplateWithCampaign", locale), module);
 			}
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(e, module);
