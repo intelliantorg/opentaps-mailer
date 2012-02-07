@@ -2,7 +2,7 @@
 
 <div class="subSectionHeader">
 	<div class="subSectionTitle">Configured Mappings</div>
-	<div class="subMenuBar"><a class="subMenuButton" href="#?contactListId=###">Remove Selected</a><a class="subMenuButton" href="importContactListForm?contactListId=###">Import List</a><a class="subMenuButton" href="addContactListPartiesForm?contactListId=###">Add New</a>
+	<div class="subMenuBar"><a class="subMenuButton" href="#?contactListId=###">Remove Selected</a><a class="subMenuButton" href="importContactListForm?contactListId=###">Import List</a>
 	</div>
 </div>
 
@@ -11,7 +11,7 @@
 		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CommonName}</td>
 		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CrmContactType}</td>
 		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CrmNumberOfMembers}</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">Select</td>
+		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.Select}</td>
 	</tr>
 	<#if contactLists?exists>
 		<#list contactLists as contactList>
