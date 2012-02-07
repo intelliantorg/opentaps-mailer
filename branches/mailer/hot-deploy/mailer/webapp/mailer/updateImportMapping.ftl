@@ -57,12 +57,12 @@
 							<#list lhsColumns as lhsColumn>
 								<div class="rowContainer">
 									<div class="label">
-										${lhsColumn.get("entityColDesc")}
+										<#if lhsColumn.get("isNotNull") == true ><span class="tableheadtext requiredField" ></#if>${lhsColumn.get("entityColDesc")}<#if lhsColumn.get("isNotNull") == true ></span></#if>
 									</div>
 									<div class="fieldContainer">
 										<input type="hidden" name="entityColName_${lhsColumn_index}" value='${lhsColumn.get("entityColName")}'>
-										<select class="dropDown" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
-											<option value='_NA_'>--select--</option>
+										<select class="dropDown <#if lhsColumn.get("isNotNull") == true >required</#if>" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
+											<option value=''>--select--</option>
 											<#list rhsColumns as rhsColumn>
 												<option value='${rhsColumn}' <#if (selectedIndex.get(lhsColumn_index)?string==rhsColumn?string) >selected='selected'</#if> >${rhsColumn}</option>
 											</#list>
