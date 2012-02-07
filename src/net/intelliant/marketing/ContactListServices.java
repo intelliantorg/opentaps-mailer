@@ -32,6 +32,8 @@ import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityConditionList;
 import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityOperator;
+import org.ofbiz.entity.model.ModelEntity;
+import org.ofbiz.entity.model.ModelField;
 import org.ofbiz.entity.transaction.TransactionUtil;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.service.DispatchContext;
@@ -101,8 +103,6 @@ public class ContactListServices {
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
 		
-		Map<String,EntityFieldStatus> columneTypes = UtilImport.getEntityColumnsMap(ofbizEntityName, Arrays.asList(new String[]{"lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp", "importedOnDateTime", "importedByUserLogin"}));
-		
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
 				excelRowIterator.next();
@@ -114,7 +114,7 @@ public class ContactListServices {
 				TransactionUtil.begin();
 				rowIndex++;
 				
-				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings, columneTypes);
+				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createAndScheduleCampaigns(delegator, contactListId, recipientId);
 				totalCount++;
@@ -133,8 +133,9 @@ public class ContactListServices {
 		return results;
 	}
 
-	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper, Map<String, EntityFieldStatus> columneTypes) throws GenericEntityException {
-		String entityPrimaryKeyField = delegator.getModelEntity(entityName).getFirstPkFieldName();
+	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException {
+		ModelEntity modelEntity = delegator.getModelEntity(entityName);
+		String entityPrimaryKeyField = modelEntity.getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
 		GenericValue rowToInsertGV = delegator.makeValue(entityName);
 		rowToInsertGV.put(entityPrimaryKeyField, entityPrimaryKey);
@@ -149,19 +150,19 @@ public class ContactListServices {
 			String cellValue = excelCell != null ? excelCell.toString() : "";
 
 			String columnName = entry.getKey();
-			
-			EntityFieldStatus entityFieldStatus = columneTypes.get(columnName); 
-			
-			if(entityFieldStatus.isNotNull()){
+
+			ModelField modelField = modelEntity.getField(columnName);
+
+			if(modelField.getIsNotNull()){
 				if(!UtilValidate.isNotEmpty(cellValue)){
-					throw new GenericEntityException(" '"+entityFieldStatus.getName()+"' field is empty.");
+					throw new GenericEntityException(" '"+modelField.getName()+"' field is empty.");
 				}
 			}
-			if(entityFieldStatus.getType().equals("email")){
+			if(modelField.getType().equals("email")){
 				if(!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isEmail(cellValue))){
 					throw new GenericEntityException(" '"+cellValue+"' is not a valid email id");
 				}
-			}else if(columneTypes.get(columnName).equals("tel-number")){
+			}else if(modelField.getType().equals("tel-number")){
 				if(!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(cellValue))){
 					throw new GenericEntityException(" '"+cellValue+"' is not a valid phone no");
 				}

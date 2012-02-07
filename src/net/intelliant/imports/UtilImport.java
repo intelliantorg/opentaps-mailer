@@ -56,17 +56,6 @@ public class UtilImport {
 		}
 		return entityColumns;
 	}
-	public static Map<String,EntityFieldStatus> getEntityColumnsMap(String entityName, List<String> entityColumnsToIgnore) throws GenericEntityException{
-		List<Map<String,Object>> columns = getEntityColumns(entityName, entityColumnsToIgnore);
-		Map<String,EntityFieldStatus> columnTypes = new HashMap<String, EntityFieldStatus>();
-
-		for(Map<String, Object> data : columns){
-			String colName = (String) data.get("entityColName");
-			columnTypes.put(colName, new EntityFieldStatus(colName, (String) data.get("entityColType"), ((Boolean)data.get("isNotNull")).booleanValue()));			
-		}
-
-		return columnTypes;
-	}
 
 	public static List<String> readExcelFirstRow(String excelFilePath, boolean isFirstRowHeader, int sheetIndex) throws FileNotFoundException, IOException {
 		List<String> columnIndices = new ArrayList<String>();
