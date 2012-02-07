@@ -65,7 +65,7 @@
 													<select class="dropDown <#if lhsColumn.get("isNotNull") == true >required</#if>" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
 														<option value=''>--select--</option>
 														<#list rhsColumns as rhsColumn>
-															<option value='${rhsColumn}'>${rhsColumn}</option>
+															<option value='${rhsColumn_index}'>${rhsColumn}</option>
 														</#list>
 													</select>
 												</div>
