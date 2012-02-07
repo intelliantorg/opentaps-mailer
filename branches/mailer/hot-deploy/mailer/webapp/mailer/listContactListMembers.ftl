@@ -2,10 +2,10 @@
 
 <table class="listTable">
 	<tr class="listTableHeader" style="border:none">
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">Name</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">Email</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">Import on</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">Import by</td>
+		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.NameHeader}</td>
+		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.EmailHeader}</td>
+		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.ImportOnHeader}</td>
+		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.ImportByHeader}</td>
 	</tr>
 	<#list contactListPartiesX as contactListParty>
 	<tr class="${tableRowClass(contactListParty_index)}">
