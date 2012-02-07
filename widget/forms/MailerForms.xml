@@ -228,40 +228,33 @@
                 if (postalCode != null) buff.append(postalCode);
                 return buff.toString();}"/>
         </field>
-
-		
-        <!-- convenience log a call shortcut -->
-        <!-- <field name="logCall" title=" " use-when="isPhoneList==true&amp;&amp;isRemoveForm==true" widget-style="buttontext">
-            <hyperlink description="${uiLabelMap.CrmLogCall}"
-                target="logTaskForm?partyId=${partyId}&amp;workEffortPurposeTypeId=WEPT_TASK_PHONE_CALL"/>
-        </field> -->
-        <!-- convenience write email shortcut -->
-        <!-- <field name="writeEmail" title=" " use-when="isEmailList==true&amp;&amp;isRemoveForm==true" widget-style="buttontext">
-            <hyperlink description="${uiLabelMap.CrmWriteEmail}"
-                target="writeEmail?contactMechIdTo=${contactMechId}&amp;internalPartyId=${partyId}&amp;donePage=viewContactList&amp;contactListId=${contactListId}"/>
-        </field> -->
-        <!-- above fields will misalign Select column for address, so force aligment with a dummy field -->
-        <!-- <field name="dummyField" title=" " use-when="isAddressList==true||isRemoveForm==false">
-            <display description=" "/>
-        </field> -->
-
-        <!-- add a create order link for the removable party list -->
-        <!-- <field name="createOrder" title=" " widget-style="buttontext" use-when="isRemoveForm==true">
-            <hyperlink description="${uiLabelMap.OpentapsCreateOrder}" target="newOrder?partyId=${partyId}"/>
-        </field> -->
-        <!-- another dummy field to compensate for create order column -->
-        <!-- <field name="dummyField2" title="  " use-when="isRemoveForm==false">
-            <display description=" "/>
-        </field> -->
-
         <field name="_rowSubmit" title="${uiLabelMap.CommonSelect}" use-when="hasUpdatePermission!=void&amp;&amp;hasUpdatePermission==true"><check/></field>
+    </form>
+    <form name="FindContactListParties" type="single" target="${findContactListPartiesTarget}"
+        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
+        <field name="contactListId"><hidden value="${parameters.contactListId}"/></field>
+        <field name="firstName" title="${uiLabelMap.PartyFirstName}"><text/></field>
+        <field name="lastName" title="${uiLabelMap.PartyLastName}"><text/></field>
+        <field name="groupName" title="${uiLabelMap.CrmCompanyName}"><text/></field>
 
-        <!-- since the form action could be to add or remove selected, the button name must be set in a .bsh file (no other method seems to work) -->
-        <!-- 
-        <field name="submitButton" title="${listFormSubmitButtonName}" widget-style="smallSubmit" 
-            use-when="hasUpdatePermission!=void&amp;&amp;hasUpdatePermission==true">
-            <submit/>
+        <field name="infoString" title="${uiLabelMap.CommonEmail}" use-when="isEmailList==true"><text/></field>
+
+        <field name="areaCode" title="${uiLabelMap.PartyAreaCode}" use-when="isPhoneList==true"><text size="3" maxlength="3"/></field>
+        <field name="contactNumber" title="${uiLabelMap.PartyPhoneNumber}" use-when="isPhoneList==true"><text size="10" maxlength="10"/></field>
+
+        <field name="address1" title="${uiLabelMap.PartyAddressLine1}" use-when="isAddressList==true"><text/></field>
+        <field name="city" title="${uiLabelMap.PartyCity}" use-when="isAddressList==true"><text/></field>
+        <field name="stateProvinceGeoId" title="${uiLabelMap.PartyState}" use-when="isAddressList==true">
+            <drop-down allow-empty="true">
+                <entity-options description="${geoName}" entity-name="Geo" key-field-name="geoId">
+                    <entity-constraint name="geoTypeId" operator="equals" value="STATE"/>
+                    <!-- TODO: find a way to add PROVINCE, which requires a combine of OR -->
+                    <entity-order-by field-name="geoName"/>
+                </entity-options>
+            </drop-down>
         </field>
-        -->
-    </form>    
+        <field name="postalCode" title="${uiLabelMap.PartyZipCode}" use-when="isAddressList==true"><text/></field>
+
+        <field name="submitButton" title="${findFormSubmitButtonName}" widget-style="smallSubmit"><submit/></field>
+    </form>  
 </forms>
