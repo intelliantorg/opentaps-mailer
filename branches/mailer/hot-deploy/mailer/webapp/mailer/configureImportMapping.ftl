@@ -59,7 +59,7 @@
 											<input type="hidden" name="entityColName_${lhsColumn_index}" value='${lhsColumn.get("entityColName")}'>
 											<div>
 												<div style="width:150px; float:left;">
-												<#if lhsColumn.get("isNotNull") == true >*</#if>${lhsColumn.get("entityColDesc")}:
+												<#if lhsColumn.get("isNotNull") == true ><span class="tableheadtext requiredField" ></#if>${lhsColumn.get("entityColDesc")}:<#if lhsColumn.get("isNotNull") == true ></span></#if>
 												</div>
 												<div style="float:left;">
 													<select class="dropDown <#if lhsColumn.get("isNotNull") == true >required</#if>" name="importFileColIdx_${lhsColumn_index}" id="importFileColIdx_${lhsColumn_index}">
