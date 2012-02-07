@@ -122,9 +122,9 @@ if (UtilValidate.isNotEmpty(fileAndPath)) {
 	
 	isFirstRowHeader = multiPartMap.get("isFirstRowHeader");
 	if (multiPartMap.get("isFirstRowHeader") != null) {
-		isFirstRowHeader = false;
-	} else {
 		isFirstRowHeader = true;
+	} else {
+		isFirstRowHeader = false;
 	}
 	context.put("isFirstRowHeader", isFirstRowHeader);
 	if (isFirstRowHeader) {
