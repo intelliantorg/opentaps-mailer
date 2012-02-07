@@ -32,7 +32,7 @@ public class ImportServices {
 		String description = (String) context.get("description");
 		String entityName = (String) context.get("ofbizEntityName");
 		String contentId = (String) context.get("contentId");
-		
+
 		boolean isFirstRowHeader = (Boolean) context.get("isFirstRowHeader");
 
 		String importMapperId = dctx.getDelegator().getNextSeqId("MailerImportMapper");
@@ -74,7 +74,7 @@ public class ImportServices {
 			if (UtilValidate.isNotEmpty(importFileColIdxValue)) {
 				inputs.put("importMapperId", importMapperId);
 				inputs.put("entityColName", entityColNames.get(key));
-				inputs.put("importFileColIdx", UtilValidate.isEmpty(importFileColIdxValue)?"_NA_":importFileColIdxValue);
+				inputs.put("importFileColIdx", UtilValidate.isEmpty(importFileColIdxValue) ? "_NA_" : importFileColIdxValue);
 				inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
 				try {
 					dctx.getDelegator().makeValue("MailerImportColumnMapper", inputs).create();
@@ -99,7 +99,7 @@ public class ImportServices {
 
 		Map<String, Object> entityColName = (Map) context.get("entityColName");
 		Map<String, Object> importFileColIdx = (Map) context.get("importFileColIdx");
-		
+
 		try {
 			updateMailerImportMapping(delegator, importMapperId, importMapperName, description, isFirstRowHeader, userLoginId);
 			updateMailerImportColumnMapping(delegator, importMapperId, userLogin, entityColName, importFileColIdx);
@@ -111,10 +111,8 @@ public class ImportServices {
 
 	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String isFirstRowHeader, String userLoginId) throws GenericEntityException {
 		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-		
-		if (!(UtilValidate.areEqual(mailerImportMapper.get("importMapperName"),importMapperName) && 
-			  UtilValidate.areEqual(mailerImportMapper.get("description"),description) && 
-			  UtilValidate.areEqual(mailerImportMapper.get("isFirstRowHeader"),isFirstRowHeader))) {
+
+		if (!(UtilValidate.areEqual(mailerImportMapper.get("importMapperName"), importMapperName) && UtilValidate.areEqual(mailerImportMapper.get("description"), description) && UtilValidate.areEqual(mailerImportMapper.get("isFirstRowHeader"), isFirstRowHeader))) {
 			mailerImportMapper.set("importMapperName", importMapperName);
 			mailerImportMapper.set("description", description);
 			mailerImportMapper.set("isFirstRowHeader", isFirstRowHeader);
@@ -130,23 +128,27 @@ public class ImportServices {
 		Set<String> keys = entityColName.keySet();
 		for (String key : keys) {
 			mailerImportColumnMapper = EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", entityColName.get(key))));
-			
-			if (!(UtilValidate.areEqual(mailerImportColumnMapper.get("importFileColIdx"),importFileColIdx.get(key)))) {
-				if (UtilValidate.isNotEmpty(mailerImportColumnMapper)) {
-					mailerImportColumnMapper.set("lastModifiedByUserLogin", userLogin.get("userLoginId"));
-					mailerImportColumnMapper.set("importFileColIdx", importFileColIdx.get(key));
-					mailerImportColumnMapper.store();
-				} else {
-					String importColumnMapperId = delegator.getNextSeqId("MailerImportColumnMapper");
 
-					Map<String, Object> inputs = UtilMisc.toMap("importColumnMapperId", importColumnMapperId);
-					inputs.put("importMapperId", importMapperId);
-					inputs.put("entityColName", entityColName.get(key));
-					inputs.put("importFileColIdx", importFileColIdx.get(key));
-					inputs.put("createdByUserLogin", userLogin.get("userLoginId"));
+			String mailerImportFileColIndex = null;
+			String importFileColIndex = (String) importFileColIdx.get(key);
 
-					delegator.makeValue("MailerImportColumnMapper", inputs).create();
-				}
+			if (UtilValidate.isNotEmpty(mailerImportColumnMapper)) {
+				mailerImportFileColIndex = (String) mailerImportColumnMapper.get("importFileColIdx");
+				importFileColIndex = (String) importFileColIdx.get(key);
+
+				mailerImportColumnMapper.set("lastModifiedByUserLogin", userLogin.get("userLoginId"));
+				mailerImportColumnMapper.set("importFileColIdx", UtilValidate.isEmpty(importFileColIndex) ? "_NA_" : importFileColIndex);
+				mailerImportColumnMapper.store();
+			} else {
+				String importColumnMapperId = delegator.getNextSeqId("MailerImportColumnMapper");
+
+				Map<String, Object> inputs = UtilMisc.toMap("importColumnMapperId", importColumnMapperId);
+				inputs.put("importMapperId", importMapperId);
+				inputs.put("entityColName", entityColName.get(key));
+				inputs.put("importFileColIdx", UtilValidate.isEmpty(importFileColIndex) ? "_NA_" : importFileColIndex);
+				inputs.put("createdByUserLogin", userLogin.get("userLoginId"));
+
+				delegator.makeValue("MailerImportColumnMapper", inputs).create();
 			}
 		}
 	}
