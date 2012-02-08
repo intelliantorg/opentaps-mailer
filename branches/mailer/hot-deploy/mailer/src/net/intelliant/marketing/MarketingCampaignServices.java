@@ -214,6 +214,12 @@ public class MarketingCampaignServices {
 		        	String campaignStatusId = mailerCampaignStatusGV.getString("campaignStatusId");
 //		        	TODO use a view instead of finding related one.
 		        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
+		        	String sendToEmailColumn = UtilProperties.getPropertyValue("mailer", "mailer.sendToEMailColumn");
+		        	if (UtilValidate.isEmpty(sendToEmailColumn)) {
+		        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorSendToEmailColumnConfigurationMissing", locale), module);
+		        	} else if (relatedRecipientGV.containsKey(sendToEmailColumn) == false) {
+		        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorSendToEmailColumnIncorrect", locale), module);
+		        	}
 		        	StringWriter writer = new StringWriter();
 //		        	and prepare email content,
 		        	FreemarkerUtil.renderTemplateWithTags("relatedRecipientGV#" + relatedRecipientGV.getString("recipientId"), emailBodyTemplate, relatedRecipientGV.getAllFields(), writer, false, false);
@@ -227,8 +233,8 @@ public class MarketingCampaignServices {
 	                serviceInputs.put("contentMimeTypeId", "text/html");
 	                serviceInputs.put("content", emailBodyContent);
 	                serviceInputs.put("fromString", fromEmailAddress);
-//	              	TODO USE recipient email address.
-	                serviceInputs.put("toString", fromEmailAddress);
+//	              	USE recipient email address.
+	                serviceInputs.put("toString", relatedRecipientGV.getString(sendToEmailColumn));
 	                serviceInputs.put("partyIdFrom", "_NA_");
 	                Map<String, Object> serviceResults = dctx.getDispatcher().runSync("createCommunicationEvent", serviceInputs);
 	                if (ServiceUtil.isError(serviceResults)) {
@@ -297,7 +303,7 @@ public class MarketingCampaignServices {
 		try {
 			GenericValue mailerMarketingCampaignGV = dctx.getDelegator().findByPrimaryKey("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId));
 	        if (!ServiceUtil.isError(serviceResults)) {
-	        	mailerMarketingCampaignGV.setString("emailStatusId", "MAILER_COMPLETED");
+	        	mailerMarketingCampaignGV.setString("emailStatusId", "MAILER_EXECUTED");
 	        	mailerMarketingCampaignGV.store();
 	        } else {
 //	        	TODO do something for error.
