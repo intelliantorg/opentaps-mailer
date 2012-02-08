@@ -57,7 +57,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "printStatusId", "MAILER_SCHEDULED"));
+		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
 		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
 	}
 
@@ -114,7 +114,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "printStatusId", "MAILER_SCHEDULED"));
+		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
 		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
 	}
 

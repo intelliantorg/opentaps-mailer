@@ -208,8 +208,7 @@ public class ContactListServices {
 			rowToInsertGV.put("recipientId", recipientId);
 			rowToInsertGV.put("contactListId", contactListId);
 			rowToInsertGV.put("marketingCampaignId", marketingCampaignId);
-			rowToInsertGV.put("printStatusId", "MAILER_SCHEDULED");
-			rowToInsertGV.put("emailStatusId", "MAILER_SCHEDULED");
+			rowToInsertGV.put("statusId", "MAILER_SCHEDULED");
 			rowToInsertGV.put("scheduledForDate", scheduledForDate);
 			return rowToInsertGV;
 		} else {
