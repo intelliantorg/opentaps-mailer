@@ -86,6 +86,7 @@ public class ImportServices {
 		return serviceResults;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Map<String, Object> updateImportMapping(DispatchContext dctx, Map<String, Object> context) {
 		GenericDelegator delegator = dctx.getDelegator();
 		Locale locale = (Locale) context.get("locale");
@@ -111,8 +112,10 @@ public class ImportServices {
 
 	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String isFirstRowHeader, String userLoginId) throws GenericEntityException {
 		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-
-		if (!(UtilValidate.areEqual(mailerImportMapper.get("importMapperName"), importMapperName) && UtilValidate.areEqual(mailerImportMapper.get("description"), description) && UtilValidate.areEqual(mailerImportMapper.get("isFirstRowHeader"), isFirstRowHeader))) {
+		if (!(UtilValidate.areEqual(mailerImportMapper.getString("importMapperName"), importMapperName) 
+				&& UtilValidate.areEqual(mailerImportMapper.getString("description"), description) 
+				&& UtilValidate.areEqual(mailerImportMapper.getString("isFirstRowHeader"), isFirstRowHeader)
+			)) {
 			mailerImportMapper.set("importMapperName", importMapperName);
 			mailerImportMapper.set("description", description);
 			mailerImportMapper.set("isFirstRowHeader", isFirstRowHeader);
@@ -121,6 +124,7 @@ public class ImportServices {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void updateMailerImportColumnMapping(GenericDelegator delegator, String importMapperId, GenericValue userLogin, Map<String, Object> entityColName, Map<String, Object> importFileColIdx) throws GenericEntityException {
 		GenericValue mailerImportColumnMapper = null;
 
@@ -129,11 +133,8 @@ public class ImportServices {
 		for (String key : keys) {
 			mailerImportColumnMapper = EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", entityColName.get(key))));
 
-			String mailerImportFileColIndex = null;
 			String importFileColIndex = (String) importFileColIdx.get(key);
-
 			if (UtilValidate.isNotEmpty(mailerImportColumnMapper)) {
-				mailerImportFileColIndex = (String) mailerImportColumnMapper.get("importFileColIdx");
 				importFileColIndex = (String) importFileColIdx.get(key);
 
 				mailerImportColumnMapper.set("lastModifiedByUserLogin", userLogin.get("userLoginId"));
