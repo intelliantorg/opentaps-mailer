@@ -238,12 +238,13 @@
     
 	<view-entity entity-name="MailerMarketingCampaignAndContactListDetails" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
 		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
-		<member-entity entity-alias="CL" entity-name="MailerRecipientContactListCount"/>
-		<alias-all entity-alias="CL">
-			<exclude field="marketingCampaignId" />
-		</alias-all>
-		<alias-all entity-alias="MMCCL" />
-		<view-link entity-alias="MMCCL" rel-entity-alias="CL">
+		<member-entity entity-alias="MRCLC" entity-name="MailerRecipientContactListCount"/>
+		<alias-all entity-alias="MRCLC" />
+		<alias entity-alias="MMCCL" name="marketingCampaignId"/>
+		<alias entity-alias="MMCCL" name="contactListId"/>
+		<alias entity-alias="MMCCL" name="fromDate"/>
+		<alias entity-alias="MMCCL" name="thruDate"/>
+		<view-link entity-alias="MMCCL" rel-entity-alias="MRCLC">
 			<key-map field-name="contactListId"/>
 		</view-link>
 	</view-entity>
