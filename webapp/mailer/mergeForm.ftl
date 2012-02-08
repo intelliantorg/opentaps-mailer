@@ -90,27 +90,6 @@
         
       </span>
     </div>
-	<#--
-    <#if mergeFormId?has_content>
-    <div class="formRow">
-      <span class="formLabel">${uiLabelMap.FormFieldTitle_categoryName}</span>
-      <span class="formInputSpan">
-        <span id="categoryControl">
-          <#list mergeFormCategories as cat>
-            ${cat.mergeFormCategoryName}<a class="buttontext" href="javascript:removeCategory('${cat.mergeFormCategoryId}')">-</a>
-          </#list >
-          <#if categories?size gt 0 >
-            <@inputSelect name="mergeFormCategoryName" list=categories displayField="mergeFormCategoryName" key="mergeFormCategoryId" />
-            <a class="buttontext" href="javascript:assignCategory()">+</a>
-          </#if >
-        </span>
-        <span id="assignSpinner">&nbsp;</span>
-      </span>
-    </div>
-    <#else>
-      <#-- TODO: implement categories for new template, possibly using Javscript to set the list of initial categories
-    </#if >
-	-->    
     <div class="formRow">
       <span class="formLabel">${uiLabelMap.CommonDescription}</span>
       <span class="formInputSpan">
@@ -137,7 +116,6 @@
       <span class="formLabelRequired">${uiLabelMap.OpentapsTemplate}</span>
       <span class="formInputSpan">
         <@htmlTextArea class="required" textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://mailer/webapp/mailer/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>
-        <!-- <@htmlTextArea class="required" textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://mailer/webapp/mailer/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>-->
       </span>
     </div>
 
