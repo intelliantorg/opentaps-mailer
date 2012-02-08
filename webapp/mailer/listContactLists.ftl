@@ -11,15 +11,13 @@
 		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CommonName}</td>
 		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CrmContactType}</td>
 		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CrmNumberOfMembers}</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.SelectHeader}</td>
 	</tr>
 	<#if contactLists?exists>
 		<#list contactLists as contactList>
 			<tr class="${tableRowClass(contactList_index)}">
 				<td><a href="<@ofbizUrl>viewContactList</@ofbizUrl>?contactListId=${contactList.contactListId}">${contactList.contactListName} (${contactList.contactListId})</a></td>
-				<td>${contactList.contactListId}</td>
+				<td>${contactList.description}</td>
 				<td>${contactList.recipientId}</td>
-				<td><input type="checkbox" name="select" value="${contactList.contactListId}" /></td>
 			</tr>
 		</#list>
 	<#else>
