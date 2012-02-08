@@ -60,20 +60,9 @@
 								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
 							</div>
 							<div class="fieldContainer" style="padding: 2px;">
-								<#assign selectMap = Static["org.ofbiz.base.util.UtilMisc"].toMap("statusTypeId", "MKTG_CAMP_STATUS")>
-								<#assign orderBy = Static["org.ofbiz.base.util.UtilMisc"].toList("sequenceId")>
-								<#assign statusItems = delegator.findByAnd("StatusItem", selectMap, orderBy)>
 								<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
 							</div>
 						</div>
-						<div class="rowContainer">
-							<!-- <div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.CommonDescription />
-							</div>
-							<div class="fieldContainer">
-								<@inputTextarea name="description" rows=4 cols=33 />
-							</div> -->
-						</div>						
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
 							<div class="fieldContainer">

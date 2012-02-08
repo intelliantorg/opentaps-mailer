@@ -22,12 +22,17 @@
             <actions>
                 <set field="pageTitleLabel" value="CreateCampaignHeader"/>
                 <set field="sectionHeaderUiLabel" value="CreateCampaignHeader"/>
-                <!-- NOT sure why this is NOT working 
-                <entity-and list="statusItems" entity-name="StatusItem">
-                	<field-map field-name="statusTypeId" value="MKTG_CAMP_STATUS"/>
-                	<order-by field-name="sequenceId"/>
-                </entity-and>
-                -->
+                <entity-condition entity-name="StatusItem" list="statusItems" list-name="statusItems">
+                	<condition-list combine="and">
+                		<condition-expr field-name="statusTypeId" operator="equals" value="MKTG_CAMP_STATUS"/>
+                		<condition-list combine="or">
+                			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_PLANNED"/>
+                			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_INPROGRESS"/>
+                			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_CANCELLED"/>
+                		</condition-list>
+                	</condition-list>
+                    <order-by field-name="sequenceId"/>
+                </entity-condition>
 				<entity-condition entity-name="MergeForm" list="mergeFormList" list-name="mergeFormList">
                     <order-by field-name="mergeFormName"/>
                 </entity-condition>
