@@ -196,20 +196,8 @@
         <view-link entity-alias="MMC" rel-entity-alias="SI" rel-optional="true">
             <key-map field-name="statusId"/>
         </view-link>
-    </view-entity>
-    
-	<view-entity entity-name="MailerMarketingCampaignAndContactListDetails" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
-		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
-		<member-entity entity-alias="CL" entity-name="MailerRecipientContactListCount"/>
-		<alias-all entity-alias="CL">
-			<exclude field="marketingCampaignId" />
-		</alias-all>
-		<alias-all entity-alias="MMCCL" />
-		<view-link entity-alias="MMCCL" rel-entity-alias="CL">
-			<key-map field-name="contactListId"/>
-		</view-link>
-	</view-entity>
-	
+    </view-entity>  
+    	
 	<view-entity entity-name="MailerRecipientContactListCount" package-name="net.intelliant.mailer" title="Counts the number of Contact List members">	
         <member-entity entity-alias="CL" entity-name="ContactList"/>
         <member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>       
@@ -246,5 +234,17 @@
         <view-link entity-alias="MRCL" rel-entity-alias="MR" rel-optional="true">
             <key-map field-name="recipientId" rel-field-name="recipientId"/>
         </view-link>
+	</view-entity>
+    
+	<view-entity entity-name="MailerMarketingCampaignAndContactListDetails" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
+		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
+		<member-entity entity-alias="CL" entity-name="MailerRecipientContactListCount"/>
+		<alias-all entity-alias="CL">
+			<exclude field="marketingCampaignId" />
+		</alias-all>
+		<alias-all entity-alias="MMCCL" />
+		<view-link entity-alias="MMCCL" rel-entity-alias="CL">
+			<key-map field-name="contactListId"/>
+		</view-link>
 	</view-entity>
 </entitymodel>
