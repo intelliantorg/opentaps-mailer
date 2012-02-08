@@ -206,6 +206,6 @@ searchConditionList1 = new EntityConditionList(searchConditions1, EntityOperator
 
 orderBy1 = UtilMisc.toList("firstName", "lastName", "emailAddress");
 fieldsToSelect1 = UtilMisc.toListArray(new String[] {"recipientId", "firstName", "lastName", "emailAddress", "importedOnDateTime", "importedByUserLogin"});
-members1 = delegator.findListIteratorByCondition("MailerRecipientContactListMerged", searchConditionList1,  null, fieldsToSelect1, orderBy1,
+members1 = delegator.findListIteratorByCondition("MailerRecipientAndMailerRecipientContactList", searchConditionList1,  null, fieldsToSelect1, orderBy1,
         new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true));
 context.put("contactListPartiesX", members1);

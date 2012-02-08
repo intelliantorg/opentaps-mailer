@@ -220,18 +220,13 @@
         </view-link>
 	</view-entity>
 	
-	<view-entity entity-name="MailerRecipientContactListMerged" package-name="net.intelliant.mailer" title="Merged MailerRecipient and ContactList entities">	
-        <member-entity entity-alias="CL" entity-name="ContactList"/>	
+	<view-entity entity-name="MailerRecipientAndMailerRecipientContactList" package-name="net.intelliant.mailer" title="Merged MailerRecipient and ContactList entities">	
         <member-entity entity-alias="MR" entity-name="MailerRecipient"/>
         <member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>
-        <alias-all entity-alias="CL"/>
         <alias-all entity-alias="MR"/>
         <alias-all entity-alias="MRCL"/>
         
-        <view-link entity-alias="MRCL" rel-entity-alias="CL" rel-optional="true">
-            <key-map field-name="contactListId" rel-field-name="contactListId"/>
-        </view-link>
-        <view-link entity-alias="MRCL" rel-entity-alias="MR" rel-optional="true">
+        <view-link entity-alias="MRCL" rel-entity-alias="MR">
             <key-map field-name="recipientId" rel-field-name="recipientId"/>
         </view-link>
 	</view-entity>
