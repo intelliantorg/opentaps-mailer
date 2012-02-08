@@ -94,7 +94,6 @@ public class ContactListServices {
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
 		Map<String, String> failureReport = new HashMap<String, String>();
-		List<String[]> failureReport1 = new ArrayList<String[]>();
 		
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
@@ -196,8 +195,6 @@ public class ContactListServices {
 
 	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId) throws GenericEntityException {
 		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-		
-		System.out.println("\nMarketing campaign : "+marketingCampaign+"\nmarketingCampaignId : "+marketingCampaignId);
 		
 		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
