@@ -259,7 +259,14 @@
 						<container style="subSectionBlock">
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/contactListsMenu.ftl"/></html></platform-specific>
                             <include-form name="ListMarketingCampaignContactLists" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            <include-form name="addContactListToMailerMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            <section>
+                            	<condition>
+                            		<if-compare field-name="marketingCampaign.statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
+                            	</condition>
+                            	<widgets>
+									<include-form name="addContactListToMailerMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            	</widgets>
+                            </section>
                         </container>
                     </decorator-section>
                 </decorator-screen>
