@@ -22,7 +22,6 @@
     </service>
     
     <service name="mailer.removeContactListFromMarketingCampaign" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="removeContactListFromMarketingCampaign" auth="true">
-        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="campaignListId" type="String" mode="IN" optional="false"/>
     </service>
     
