@@ -1,8 +1,7 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <div class="subSectionHeader">
-	<div class="subSectionTitle">Contact Lists</div>
-	<div class="subMenuBar"><a class="subMenuButton" href="#?contactListId=###">Remove Selected</a>
+	<div class="subSectionTitle">${uiLabelMap.ContactListHeader}</div>
 	</div>
 </div>
 

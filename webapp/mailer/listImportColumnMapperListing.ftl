@@ -1,7 +1,7 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <div class="subSectionHeader">
-	<div class="subSectionTitle">Import column mapper listing</div>
+	<div class="subSectionTitle">${uiLabelMap.ImportColumnMapperHeading}</div>
 </div>
 <#if lhsColumns?has_content>
 	<form id="updateImportColumnMapper" name="updateImportColumnMapper" action="" method="post">

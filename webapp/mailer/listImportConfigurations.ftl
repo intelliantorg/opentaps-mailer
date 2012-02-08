@@ -1,7 +1,7 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <div class="subSectionHeader">
-	<div class="subSectionTitle">Configured Mappings</div>
+	<div class="subSectionTitle">${uiLabelMap.ConfigureMappingHeader}</div>
 	<div class="subMenuBar">
 		<a class="subMenuButton" href="<@ofbizUrl>configureImportMapping</@ofbizUrl>">${uiLabelMap.ConfigureNewMapping}</a>
 	</div>
