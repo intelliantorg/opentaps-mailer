@@ -45,9 +45,12 @@
             <key-map field-name="mergeFormTypeId"/>
         </relation>
 	</extend-entity>
-	
+
 	<entity entity-name="MailerRecipient" package-name="net.intelliant.mailer" title="Mailer recipient">
     	<field name="recipientId" type="id-ne"/>
+    	<field name="salesOrServiceDate" type="date" not-null="true">
+    		<description>Sales/Service date</description>
+    	</field>
     	<field name="firstName" type="name" not-null="true">
     		<description>First Name</description>
     	</field>

@@ -5,7 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
+import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
@@ -41,7 +47,12 @@ import org.opentaps.common.util.UtilMessage;
 
 public class ContactListServices {
 	private static final String MODULE = ContactListServices.class.getName();
+	private static SimpleDateFormat simpleDateFormat = null;
 
+	static{
+		simpleDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
+	}
+	
 	/**
 	 * Gets the path for uploaded files.
 	 * 
@@ -94,12 +105,13 @@ public class ContactListServices {
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
 		Map<String, String> failureReport = new HashMap<String, String>();
-		
+		List<String[]> failureReport1 = new ArrayList<String[]>();
+
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
-		
+
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
 				excelRowIterator.next();
@@ -110,14 +122,19 @@ public class ContactListServices {
 			try {
 				TransactionUtil.begin();
 				rowIndex++;
-				
-				String recipientId = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
-				createCLRecipientRelation(delegator, contactListId, recipientId);
-				createAndScheduleCampaigns(delegator, contactListId, recipientId);
 				totalCount++;
+
+				Map<String,Object> recipientIdAndSalesServiceDate = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
+				String recipientId = String.valueOf(recipientIdAndSalesServiceDate.get("recipientId"));
+				createCLRecipientRelation(delegator, contactListId, recipientId);
+				createAndScheduleCampaigns(delegator, contactListId, recipientId, (Date)recipientIdAndSalesServiceDate.get("saleOrServiceDate"));
 			} catch (GenericEntityException gee) {
 				TransactionUtil.rollback();
-				failureReport.put(String.valueOf(rowIndex), gee.getMessage());
+				failureReport.put(String.valueOf(rowIndex-1), gee.getMessage());
+				failureCount++;
+			} catch (Exception e) {
+				TransactionUtil.rollback();
+				failureReport.put(String.valueOf(rowIndex-1), e.getMessage());
 				failureCount++;
 			} finally {
 				TransactionUtil.commit();
@@ -130,7 +147,7 @@ public class ContactListServices {
 		return results;
 	}
 
-	private static String insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException {
+	private static Map<String,Object> insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException, ParseException {
 		ModelEntity modelEntity = delegator.getModelEntity(entityName);
 		String entityPrimaryKeyField = modelEntity.getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
@@ -141,34 +158,52 @@ public class ContactListServices {
 
 		Set<Entry<String, Object>> entries = columnMapper.entrySet();
 
+		Date salesOrServiceDate = null;
+		Map<String,Object> dataToReturn = null;
 		for (Map.Entry<String, Object> entry : entries) {
-			short columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
-			HSSFCell excelCell = excelRowData.getCell(columnIndex);
-			String cellValue = excelCell != null ? excelCell.toString() : "";
+			short columnIndex = 0;
+			HSSFCell excelCell = null;
+			Object cellValue = null; 
+					
+			try{
+				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
+				excelCell = excelRowData.getCell(columnIndex);
+				cellValue = (excelCell != null) ? excelCell.toString() : "";
+			}catch(NumberFormatException nfe){
+				columnIndex = -1;
+				cellValue = "";
+			}
 
 			String columnName = entry.getKey();
-
 			ModelField modelField = modelEntity.getField(columnName);
 
-			if(modelField.getIsNotNull()){
-				if(!UtilValidate.isNotEmpty(cellValue)){
-					throw new GenericEntityException(" '"+modelField.getName()+"' field is empty.");
+			if (modelField.getIsNotNull()) {
+				if (!UtilValidate.isNotEmpty(cellValue)) {
+					throw new GenericEntityException(" '" + modelField.getName() + "' field is empty.");
 				}
 			}
-			if(modelField.getType().equals("email")){
-				if(!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isEmail(cellValue))){
-					throw new GenericEntityException(" '"+cellValue+"' is not a valid email id");
+			if (modelField.getType().equals("email")) {
+				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isEmail(String.valueOf(cellValue)))) {
+					throw new GenericEntityException(" '" + cellValue + "' is not a valid email id");
 				}
-			}else if(modelField.getType().equals("tel-number")){
-				if(!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(cellValue))){
-					throw new GenericEntityException(" '"+cellValue+"' is not a valid phone no");
+			} else if (modelField.getType().equals("tel-number")) {
+				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue)))) {
+					throw new GenericEntityException(" '" + cellValue + "' is not a valid phone no");
+				}
+			} else if (modelField.getType().equals("date")) {
+				cellValue = salesOrServiceDate = excelCell.getDateCellValue();
+				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isDate(simpleDateFormat.format(cellValue)))) {
+					throw new GenericEntityException(" '" + cellValue + "' is not a valid date");
 				}
 			}
-			
+
 			rowToInsertGV.put(columnName, cellValue);
 		}
 		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
-		return entityPrimaryKey;
+		
+		dataToReturn = UtilMisc.toMap("recipientId", entityPrimaryKey);
+		dataToReturn.put("saleOrServiceDate", salesOrServiceDate);
+		return dataToReturn;
 	}
 
 	private static void createCLRecipientRelation(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
@@ -176,14 +211,15 @@ public class ContactListServices {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void createAndScheduleCampaigns(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
+	private static void createAndScheduleCampaigns(GenericDelegator delegator, String contactListId, String recipientId, Date salesAndServiceDate) throws Exception {
 		List<GenericValue> rowsToInsert = FastList.newInstance();
 		EntityConditionList conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId), EntityUtil.getFilterByDateExpr()), EntityOperator.AND);
 		List<String> selectColumns = UtilMisc.toList("contactListId", "marketingCampaignId");
 		List<GenericValue> rows = delegator.findByCondition("MailerMarketingCampaignAndContactList", conditions, selectColumns, UtilMisc.toList("fromDate"));
 
 		for (GenericValue row : rows) {
-			GenericValue rowToInsertGV = createAndScheduleCampaign(delegator, row.getString("marketingCampaignId"), contactListId, recipientId);
+			GenericValue rowToInsertGV = createAndScheduleCampaign(delegator, row.getString("marketingCampaignId"), contactListId, recipientId, salesAndServiceDate);
+			System.out.println("Create and schedule campaign : "+rowToInsertGV);
 			if (UtilValidate.isNotEmpty(rowToInsertGV)) {
 				rowsToInsert.add(rowToInsertGV);
 			}
@@ -193,16 +229,28 @@ public class ContactListServices {
 		}
 	}
 
-	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId) throws GenericEntityException {
+	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId, Date salesAndServiceDate) throws Exception {
 		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+
+		System.out.println("\nMarketing campaign : " + marketingCampaign + "\nmarketingCampaignId : " + marketingCampaignId);
+
 		
 		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
+			
 			Timestamp scheduledForDate = UtilDateTime.nowTimestamp();
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
-				// scheduledForDate = Do something here.
+				Calendar cal = GregorianCalendar.getInstance();
+				cal.setTime(salesAndServiceDate);
+				System.out.println("Dt1 : "+cal.getTime().toString());
+				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(scheduleAt));
+				System.out.println("Dt2 : "+cal.getTime().toString());
+				scheduledForDate = new Timestamp(cal.getTimeInMillis());
+			}else{
+				throw new Exception("scheduleAt must be set at Form Letter Template");
 			}
+			
 			GenericValue rowToInsertGV = delegator.makeValue("MailerCampaignStatus");
 			rowToInsertGV.put("campaignStatusId", delegator.getNextSeqId(rowToInsertGV.getEntityName()));
 			rowToInsertGV.put("recipientId", recipientId);
@@ -217,7 +265,7 @@ public class ContactListServices {
 		return null;
 	}
 
-	public static Map<String, Object> scheduleCampaignsForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
+	public static Map<String, Object> scheduleCampaignsForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) throws Exception {
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		List<GenericValue> rowsToInsert = FastList.newInstance();
@@ -225,7 +273,7 @@ public class ContactListServices {
 			List<GenericValue> members = dctx.getDelegator().findByAnd("MailerRecipientContactList", UtilMisc.toMap("contactListId", contactListId));
 			if (UtilValidate.isNotEmpty(members)) {
 				for (GenericValue member : members) {
-					GenericValue rowToInsertGV = createAndScheduleCampaign(dctx.getDelegator(), marketingCampaignId, contactListId, member.getString("recipientId"));
+					GenericValue rowToInsertGV = createAndScheduleCampaign(dctx.getDelegator(), marketingCampaignId, contactListId, member.getString("recipientId"), new Date());
 					if (UtilValidate.isNotEmpty(rowToInsertGV)) {
 						rowsToInsert.add(rowToInsertGV);
 					}
