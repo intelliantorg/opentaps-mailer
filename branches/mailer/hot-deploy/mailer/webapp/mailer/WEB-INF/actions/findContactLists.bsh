@@ -38,7 +38,7 @@ if (contactMechTypeId != null) {
 
 searchConditionList = new EntityConditionList(searchConditions, EntityOperator.AND);
 
-listIt = delegator.findListIteratorByCondition("MailerRecipientContactListCount", searchConditionList, null, 
+listIt = delegator.findListIteratorByCondition("MailerRecipientContactListContactListType", searchConditionList, null, 
         null,  // fields to select
         orderBy, // fields to order by
         // the first true here is for "specifyTypeAndConcur"
