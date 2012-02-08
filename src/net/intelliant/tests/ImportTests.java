@@ -220,9 +220,6 @@ public class ImportTests extends OpentapsTestCase {
 		// Run update service
 		runAndAssertServiceSuccess("mailer.updateImportMapping", updateInputs);
 
-		// GenericValue value =
-		// delegator.findByPrimaryKey("MailerImportMapper",UtilMisc.toMap("importMapperId",
-		// importMapperId));
 		testUpdateImportMapperData(importMapperId, updateInputs);
 		testUpdateImportColumnMapperData(importMapperId, inputs, updateInputs);
 		testUpdateMustFail(importMapperId, updateInputs);
