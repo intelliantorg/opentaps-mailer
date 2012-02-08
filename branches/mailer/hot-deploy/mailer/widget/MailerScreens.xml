@@ -69,7 +69,6 @@
                             </container>
                         </container>
                         <container style="subSectionBlock">
-                            <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.CrmMarketingCampaigns}</label></container>
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/findMarketingCampaignListing.ftl"/></html></platform-specific>
                         </container>
                     </decorator-section>
@@ -163,15 +162,9 @@
                         <container style="subSectionBlock">
                             <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.CrmFindContactListParties}</label></container>
                             <container style="form">
-                                <include-form name="FindContactListParties" location="component://crmsfa/widget/crmsfa/forms/marketing/ContactListForms.xml"/>
+                                <include-form name="FindContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
                             </container>
                         </container>
-						<!-- 
-                        <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>
-                            <include-form name="ListContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
-                        </container>
-                         -->
                         <container style="subSectionBlock">
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/listContactListMembers.ftl"/></html></platform-specific>
