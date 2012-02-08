@@ -37,6 +37,13 @@
     
 	<extend-entity entity-name="MergeForm">
 		<field name="scheduleAt" type="id"/>
+		<field name="mergeFormTypeId" type="id"/>
+		<field name="fromEmailAddress" type="email"/>
+		<field name="headerImageLocation" type="long-varchar"/>
+		<field name="footerImageLocation" type="long-varchar"/>
+		<relation type="one" fk-name="MF_TO_MFT" rel-entity-name="MergeFormType">
+            <key-map field-name="mergeFormTypeId"/>
+        </relation>
 	</extend-entity>
 	
 	<entity entity-name="MailerRecipient" package-name="net.intelliant.mailer" title="Mailer recipient">
@@ -81,7 +88,8 @@
     	<field name="importedOnDateTime" type="date-time"/>
     	<field name="importedByUserLogin" type="id-vlong"/>
     	<prim-key field="recipientId"/>
-   	</entity>   	
+   	</entity>
+   	   	
    	<entity entity-name="MailerRecipientContactList" package-name="net.intelliant.mailer" title="Mailer recipient">
     	<field name="contactListId" type="email"/>
     	<field name="recipientId" type="id-ne"/>
@@ -95,6 +103,7 @@
     	<prim-key field="recipientId"/>
     	<prim-key field="contactListId"/>
    	</entity>
+   	
 	<view-entity entity-name="MailerRecipientContactListCount" 
 				 package-name="com.opensourcestrategies.crmsfa.marketing"
                  title="Counts the number of Contact List members">	
@@ -108,6 +117,7 @@
             <key-map field-name="contactListId" rel-field-name="contactListId"/>
         </view-link>
 	</view-entity>
+	
 	<view-entity entity-name="MailerRecipientContactListContactListType"
 				 package-name="com.opensourcestrategies.crmsfa.marketing"
                  title="Counts the number of Contact List members" >
@@ -206,6 +216,12 @@
     	<prim-key field="recipientId"/>
     	<prim-key field="contactListId"/>
    	</entity>
+   	
+   	<entity entity-name="MergeFormType" package-name="net.intelliant.mailer" title="Merge Form Type Entity">
+		<field name="mergeFormTypeId" type="id-ne"></field>
+		<field name="description" type="description"></field>
+		<prim-key field="mergeFormTypeId"/>
+    </entity>
    	
    	<!-- Views entities -->
    	<view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
