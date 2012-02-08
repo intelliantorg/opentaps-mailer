@@ -235,6 +235,7 @@
 		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
 		<member-entity entity-alias="MRCLC" entity-name="MailerRecipientContactListCount"/>
 		<alias-all entity-alias="MRCLC" />
+		<alias entity-alias="MMCCL" name="campaignListId"/>
 		<alias entity-alias="MMCCL" name="marketingCampaignId"/>
 		<alias entity-alias="MMCCL" name="contactListId"/>
 		<alias entity-alias="MMCCL" name="fromDate"/>
