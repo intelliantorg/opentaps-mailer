@@ -14,4 +14,5 @@
 	<entity-group group="org.ofbiz" entity="MailerRecipientContactListCount" />
 	<entity-group group="org.ofbiz" entity="MailerRecipientContactListMerged" />
 	<entity-group group="org.ofbiz" entity="MailerRecipientContactListContactListType" />
+	<entity-group group="org.ofbiz" entity="MergeFormType" />
 </entitygroup>
