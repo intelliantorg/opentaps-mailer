@@ -341,7 +341,7 @@
     <screen name="listConfiguredImportMappingsScreen">
 	    <section> 
 	        <actions>
-	            <set field="pageTitleLabel" value="Configured Mappings"/>
+	            <set field="pageTitleLabel" value="ConfigureMappingHeader"/>
 	            <entity-condition entity-name="MailerImportMapper" list="listOfMappings" list-name="listOfMappings">
 					<order-by field-name="importMapperName"/>
 				</entity-condition>
@@ -360,7 +360,7 @@
 	    <section> 
 	        <actions>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
-	            <set field="pageTitleLabel" value="Configure Mappings"/>
+	            <set field="pageTitleLabel" value="ConfigureMappingHeader"/>
 	            <script location="component://mailer/webapp/mailer/WEB-INF/actions/uploadImportSampleForMapping.bsh"/>
 	        </actions>
 	        <widgets>
@@ -376,8 +376,27 @@
 	<screen name="updateImportMappingScreen">
         <section>
             <actions>
-                <set field="pageTitleLabel" value="Update Mapping"/>
-                <set field="sectionHeaderUiLabel" value="Update Mapping"/>
+                <set field="pageTitleLabel" value="UpdateMappingHeader"/>
+                <set field="sectionHeaderUiLabel" value="UpdateMappingHeader"/>
+	        	<set field="nameOfEntity" value="MailerRecipient"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.bsh"/>                
+            </actions>
+            <widgets>
+            	<decorator-screen name="main-section-decorator">
+	                <decorator-section name="section-body">                     
+	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>	                    
+	                </decorator-section>
+	            </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+	<screen name="updateImportMappingScreen">
+        <section>
+            <actions>
+                <set field="pageTitleLabel" value="UpdateMappingHeader"/>
+                <set field="sectionHeaderUiLabel" value="UpdateMappingHeader"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.bsh"/>                

@@ -33,7 +33,7 @@
         <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit"><submit/></field>
     </form>
 
-    <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" title="Create Marketing Campaign" default-map-name="marketingCampaign" target="updateMarketingCampaign"
+    <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" title="${uiLabelMap.CreateCampaignHeader}" default-map-name="marketingCampaign" target="updateMarketingCampaign"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
         <field name="marketingCampaignId"><hidden/></field>
@@ -66,7 +66,7 @@
         <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
     
-    <form name="createContactListForm" type="single" title="Create Contact List" target="createContactList"
+    <form name="createContactListForm" type="single" title="${uiLabelMap.CreateContactListHeader}" target="createContactList"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
         <field name="contactListName" title="${uiLabelMap.CommonName}" title-style="requiredField"><text/></field>
         <field name="contactListTypeId"><hidden value="MARKETING"/></field>
@@ -108,7 +108,7 @@
         <field name="submitButton" title="${uiLabelMap.CrmFindContactLists}" widget-style="smallSubmit"><submit/></field>
     </form>
     
-    <form name="updateContactListForm" type="single" title="Create Contact List" default-map-name="contactList" target="updateContactList"
+    <form name="updateContactListForm" type="single" title="${uiLabelMap.UpdateContactListHeader}" default-map-name="contactList" target="updateContactList"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
         <field name="contactListId"><hidden/></field>
@@ -128,7 +128,7 @@
     </form>
     
     <form name="ListContactLists" type="list" separate-columns="true" 
-        title="List Contact Lists"  default-title-style="tableheadtext" target=""
+        title="${uiLabelMap.ListContactListHeader}"  default-title-style="tableheadtext" target=""
         default-widget-style="tabletext" default-tooltip-style="tabletext"
         default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"
         paginate-target="${listSortTarget}"  paginate-target-anchor="ListContactLists"
@@ -147,7 +147,7 @@
     </form>
 
    	<form name="ListMarketingCampaignContactLists" type="list" separate-columns="true" 
-        title="List Marketing Campaign Contact Lists"  default-title-style="tableheadtext" target=""
+        title="${uiLabelMap.ListContactListHeader}"  default-title-style="tableheadtext" target=""
         default-widget-style="tabletext" default-tooltip-style="tabletext"
         default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"
         list-name="marketingCampaignContactLists">
@@ -178,7 +178,7 @@
         <field name="submitButton" title="${uiLabelMap.CrmAddContactList}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
     
-    <form name="viewContactList" type="single" title="View Contact List" default-map-name="contactList"
+    <form name="viewContactList" type="single" title="${uiLabelMap.ViewContactListHeader}" default-map-name="contactList"
         default-title-style="tableheadtext" default-widget-style="tabletext" default-tooltip-style="tabletext">
         <field name="contactListName" title="${uiLabelMap.CommonName}" position="1"><display/></field>
         <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" position="2">
@@ -191,7 +191,7 @@
     </form>
     
     <form name="ListContactListParties" type="multi" separate-columns="false" use-row-submit="true"
-        title="Contact List Parties"  default-title-style="tableheadtext" target="${listContactListPartiesTarget}?contactListId=${parameters.contactListId}"
+        title="${uiLabelMap.ContactLIstPariesHeader}"  default-title-style="tableheadtext" target="${listContactListPartiesTarget}?contactListId=${parameters.contactListId}"
         default-widget-style="tabletext" default-tooltip-style="tabletext"
         default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"
         paginate-target="${listSortTarget}" paginate-target-anchor="ListContactListParties" 

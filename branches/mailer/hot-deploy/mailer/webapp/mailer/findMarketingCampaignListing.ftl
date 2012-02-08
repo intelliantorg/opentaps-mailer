@@ -23,7 +23,7 @@
 	}
 </script>
 <div class="subSectionHeader">
-	<div class="subSectionTitle">Marketing Campaigns</div>
+	<div class="subSectionTitle">${uiLabelMap.MarketingCampaignHeader}</div>
 	<div class="subMenuBar"><@inputSubmit title=uiLabelMap.ButtonPrint onClick="return validateThisForm('print')" /><@inputSubmit title=uiLabelMap.ButtonEmail onClick="return validateThisForm('email')" /></div>
 </div>
 <div>
