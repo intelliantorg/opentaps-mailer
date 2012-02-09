@@ -54,7 +54,7 @@ public class ImportTests extends MailerTests {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	public void testReadExcelHeaders() throws GeneralException {
 		String ofbizHome = System.getProperty("ofbiz.home");
 		if (!ofbizHome.endsWith(File.separator)) {
@@ -231,7 +231,7 @@ public class ImportTests extends MailerTests {
 		assertEquals(mailerImportMapperGV.get("description"), inputs.get("description"));
 		assertEquals(mailerImportMapperGV.get("isFirstRowHeader"), "Y");
 	}
-	
+
 	private void testUpdateImportColumnMapperData(String importMapperId, Map<String, Object> createInputs, Map<String, Object> updateInputs) throws GenericEntityException {
 		testConfigureImportColumnMapperData(importMapperId, updateInputs);
 		
@@ -247,7 +247,7 @@ public class ImportTests extends MailerTests {
 			mailerImportColumnMapperGV =  EntityUtil.getFirst(delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", importMapperId, "entityColName", updateEntityColumnNames.get(key))));
 			
 			if(createFileColumnIndexes.get(key).equals(updateFileColumnIndexes.get(key))){
-				assertEquals(null,mailerImportColumnMapperGV.get("lastModifiedByUserLogin"));
+				assertEquals("admin",mailerImportColumnMapperGV.get("lastModifiedByUserLogin"));
 			}else{
 				assertEquals(((GenericValue)updateInputs.get("userLogin")).get("userLoginId"),mailerImportColumnMapperGV.get("lastModifiedByUserLogin"));
 			}

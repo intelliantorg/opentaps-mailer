@@ -13,7 +13,7 @@
 <#if hasUpdatePermission?exists && marketingCampaign.statusId != "MKTG_CAMP_CANCELLED">
 	<#assign updateLink>
 		<a class='subMenuButton' href='updateMarketingCampaignForm?marketingCampaignId=${marketingCampaign.marketingCampaignId}'>${uiLabelMap.ButtonEdit}</a>
-	</#assign>	
+	</#assign>
 </#if>
 
 <div class="subSectionHeader">
