@@ -87,11 +87,14 @@ public class MarketingCampaignServices {
 		GenericDelegator delegator = dctx.getDelegator();
 		Locale locale = (Locale) context.get("locale");
 		String statusId = (String) context.get("statusId");
+		String templateId = (String) context.get("templateId");
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		try {
-			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
-			if (UtilValidate.isEmpty(mergeFormGV)) {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
+			if (UtilValidate.isNotEmpty(templateId)) {
+				GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
+				if (UtilValidate.isEmpty(mergeFormGV)) {
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
+				}
 			}
 			ModelService service = dctx.getModelService("updateMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
@@ -105,7 +108,7 @@ public class MarketingCampaignServices {
 			
 			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
 			mailerMarketingCampaign.set("fromEmailAddress", context.get("fromEmailAddress"));
-			mailerMarketingCampaign.set("templateId", context.get("templateId"));
+			mailerMarketingCampaign.set("templateId", templateId);
 			mailerMarketingCampaign.store();
 
 			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
