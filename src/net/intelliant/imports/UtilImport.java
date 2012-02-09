@@ -25,7 +25,7 @@ import org.ofbiz.entity.model.ModelEntity;
 import org.ofbiz.entity.model.ModelField;
 import org.ofbiz.entity.model.ModelReader;
 
-public class UtilImport {
+public final class UtilImport {
 	private UtilImport() {
 	}
 
