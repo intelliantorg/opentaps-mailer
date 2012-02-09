@@ -4,9 +4,8 @@ import java.util.Map;
 
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilMisc;
-import org.opentaps.tests.OpentapsTestCase;
 
-public class MergeFormsTests extends OpentapsTestCase {
+public class MergeFormsTests extends MailerTests {
 	private final static String module = MarketingCampaignTests.class.getName();
 
 	@Override

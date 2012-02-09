@@ -15,10 +15,9 @@ import org.ofbiz.webapp.control.ConfigXMLReader;
 import org.ofbiz.webapp.control.ConfigXMLReader.ControllerConfig;
 import org.ofbiz.widget.screen.ModelScreen;
 import org.ofbiz.widget.screen.ScreenFactory;
-import org.opentaps.tests.OpentapsTestCase;
 import org.xml.sax.SAXException;
 
-public class UITests extends OpentapsTestCase {
+public class UITests extends MailerTests {
 	private final static String module = UITests.class.getName();
 
 	@Override
