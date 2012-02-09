@@ -13,7 +13,7 @@ import org.opentaps.tests.OpentapsTestCase;
 
 public class MailerTests extends OpentapsTestCase {
 	
-	static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
+	protected static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 
 	@Override
 	public void setUp() throws Exception {
@@ -52,14 +52,14 @@ public class MailerTests extends OpentapsTestCase {
 	}
 
 	protected String createMergTemplate(Map overriddingInputs) throws GenericEntityException {
-		Map<String, Object> inputs = UtilMisc.toMap("mergeFormName", "mergeFormName_" + System.currentTimeMillis());
-		inputs.put("scheduleAt", "1");
-		inputs.put("mergeFormText", "Sample text");
-		inputs.put("userLogin", admin);
+		Map<String, Object> defaultInputs = UtilMisc.toMap("mergeFormName", "mergeFormName_" + System.currentTimeMillis());
+		defaultInputs.put("scheduleAt", "1");
+		defaultInputs.put("mergeFormText", "Sample text");
+		defaultInputs.put("userLogin", admin);
 		if (UtilValidate.isNotEmpty(overriddingInputs)) {
-			inputs.putAll(overriddingInputs);
+			defaultInputs.putAll(overriddingInputs);
 		}
-		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createMergeForm", inputs);
+		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createMergeForm", defaultInputs);
 		return (String) results.get("mergeFormId");
 	}
 
