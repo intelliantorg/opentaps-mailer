@@ -2,6 +2,7 @@ package net.intelliant.marketing;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -88,9 +89,10 @@ public class MarketingCampaignServices {
 		String statusId = (String) context.get("statusId");
 		String templateId = (String) context.get("templateId");
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
+		GenericValue mergeFormGV = null;
 		try {
 			if (UtilValidate.isNotEmpty(templateId)) {
-				GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
+				mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 				if (UtilValidate.isEmpty(mergeFormGV)) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
 				}
@@ -106,14 +108,28 @@ public class MarketingCampaignServices {
 			}
 			
 			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
+			String oldTemplateId = mailerMarketingCampaign.getString("templateId");
 			mailerMarketingCampaign.set("templateId", templateId);
 			mailerMarketingCampaign.store();
 
 			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
 				service = dctx.getModelService("mailer.cancelScheduledMailers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
-				dctx.getDispatcher().runSync("mailer.cancelScheduledMailers", inputs);
-			} 
+				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
+				if (ServiceUtil.isError(serviceResults)) {
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+				}
+			} else if (UtilValidate.isNotEmpty(templateId) && !UtilValidate.areEqual(oldTemplateId, templateId)) {
+				/** No point executing this campaign was cancelled. */
+				/** Check if user is actually update template Id as well. */				
+				service = dctx.getModelService("mailer.reScheduleMailers");
+				inputs = service.makeValid(context, ModelService.IN_PARAM);
+				inputs.put("scheduleAt", mergeFormGV.getString("scheduleAt"));
+				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
+				if (ServiceUtil.isError(serviceResults)) {
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+				}
+			}
 			return serviceResults;
 		} catch (GenericServiceException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
@@ -376,4 +392,56 @@ public class MarketingCampaignServices {
 		}
 		return ServiceUtil.returnSuccess();
 	}
+	
+	/**
+	 * Will be used to cancel scheduled mailers.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> reScheduleMailers(DispatchContext dctx, Map<String, Object> context) {
+		Locale locale = (Locale) context.get("locale");
+		GenericDelegator delegator = dctx.getDelegator();
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
+		String scheduleAt = (String) context.get("scheduleAt");
+		EntityListIterator iterator = null;
+		try {
+			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+            EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
+            if (Debug.infoOn()) {
+            	Debug.logInfo("The conditions >> " + conditions, module);
+            }
+	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
+	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
+	        List mailersToBeReScheduled = FastList.newInstance();
+	        GenericValue mailerCampaignStatusGV = null;
+	        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
+	        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
+	        	String dateOfOperationColumn = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
+	        	if (UtilValidate.isEmpty(dateOfOperationColumn)) {
+	        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorDateOfOperationColumnConfigurationMissing", locale), module);
+	        	} else if (relatedRecipientGV.containsKey(dateOfOperationColumn) == false) {
+	        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorDateOfOperationColumnIncorrect", locale), module);
+	        	}
+	        	Timestamp newDate = UtilDateTime.addDaysToTimestamp(new Timestamp(relatedRecipientGV.getDate(dateOfOperationColumn).getTime()), Integer.valueOf(scheduleAt));
+	        	mailerCampaignStatusGV.set("scheduledForDate", newDate);	        	
+	        	mailersToBeReScheduled.add(mailerCampaignStatusGV);
+            }
+	        if (UtilValidate.isNotEmpty(mailersToBeReScheduled)) {
+	        	if (Debug.infoOn()) {
+	        		Debug.logInfo("About to re-schedule " + mailersToBeReScheduled.size() + " mailers.", module);
+	        	}
+	        	delegator.storeAll(mailersToBeReScheduled);
+	        }
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} finally {
+			if (iterator != null) {
+				try {
+					iterator.close();
+				} catch (GenericEntityException e) {
+					iterator = null;
+				}
+			}
+		}
+		return ServiceUtil.returnSuccess();
+	}	
 }
