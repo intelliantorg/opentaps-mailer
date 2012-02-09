@@ -47,11 +47,7 @@ import org.opentaps.common.util.UtilMessage;
 
 public class ContactListServices {
 	private static final String MODULE = ContactListServices.class.getName();
-	private static SimpleDateFormat simpleDateFormat = null;
-
-	static{
-		simpleDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
-	}
+	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
 
 	/**
 	 * Gets the path for uploaded files.
@@ -105,7 +101,6 @@ public class ContactListServices {
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
 		Map<String, String> failureReport = new HashMap<String, String>();
-		List<String[]> failureReport1 = new ArrayList<String[]>();
 
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
@@ -165,15 +160,14 @@ public class ContactListServices {
 			HSSFCell excelCell = null;
 			Object cellValue = null; 
 
-			try{
+			try {
 				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
 				excelCell = excelRowData.getCell(columnIndex);
 				cellValue = (excelCell != null) ? excelCell.toString() : "";
-			}catch(NumberFormatException nfe){
+			} catch (NumberFormatException nfe) {
 				columnIndex = -1;
 				cellValue = "";
 			}
-
 			String columnName = entry.getKey();
 			ModelField modelField = modelEntity.getField(columnName);
 
@@ -219,7 +213,6 @@ public class ContactListServices {
 
 		for (GenericValue row : rows) {
 			GenericValue rowToInsertGV = createAndScheduleCampaign(delegator, row.getString("marketingCampaignId"), contactListId, recipientId, salesAndServiceDate);
-			System.out.println("Create and schedule campaign : "+rowToInsertGV);
 			if (UtilValidate.isNotEmpty(rowToInsertGV)) {
 				rowsToInsert.add(rowToInsertGV);
 			}
@@ -232,9 +225,6 @@ public class ContactListServices {
 	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId, Date salesAndServiceDate) throws Exception {
 		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
-		System.out.println("\nMarketing campaign : " + marketingCampaign + "\nmarketingCampaignId : " + marketingCampaignId);
-
-		
 		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
@@ -243,11 +233,9 @@ public class ContactListServices {
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
 				Calendar cal = GregorianCalendar.getInstance();
 				cal.setTime(salesAndServiceDate);
-				System.out.println("Dt1 : "+cal.getTime().toString());
 				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(scheduleAt));
-				System.out.println("Dt2 : "+cal.getTime().toString());
 				scheduledForDate = new Timestamp(cal.getTimeInMillis());
-			}else{
+			} else {
 				throw new Exception("scheduleAt must be set at Form Letter Template");
 			}
 			
