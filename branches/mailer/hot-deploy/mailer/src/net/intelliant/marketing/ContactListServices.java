@@ -7,10 +7,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -231,10 +228,7 @@ public class ContactListServices {
 			
 			Timestamp scheduledForDate = UtilDateTime.nowTimestamp();
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
-				Calendar cal = GregorianCalendar.getInstance();
-				cal.setTime(salesAndServiceDate);
-				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(scheduleAt));
-				scheduledForDate = new Timestamp(cal.getTimeInMillis());
+				scheduledForDate = UtilDateTime.addDaysToTimestamp(new Timestamp(salesAndServiceDate.getTime()), Integer.parseInt(scheduleAt));
 			} else {
 				throw new Exception("scheduleAt must be set at Form Letter Template");
 			}
