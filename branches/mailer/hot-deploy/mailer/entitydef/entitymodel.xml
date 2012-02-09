@@ -122,11 +122,8 @@
       	<relation type="one" fk-name="MCS_TO_MC" rel-entity-name="MailerRecipient">
         	<key-map field-name="recipientId"/>
       	</relation>
-      	<relation type="one" fk-name="MCS_TO_PSI" rel-entity-name="StatusItem">
-        	<key-map field-name="printStatusId" rel-field-name="statusId"/>
-      	</relation>
-      	<relation type="one" fk-name="MCS_TO_ESI" rel-entity-name="StatusItem">
-        	<key-map field-name="emailStatusId" rel-field-name="statusId"/>
+      	<relation type="one" fk-name="MCS_TO_SI" rel-entity-name="StatusItem">
+        	<key-map field-name="statusId" rel-field-name="statusId"/>
       	</relation>
       	<relation type="one" fk-name="MCS_TO_CL" rel-entity-name="ContactList">
             <key-map field-name="contactListId"/>
