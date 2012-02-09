@@ -14,6 +14,7 @@
 		}
 		//return atleastOneCheckedFlag?true:false;
 		if(atleastOneCheckedFlag){
+			messageBox.innerHTML="";
 			return true;
 		}else{
 			messageBox.innerHTML="Select at least one checkbox";
@@ -30,7 +31,7 @@
 	</div>
 </div>
 <div>
-	<div><span id="message" class="tabletext" style="color:red"></span></div>
+	<div style="text-align:right;"><span id="message" class="tabletext" style="color:red;font-size: 12px;"></span></div>
 	<form action="" name="executeBulkCampaign" method="post">
 		<table class="crmsfaListTable">
 			<tr class="crmsfaListTableHeader">
