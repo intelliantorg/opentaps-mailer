@@ -1,4 +1,5 @@
 <@import location="component://opentaps-common/webapp/common/includes/lib/opentapsFormMacros.ftl"/>
+<@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <div class="subSectionHeader">
     <div class="subSectionTitle">
@@ -83,13 +84,34 @@
       </span>
     </div>
 
-    <div class="formRow">
-      <span class="formLabel">${uiLabelMap.CrmFormLetterTemplatePrivate}</span>
+	<div class="formRow">
+      <span class="formLabelRequired">${uiLabelMap.LabelTemplateType}</span>
       <span class="formInputSpan">
-        <input type="checkbox" name="privateForm" value="Y" <#if mergeForm?default({}).partyId?has_content>checked="checked"</#if> />
-        
+    	<#assign email = Static["org.ofbiz.base.util.UtilMisc"].toMap("value", "email", "name", "Email")>							
+		<#assign pdf = Static["org.ofbiz.base.util.UtilMisc"].toMap("value", "pdf", "name", "PDF")>
+		<#assign formTypeCombo = [email, pdf] >								
+		<@inputSelect name="contactMechTypeId" list=formTypeCombo displayField="name" key="value" />  
       </span>
     </div>
+    <div class="formRow">
+      <span class="formLabelRequired">${uiLabelMap.LabelFromEmailAddress}</span>
+      <span class="formInputSpan">
+        <input type="text" class="inputBox required" name="fromEmailAddress" value="${(mergeForm.fromEmailAddress)?if_exists}" size="50" maxlength="100"/>
+      </span>
+    </div>
+    <div class="formRow">
+      <span class="formLabelRequired">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
+      <span class="formInputSpan">
+      	<@inputFile name="headerImageLocation" class="inputBox required" />
+      </span>
+    </div>
+    <div class="formRow">
+      <span class="formLabelRequired">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
+      <span class="formInputSpan">
+      	<@inputFile name="footerImageLocation" class="inputBox required" />
+      </span>
+    </div>
+    
     <div class="formRow">
       <span class="formLabel">${uiLabelMap.CommonDescription}</span>
       <span class="formInputSpan">
