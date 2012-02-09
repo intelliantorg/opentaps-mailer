@@ -12,22 +12,6 @@
 							<div class="fieldContainer">
 								<@inputText name="campaignName" size=35 class="inputBox required"/>
 							</div>
-							<#--
-							<div class="label">
-								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelFromEmailAddress />
-							</div>
-							<div class="fieldContainer">
-								<@inputText name="fromEmailAddress" size=35 class="inputBox required email"/>
-							</div>
-							-->
-						</div>
-						<div class="rowContainer">
-							<div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.CommonFrom />
-							</div>
-							<div class="fieldContainer">
-								<@inputDateTime name="fromDate" />
-							</div>							
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelTemplateId />
 							</div>
@@ -37,11 +21,11 @@
 						</div>
 						<div class="rowContainer">
 							<div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.CommonThru />
+								<@display class="tableheadtext" text=uiLabelMap.CommonFrom />
 							</div>
 							<div class="fieldContainer">
-								<@inputDateTime name="thruDate" />
-							</div>
+								<@inputDateTime name="fromDate" />
+							</div>							
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelContactList />
 							</div>
@@ -53,16 +37,24 @@
 						</div>
 						<div class="rowContainer">
 							<div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.CommonDescription />
+								<@display class="tableheadtext" text=uiLabelMap.CommonThru />
 							</div>
 							<div class="fieldContainer">
-								<@inputTextarea name="description" rows=4 cols=33 />
-							</div>							
+								<@inputDateTime name="thruDate" />
+							</div>
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
 							</div>
 							<div class="fieldContainer" style="padding: 2px;">
 								<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
+							</div>
+						</div>
+						<div class="rowContainer">
+							<div class="label">
+								<@display class="tableheadtext" text=uiLabelMap.CommonDescription />
+							</div>
+							<div class="fieldContainer">
+								<@inputTextarea name="description" rows=4 cols=33 />
 							</div>
 						</div>
 						<div class="rowContainer">
