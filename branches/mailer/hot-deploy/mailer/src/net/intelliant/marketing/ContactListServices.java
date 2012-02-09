@@ -52,7 +52,7 @@ public class ContactListServices {
 	static{
 		simpleDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
 	}
-	
+
 	/**
 	 * Gets the path for uploaded files.
 	 * 
@@ -164,7 +164,7 @@ public class ContactListServices {
 			short columnIndex = 0;
 			HSSFCell excelCell = null;
 			Object cellValue = null; 
-					
+
 			try{
 				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
 				excelCell = excelRowData.getCell(columnIndex);

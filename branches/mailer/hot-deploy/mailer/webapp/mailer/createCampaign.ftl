@@ -11,13 +11,15 @@
 							</div>
 							<div class="fieldContainer">
 								<@inputText name="campaignName" size=35 class="inputBox required"/>
-							</div>							
+							</div>
+							<#--
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelFromEmailAddress />
 							</div>
 							<div class="fieldContainer">
 								<@inputText name="fromEmailAddress" size=35 class="inputBox required email"/>
 							</div>
+							-->
 						</div>
 						<div class="rowContainer">
 							<div class="label">
@@ -39,7 +41,7 @@
 							</div>
 							<div class="fieldContainer">
 								<@inputDateTime name="thruDate" />
-							</div>					
+							</div>
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelContactList />
 							</div>
