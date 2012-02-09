@@ -1,18 +1,19 @@
 package net.intelliant.marketing;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
-import org.ofbiz.content.content.ContentServices;
+import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.service.DispatchContext;
+import org.ofbiz.service.GenericServiceException;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
-import org.opentaps.domain.base.entities.Content;
 
 public class MergeFormServices {
 	private final static String module = MergeFormServices.class.getName();
@@ -42,28 +43,43 @@ public class MergeFormServices {
     }
 
     public static Map<String, Object> updateMergeForm(DispatchContext dctx, Map<String, Object> context) {
-        Map<String, Object> result = ServiceUtil.returnSuccess();
+    	GenericValue userLogin = (GenericValue) context.get("userLogin");
+        Map<String, Object> results = ServiceUtil.returnSuccess();
         GenericDelegator delegator = dctx.getDelegator();
         Locale locale = (Locale) context.get("locale");
+        String scheduleAt = (String) context.get("scheduleAt");
         String mergeFormId = (String) context.get("mergeFormId");
         Boolean privateForm = "Y".equals((String) context.get("privateForm"));
-        Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
+        results.put("mergeFormId", mergeFormId);
        
-        System.out.println("Context : "+context+"\nMap : "+newMergeFormMap);
-        
-        GenericValue mergeForm = null;
-                      
         try {
-            mergeForm = delegator.findByPrimaryKey("MergeForm", newMergeFormMap);
-            //delegator.findByAnd(entityName, fields)
+        	GenericValue mergeForm = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
             mergeForm.setNonPKFields(context);
             if ((! privateForm)) mergeForm.set("partyId", null);
             delegator.store(mergeForm);
+            
+            String oldScheduleAt = mergeForm.getString("scheduleAt");            
+            if (! UtilValidate.areEqual(oldScheduleAt, scheduleAt)) {
+				Map inputs = UtilMisc.toMap("scheduleAt", scheduleAt);
+				inputs.put("userLogin", userLogin);
+				
+				List<GenericValue> relatedCampaigns = mergeForm.getRelated("MarketingCampaign");
+				if (UtilValidate.isNotEmpty(relatedCampaigns)) {
+					for (GenericValue relatedCampaign : relatedCampaigns) {
+						inputs.put("marketingCampaignId", relatedCampaign.getString("marketingCampaignId"));
+						results = dctx.getDispatcher().runSync("mailer.reScheduleMailers", inputs);
+						if (ServiceUtil.isError(results)) {
+							return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+						}
+					}
+				}
+            }
         } catch (GenericEntityException e) {
         	return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+        } catch (GenericServiceException e) {
+        	return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);		
         }        
-        result.put("mergeFormId", mergeFormId);
-        return result;
+        return results;
     }
     
     public static Map<String, Object> deleteMergeForm(DispatchContext dctx, Map<String, Object> context) {
