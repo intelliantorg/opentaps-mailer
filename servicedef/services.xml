@@ -123,4 +123,10 @@
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="true"/>
     </service>
+    
+	<service name="mailer.reScheduleMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="reScheduleMailers" auth="true">
+    	<description>Will be used to update scheduled mailers.</description>
+        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
+        <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
+    </service>
 </services>
