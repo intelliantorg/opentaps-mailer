@@ -218,17 +218,17 @@ public class MarketingCampaignServices {
 		EntityListIterator iterator = null;
 		try {
 			GenericValue campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-//			find out the from address
-			String fromEmailAddress = campaignGV.getString("fromEmailAddress");
 //			find out the template
 			GenericValue templateGV = campaignGV.getRelatedOne("MergeForm");
 			if (UtilValidate.isNotEmpty(templateGV)) {
 //				TODO do some changes on the template
 				String emailSubject = templateGV.getString("subject");
 				String emailBodyTemplate = templateGV.getString("mergeFormText");
+				String emailFromAddress = templateGV.getString("fromEmailAddress");
 				if (Debug.infoOn()) {
 					Debug.logInfo("This the email subject - " + emailSubject, module);
 					Debug.logInfo("This the email template body - " + emailBodyTemplate, module);
+					Debug.logInfo("This the email from address - " + emailFromAddress, module);					
 				}
 	            EntityCondition conditions = new EntityConditionList( 
             		UtilMisc.toList(
@@ -237,7 +237,7 @@ public class MarketingCampaignServices {
                         new EntityExpr("scheduledForDate", EntityOperator.LESS_THAN_EQUAL_TO, UtilDateTime.nowTimestamp())
             		), EntityOperator.AND);
 	            if (Debug.infoOn()) {
-	            	Debug.logInfo("This the mailer recipient conditions >> " + conditions, module);
+	            	Debug.logInfo("The campaign status conditions >> " + conditions, module);
 	            }
 		        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 		        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -265,7 +265,7 @@ public class MarketingCampaignServices {
 	                serviceInputs.put("subject", emailSubject);
 	                serviceInputs.put("contentMimeTypeId", "text/html");
 	                serviceInputs.put("content", emailBodyContent);
-	                serviceInputs.put("fromString", fromEmailAddress);
+	                serviceInputs.put("fromString", emailFromAddress);
 //	              	USE recipient email address.
 	                serviceInputs.put("toString", relatedRecipientGV.getString(sendToEmailColumn));
 	                serviceInputs.put("partyIdFrom", "_NA_");
