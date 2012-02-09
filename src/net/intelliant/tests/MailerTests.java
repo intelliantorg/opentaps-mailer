@@ -25,10 +25,9 @@ public class MailerTests extends OpentapsTestCase {
 		super.tearDown();
 	}
 
-	protected String createMarketingCampaign(String campaignName, String fromEmailAddress, String templateId, String contactListId, Double budgetedCost, Double estimatedCost, String currencyUomId) {
+	protected String createMarketingCampaign(String campaignName, String templateId, String contactListId, Double budgetedCost, Double estimatedCost, String currencyUomId) {
 		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
 		inputs.put("userLogin", admin);
-		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("templateId", templateId);
 		inputs.put("contactListId", contactListId);
 		inputs.put("budgetedCost", budgetedCost);

@@ -24,15 +24,14 @@ public class MarketingCampaignTests extends MailerTests {
 
 	public void testCreateMarketingCampaign() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
-		String fromEmailAddress = "email@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
 
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
-		
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+
 		Map<?, ?> results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
 		assertEquals(results.get("campaignName"), campaignName);
@@ -44,7 +43,6 @@ public class MarketingCampaignTests extends MailerTests {
 
 		results = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
-		assertEquals(results.get("fromEmailAddress"), fromEmailAddress);
 		assertEquals(results.get("templateId"), templateId);
 
 		List<?> contactListsForMMC = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
@@ -85,14 +83,13 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testAddContactListToMarketingCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
@@ -104,18 +101,16 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testUpdateMarketingCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 
 		currTime = System.currentTimeMillis();
 		campaignName = "Campaign_" + currTime;
-		fromEmailAddress = "email_" + currTime + "@email.com";
 		templateId = createMergTemplate(null);
 		budgetedCost = 12050.0;
 		estimatedCost = 11550.50;
@@ -124,7 +119,6 @@ public class MarketingCampaignTests extends MailerTests {
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("campaignName", campaignName);
 		inputs.put("userLogin", admin);
-		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("templateId", templateId);
 		inputs.put("budgetedCost", budgetedCost);
 		inputs.put("currencyUomId", currencyUomId);
@@ -142,21 +136,19 @@ public class MarketingCampaignTests extends MailerTests {
 
 		results = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
-		assertEquals(results.get("fromEmailAddress"), fromEmailAddress);
 		assertEquals(results.get("templateId"), templateId);
 	}
 	
 	public void testCancelMarketingCampaignWithNoContactList() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
@@ -167,7 +159,6 @@ public class MarketingCampaignTests extends MailerTests {
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("statusId", "MKTG_CAMP_CANCELLED");
 		inputs.put("templateId", templateId);
-		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("userLogin", admin);
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
@@ -179,14 +170,13 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testCancelMarketingCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
@@ -198,7 +188,6 @@ public class MarketingCampaignTests extends MailerTests {
 		inputs.put("statusId", "MKTG_CAMP_CANCELLED");
 		inputs.put("userLogin", admin);
 		inputs.put("templateId", templateId);
-		inputs.put("fromEmailAddress", fromEmailAddress);
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
@@ -215,14 +204,13 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testRemoveContactListFromCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 		
 		contactListId = createContactListWithTwoRecipients();
 		Map results = runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
@@ -243,14 +231,13 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testUpdateMarketingCampaignByChangingTemplate() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
@@ -265,7 +252,6 @@ public class MarketingCampaignTests extends MailerTests {
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		String newTemplateId = createMergTemplate(UtilMisc.toMap("scheduleAt", "2"));
 		inputs.put("templateId", newTemplateId);
-		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("userLogin", admin);
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
@@ -286,14 +272,13 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testUpdateMarketingCampaignNoChangeInTemplate() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String fromEmailAddress = "email_" + currTime + "@email.com";
 		String templateId = createMergTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
@@ -307,7 +292,6 @@ public class MarketingCampaignTests extends MailerTests {
 
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("templateId", templateId);
-		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("userLogin", admin);
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
