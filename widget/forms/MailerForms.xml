@@ -150,7 +150,7 @@
         title="${uiLabelMap.ListContactListHeader}"  default-title-style="tableheadtext" target=""
         default-widget-style="tabletext" default-tooltip-style="tabletext"
         default-table-style="crmsfaListTable" header-row-style="crmsfaListTableHeader" even-row-style="rowWhite" odd-row-style="rowLightGray"
-        list-name="marketingCampaignContactLists" default-map-name="marketingCampaign">
+        list-name="marketingCampaignContactLists" map-name="marketingCampaign">
         
         <field name="contactListId" title="Segment" widget-area-style="fieldWidth300" widget-style="linktext" use-when="contactListId!=null">
             <hyperlink description="${contactListName} (${contactListId})" target="viewContactList?contactListId=${contactListId}"/>
