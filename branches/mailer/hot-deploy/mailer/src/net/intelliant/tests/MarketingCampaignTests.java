@@ -26,7 +26,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 	public void testCreateMarketingCampaign() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String fromEmailAddress = "email@email.com";
-		String templateId = "10000";
+		String templateId = createMergTemplate();;
 		String contactListId = createContactList();
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
@@ -103,7 +103,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String fromEmailAddress = "email_" + currTime + "@email.com";
-		String templateId = "10000";
+		String templateId = createMergTemplate();;
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -122,7 +122,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String fromEmailAddress = "email_" + currTime + "@email.com";
-		String templateId = "10000";
+		String templateId = createMergTemplate();;
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -133,7 +133,7 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		currTime = System.currentTimeMillis();
 		campaignName = "Campaign_" + currTime;
 		fromEmailAddress = "email_" + currTime + "@email.com";
-		templateId = "10000";
+		templateId = createMergTemplate();;
 		budgetedCost = 12050.0;
 		estimatedCost = 11550.50;
 		currencyUomId = "INR";
@@ -173,6 +173,15 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		return (String) results.get("contactListId");
 	}
 	
+	private String createMergTemplate() throws GenericEntityException {
+		Map<String, Object> inputs = UtilMisc.toMap("mergeFormName", "mergeFormName" + System.currentTimeMillis());
+		inputs.put("scheduleAt", "1");
+		inputs.put("mergeFormText", "Sample text");
+		inputs.put("userLogin", admin);
+		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createMergeForm", inputs);
+		return (String) results.get("mergeFormId");
+	}
+	
 	private String createContactListWithTwoRecipients() throws GenericEntityException {
 		String contactListId = createContactList();
 		/** Manually recipients and the associate them with contact list. */
@@ -185,5 +194,99 @@ public class MarketingCampaignTests extends OpentapsTestCase {
 		delegator.create("MailerRecipientContactList", UtilMisc.toMap("recipientId", recipientId, "contactListId", contactListId));
 		
 		return contactListId;
+	}
+	
+	public void testCancelMarketingCampaignWithNoContactList() throws GeneralException {
+		Long currTime = System.currentTimeMillis();
+		String campaignName = "Campaign_" + currTime;
+		String fromEmailAddress = "email_" + currTime + "@email.com";
+		String templateId = createMergTemplate();;
+		String contactListId = createContactList();
+		Double budgetedCost = Math.random() * 100000;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
+		String currencyUomId = "INR";
+		
+		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		
+		contactListId = createContactListWithTwoRecipients();
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		
+		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+
+		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
+		inputs.put("statusId", "MKTG_CAMP_CANCELLED");
+		inputs.put("templateId", templateId);
+		inputs.put("fromEmailAddress", fromEmailAddress);
+		inputs.put("userLogin", admin);
+		 
+		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
+		
+		GenericValue marketingCampaignGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertNotNull("Thru date must be set when campaign is cancelled.", marketingCampaignGV.getTimestamp("thruDate"));
+	}
+	
+	public void testCancelMarketingCampaign() throws GeneralException {
+		Long currTime = System.currentTimeMillis();
+		String campaignName = "Campaign_" + currTime;
+		String fromEmailAddress = "email_" + currTime + "@email.com";
+		String templateId = createMergTemplate();;
+		String contactListId = createContactList();
+		Double budgetedCost = Math.random() * 100000;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
+		String currencyUomId = "INR";
+		
+		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		
+		contactListId = createContactListWithTwoRecipients();
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		
+		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+
+		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
+		inputs.put("statusId", "MKTG_CAMP_CANCELLED");
+		inputs.put("userLogin", admin);
+		inputs.put("templateId", templateId);
+		inputs.put("fromEmailAddress", fromEmailAddress);
+		 
+		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
+		
+		GenericValue marketingCampaignGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertNotNull("Thru date must be set when campaign is cancelled.", marketingCampaignGV.getTimestamp("thruDate"));
+		
+		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 0 scheduled campaigns", 0, scheduledCampaigns.size());
+		
+		List<?> cancelledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_CANCELLED"));
+		assertEquals("There must 2 scheduled campaigns", 2, cancelledCampaigns.size());
+	}
+	
+	public void testRemoveContactListFromCampaign() throws GeneralException {
+		Long currTime = System.currentTimeMillis();
+		String campaignName = "Campaign_" + currTime;
+		String fromEmailAddress = "email_" + currTime + "@email.com";
+		String templateId = createMergTemplate();;
+		String contactListId = createContactList();
+		Double budgetedCost = Math.random() * 100000;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
+		String currencyUomId = "INR";
+		
+		String marketingCampaignId = createMarketingCampaign(campaignName, fromEmailAddress, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		
+		contactListId = createContactListWithTwoRecipients();
+		Map results = runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		String campaignListId = (String) results.get("campaignListId"); 
+		
+		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+
+		results = runAndAssertServiceSuccess("mailer.removeContactListFromMarketingCampaign", UtilMisc.toMap("userLogin", admin, "campaignListId", campaignListId));
+		
+		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 2 scheduled campaigns", 0, scheduledCampaigns.size());
+		
+		List<?> cancelledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_CANCELLED"));
+		assertEquals("There must 2 scheduled campaigns", 2, cancelledCampaigns.size());
 	}
 }

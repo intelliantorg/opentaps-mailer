@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javolution.util.FastList;
+
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
@@ -27,7 +29,6 @@ import org.ofbiz.service.LocalDispatcher;
 import org.ofbiz.service.ModelService;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.template.freemarker.FreemarkerUtil;
-import org.opentaps.common.util.UtilCommon;
 import org.opentaps.common.util.UtilMessage;
 
 import freemarker.template.TemplateException;
@@ -82,28 +83,36 @@ public class MarketingCampaignServices {
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> updateMarketingCampaign(DispatchContext dctx, Map<String, Object> context) {
+		LocalDispatcher dispatcher = dctx.getDispatcher();
 		GenericDelegator delegator = dctx.getDelegator();
 		Locale locale = (Locale) context.get("locale");
+		String statusId = (String) context.get("statusId");
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		try {
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
 			}
-			
 			ModelService service = dctx.getModelService("updateMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
-			LocalDispatcher dispatcher = dctx.getDispatcher();
+			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
+				inputs.put("thruDate", UtilDateTime.nowTimestamp());
+			} 
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
 				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, module);
 			}
 			
-			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign",UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
+			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
 			mailerMarketingCampaign.set("fromEmailAddress", context.get("fromEmailAddress"));
 			mailerMarketingCampaign.set("templateId", context.get("templateId"));
 			mailerMarketingCampaign.store();
 
+			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
+				service = dctx.getModelService("mailer.cancelScheduledMailers");
+				inputs = service.makeValid(context, ModelService.IN_PARAM);
+				dctx.getDispatcher().runSync("mailer.cancelScheduledMailers", inputs);
+			} 
 			return serviceResults;
 		} catch (GenericServiceException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
@@ -133,6 +142,7 @@ public class MarketingCampaignServices {
 				inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
 				GenericValue mailerMarketingCampaignContactList = dctx.getDelegator().makeValue("MailerMarketingCampaignAndContactList", inputs);
 				mailerMarketingCampaignContactList.create();
+				serviceResults.put("campaignListId", campaignListId);
 				
 				ModelService service = dctx.getModelService("mailer.scheduleCampaignsForListMembers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
@@ -161,15 +171,21 @@ public class MarketingCampaignServices {
 		Locale locale = (Locale) context.get("locale");
 		String campaignListId = (String) context.get("campaignListId");
 		try {
-			GenericValue marketingCampaignContactList = delegator.findByPrimaryKey("MailerMarketingCampaignAndContactList", UtilMisc.toMap("campaignListId", campaignListId));
-			if (UtilValidate.isEmpty(marketingCampaignContactList)) {
+			GenericValue marketingCampaignCL = delegator.findByPrimaryKey("MailerMarketingCampaignAndContactList", UtilMisc.toMap("campaignListId", campaignListId));
+			if (UtilValidate.isEmpty(marketingCampaignCL)) {
 				return UtilMessage.createAndLogServiceError("CrmErrorMarketingCampaignContactListNotFound", UtilMisc.toMap("campaignListId", campaignListId), locale, module);
 			}
-			marketingCampaignContactList.set("thruDate", UtilDateTime.nowTimestamp());
-			marketingCampaignContactList.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
-			delegator.store(marketingCampaignContactList);
-		} catch (GenericEntityException e2) {
-			return UtilMessage.createAndLogServiceError(e2, module);
+			marketingCampaignCL.set("thruDate", UtilDateTime.nowTimestamp());
+			marketingCampaignCL.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
+			delegator.store(marketingCampaignCL);
+			ModelService service = dctx.getModelService("mailer.cancelScheduledMailers");
+			Map inputs = service.makeValid(context, ModelService.IN_PARAM);
+			inputs.put("marketingCampaignId", marketingCampaignCL.getString("marketingCampaignId"));
+			dctx.getDispatcher().runSync("mailer.cancelScheduledMailers", inputs);
+		} catch (GenericEntityException gee) {
+			return UtilMessage.createAndLogServiceError(gee, module);
+		} catch (GenericServiceException gse) {
+			return UtilMessage.createAndLogServiceError(gse, module);
 		}
 		return ServiceUtil.returnSuccess();
 	}
@@ -303,13 +319,59 @@ public class MarketingCampaignServices {
 		try {
 			GenericValue mailerMarketingCampaignGV = dctx.getDelegator().findByPrimaryKey("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId));
 	        if (!ServiceUtil.isError(serviceResults)) {
-	        	mailerMarketingCampaignGV.setString("emailStatusId", "MAILER_EXECUTED");
+	        	mailerMarketingCampaignGV.setString("statusId", "MAILER_EXECUTED");
 	        	mailerMarketingCampaignGV.store();
 	        } else {
 //	        	TODO do something for error.
 	        }
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(e, module);
+		}
+		return ServiceUtil.returnSuccess();
+	}
+	
+	/**
+	 * Will be used to cancel scheduled mailers.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> cancelScheduledMailers(DispatchContext dctx, Map<String, Object> context) {
+		GenericDelegator delegator = dctx.getDelegator();
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
+		String contactListId = (String) context.get("contactListId");
+		EntityListIterator iterator = null;
+		try {
+			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			if (UtilValidate.isNotEmpty(contactListId)) {
+				conditionsList.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
+			}
+            EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
+            if (Debug.infoOn()) {
+            	Debug.logInfo("The conditions >> " + conditions, module);
+            }
+	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
+	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
+	        List mailersToBeCancelled = FastList.newInstance();
+	        GenericValue mailerCampaignStatusGV = null;
+	        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
+	        	mailerCampaignStatusGV.set("statusId", "MAILER_CANCELLED");
+	        	mailersToBeCancelled.add(mailerCampaignStatusGV);
+            }
+	        if (UtilValidate.isNotEmpty(mailersToBeCancelled)) {
+	        	if (Debug.infoOn()) {
+	        		Debug.logInfo("About to cancel " + mailersToBeCancelled.size() + " mailers.", module);
+	        	}
+	        	delegator.storeAll(mailersToBeCancelled);
+	        }
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} finally {
+			if (iterator != null) {
+				try {
+					iterator.close();
+				} catch (GenericEntityException e) {
+					iterator = null;
+				}
+			}
 		}
 		return ServiceUtil.returnSuccess();
 	}
