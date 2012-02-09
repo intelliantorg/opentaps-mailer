@@ -1,10 +1,9 @@
 <@import location="component://opentaps-common/webapp/common/includes/lib/opentapsFormMacros.ftl"/>
 <script type="text/javascript">
-	function validateThisForm(value){		
-		document.getElementById("action").value=value;
+	function validateThisForm(){		
 		var messageBox = document.getElementById("message");
 		
-		var checkboxArray = document.findCampaignForm.select;
+		var checkboxArray = document.executeBulkCampaign.select;
 		var length = checkboxArray.length;
 		var atleastOneCheckedFlag = false;
 		for(var i = 0 ; i < length; i++){
@@ -24,12 +23,15 @@
 </script>
 <div class="subSectionHeader">
 	<div class="subSectionTitle">${uiLabelMap.MarketingCampaignHeader}</div>
-	<div class="subMenuBar"><@inputSubmit title=uiLabelMap.ButtonPrint onClick="return validateThisForm('print')" /><@inputSubmit title=uiLabelMap.ButtonEmail onClick="return validateThisForm('email')" /></div>
+	<div class="subMenuBar">
+		<a class='subMenuButton' href='#' onclick='javascript:validateThisForm()'>
+		${uiLabelMap.ButtonExecute}
+		</a>
+	</div>
 </div>
 <div>
 	<div><span id="message" class="tabletext" style="color:red"></span></div>
-	<form action="" name="findCampaignForm" method="post">
-		<input id="action" type="hidden" name="action" />
+	<form action="" name="executeBulkCampaign" method="post">
 		<table class="crmsfaListTable">
 			<tr class="crmsfaListTableHeader">
 				<td><span class="tableheadtext"><a class="orderByHeaderLink" href="${listSortTarget}?campaignsOrderBy=campaignName${findParams}#ListMarketingCampaigns">${uiLabelMap.CommonName}<a></span></td>
