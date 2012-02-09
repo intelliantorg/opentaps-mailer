@@ -9,9 +9,8 @@
             <display-entity entity-name="StatusItem"/>
         </field>
         <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1"><display/></field>
-        <field name="fromEmailAddress" title="${uiLabelMap.LabelFromEmailAddress}" position="2"><display/></field>
-        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1"><display/></field>
-        <field name="templateId" title="${uiLabelMap.LabelTemplateId}" position="2" widget-style="linktext">
+        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="2"><display/></field>
+        <field name="templateId" title="${uiLabelMap.LabelTemplateId}" position="1" widget-style="linktext">
 			<hyperlink target="editMergeForms?mergeFormId=${marketingCampaign.templateId}" description="${templateName}" />
         </field>      
         <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display/></field>
@@ -33,23 +32,20 @@
         <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit"><submit/></field>
     </form>
 
-    <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" title="${uiLabelMap.CreateCampaignHeader}" default-map-name="marketingCampaign" target="updateMarketingCampaign"
-        default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
+    <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" 
+    	  title="${uiLabelMap.CreateCampaignHeader}" default-map-name="marketingCampaign" target="updateMarketingCampaign"
+          default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
         <field name="marketingCampaignId"><hidden/></field>
         <field widget-style="inputBox required" title-style="requiredField" name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
-        <field name="fromEmailAddress" widget-style="inputBox required email" title-style="requiredField" title="${uiLabelMap.LabelFromEmailAddress}" position="2"><text/></field>
-        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
-            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
-        </field>
         <field name="templateId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.LabelTemplateId}" position="2">
             <drop-down allow-empty="false">
                 <entity-options entity-name="MergeForm" key-field-name="mergeFormId" description="${mergeFormName}">
                     <entity-order-by field-name="mergeFormName"/>
                 </entity-options>
             </drop-down>
-        </field>        
-        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
+        </field>     
+        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
         <field name="statusId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.CommonStatus}" position="2">
@@ -59,6 +55,9 @@
                     <entity-order-by field-name="sequenceId"/>
                 </entity-options>
             </drop-down>
+        </field>
+        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
+            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>      
         <field name="campaignSummary" title="${uiLabelMap.CommonDescription}">
         	<textarea rows="4" cols="33" />

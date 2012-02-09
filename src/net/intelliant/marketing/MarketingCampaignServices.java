@@ -64,7 +64,6 @@ public class MarketingCampaignServices {
 			serviceResults.put("marketingCampaignId", marketingCampaignId);
 
 			inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
-			inputs.put("fromEmailAddress", context.get("fromEmailAddress"));
 			inputs.put("templateId", context.get("templateId"));
 			GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", inputs);
 			mailerMarketingCampaign.create();
@@ -107,7 +106,6 @@ public class MarketingCampaignServices {
 			}
 			
 			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
-			mailerMarketingCampaign.set("fromEmailAddress", context.get("fromEmailAddress"));
 			mailerMarketingCampaign.set("templateId", templateId);
 			mailerMarketingCampaign.store();
 
