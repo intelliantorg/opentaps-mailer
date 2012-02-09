@@ -259,7 +259,7 @@ public class MarketingCampaignServices {
 		            String emailBodyContent = writer.toString();
 //		        	prepare Comm. Event, and send email.
 					ModelService service = dctx.getModelService("createCommunicationEvent");
-	                Map<String, Object> serviceInputs = service.makeValid(context, "IN");
+	                Map<String, Object> serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
 	                serviceInputs.put("entryDate", UtilDateTime.nowTimestamp());
 	                serviceInputs.put("communicationEventTypeId", "EMAIL_COMMUNICATION");
 	                serviceInputs.put("subject", emailSubject);
@@ -275,7 +275,7 @@ public class MarketingCampaignServices {
 	                }
 	                String communicationEventId = (String) serviceResults.get("communicationEventId");
 	                service = dctx.getModelService("mailer.sendEmailMailer");
-	                serviceInputs = service.makeValid(context, "IN");
+	                serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
 	                serviceInputs.put("communicationEventId", communicationEventId);
 	                serviceInputs.put("campaignStatusId", campaignStatusId);
 	                dctx.getDispatcher().runAsync(service.name, serviceInputs);
@@ -316,7 +316,7 @@ public class MarketingCampaignServices {
 		try {
 			commEventGV = dctx.getDelegator().findByPrimaryKey("CommunicationEvent", UtilMisc.toMap("communicationEventId", communicationEventId));
 			ModelService service = dctx.getModelService("sendMail");
-			Map<String, Object> serviceInputs = service.makeValid(context, "IN");
+			Map<String, Object> serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
 	        serviceInputs.put("partyId", "_NA_");
 	        serviceInputs.put("sendFrom", commEventGV.getString("fromString"));
 	        serviceInputs.put("subject", commEventGV.getString("subject"));
