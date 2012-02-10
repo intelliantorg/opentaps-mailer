@@ -1,6 +1,7 @@
 import org.ofbiz.base.util.*;
 import org.ofbiz.entity.condition.*;
 import org.ofbiz.entity.util.EntityUtil;
+import org.ofbiz.entity.GenericValue;
 
 userLogin = request.getAttribute("userLogin");
 mergeFormId = context.get("mergeFormId");
@@ -24,3 +25,10 @@ if (mergeFormCategories != null) {
     categories.removeAll(mergeFormCategories);
 }
 context.put("categories", categories);
+
+mergeFormTypes = delegator.findAll("MergeFormType");
+mergeFormTypesCombobox = new ArrayList();
+for(GenericValue entity : mergeFormTypes){
+	mergeFormTypesCombobox.add(UtilMisc.toMap("mergeFormTypeId",entity.get("mergeFormTypeId"),"description",entity.get("description")));
+}
+context.put("mergeFormTypesCombobox", mergeFormTypesCombobox);

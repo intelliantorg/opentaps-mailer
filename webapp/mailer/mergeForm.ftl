@@ -87,29 +87,29 @@
 	<div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.LabelTemplateType}</span>
       <span class="formInputSpan">
-    	<#assign email = Static["org.ofbiz.base.util.UtilMisc"].toMap("value", "email", "name", "Email")>							
-		<#assign pdf = Static["org.ofbiz.base.util.UtilMisc"].toMap("value", "pdf", "name", "PDF")>
-		<#assign formTypeCombo = [email, pdf] >								
-		<@inputSelect name="contactMechTypeId" list=formTypeCombo displayField="name" key="value" />  
+		<@inputSelect name="mergeFormTypeId" default=mergeForm.mergeFormTypeId?if_exists list=mergeFormTypesCombobox displayField="description" key="mergeFormTypeId" onChange="campaignTypeOnChange(this.value)" />  
       </span>
     </div>
-    <div class="formRow">
+    
+    <div class="formRow" id="emailAddressContainer" <#if (mergeForm.mergeFormTypeId?if_exists != "EMAIL") >style="display:none"</#if> >
       <span class="formLabelRequired">${uiLabelMap.LabelFromEmailAddress}</span>
       <span class="formInputSpan">
         <input type="text" class="inputBox required" name="fromEmailAddress" value="${(mergeForm.fromEmailAddress)?if_exists}" size="50" maxlength="100"/>
       </span>
     </div>
-    <div class="formRow">
-      <span class="formLabelRequired">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
-      <span class="formInputSpan">
-      	<@inputFile name="headerImageLocation" class="inputBox required" />
-      </span>
-    </div>
-    <div class="formRow">
-      <span class="formLabelRequired">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
-      <span class="formInputSpan">
-      	<@inputFile name="footerImageLocation" class="inputBox required" />
-      </span>
+    <div id="headerFooterImageContainer" <#if mergeForm.mergeFormTypeId?if_exists == null || mergeForm.mergeFormTypeId?if_exists != "PRINT" > style="display:none"</#if> >
+	    <div class="formRow">
+	      <span class="formLabelRequired">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
+	      <span class="formInputSpan">
+	      	<@inputFile name="headerImageLocation" class="inputBox required" />
+	      </span>
+	    </div>
+	    <div class="formRow">
+	      <span class="formLabelRequired">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
+	      <span class="formInputSpan">
+	      	<@inputFile name="footerImageLocation" class="inputBox required" />
+	      </span>
+	    </div>
     </div>
     
     <div class="formRow">
