@@ -75,7 +75,10 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
         <auto-attributes include="pk" mode="OUT" optional="true"/>        
         <attribute name="mergeFormName" type="String" mode="IN" optional="false"/>
-        <attribute name="fromEmailAddress" type="String" mode="IN" optional="false"/>
+        <attribute name="mergeFormTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromEmailAddress" type="String" mode="IN" optional="true"/>
+        <attribute name="headerImageLocation" type="String" mode="IN" optional="true"/>
+        <attribute name="footerImageLocation" type="String" mode="IN" optional="true"/>
         <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
         <attribute name="privateForm" type="String" mode="IN" optional="true"/>
@@ -85,7 +88,10 @@
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
         <auto-attributes include="pk" mode="INOUT" optional="true"/>        
         <attribute name="mergeFormName" type="String" mode="IN" optional="false"/>
-        <attribute name="fromEmailAddress" type="String" mode="IN" optional="false"/>
+        <attribute name="mergeFormTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromEmailAddress" type="String" mode="IN" optional="true"/>
+        <attribute name="headerImageLocation" type="String" mode="IN" optional="true"/>
+        <attribute name="footerImageLocation" type="String" mode="IN" optional="true"/>
         <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
         <attribute name="privateForm" type="String" mode="IN" optional="true"/>

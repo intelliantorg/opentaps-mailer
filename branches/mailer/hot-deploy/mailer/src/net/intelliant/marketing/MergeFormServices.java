@@ -18,20 +18,17 @@ import org.opentaps.common.util.UtilMessage;
 public class MergeFormServices {
 	private final static String module = MergeFormServices.class.getName();
     public static final String errorResource = "OpentapsErrorLabels";
-	
+
     public static Map<String, Object> createMergeForm(DispatchContext dctx, Map<String, Object> context) {
     	Map<String, Object> results = ServiceUtil.returnSuccess();
         GenericDelegator delegator = dctx.getDelegator();
         Locale locale = (Locale) context.get("locale");
-        Boolean privateForm = "Y".equals((String) context.get("privateForm"));
 
         GenericValue mergeForm = null;
         String mergeFormId = delegator.getNextSeqId("MergeForm");
         Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
         mergeForm = delegator.makeValue("MergeForm", newMergeFormMap);
         mergeForm.setNonPKFields(context);
-
-        if (! privateForm) mergeForm.set("partyId", null);
 
         try {
             delegator.create(mergeForm);
