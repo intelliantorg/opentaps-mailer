@@ -57,8 +57,8 @@ public class ContactListServices {
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> importContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
-		String fileFormat = "EXCEL";
 		String fileName = (String) context.get("_uploadedFile_fileName");
+		String fileFormat = (String) context.get("_uploadedFile_contentType");
 
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperId = (String) context.get("importMapperId");
@@ -68,6 +68,7 @@ public class ContactListServices {
 		Map<String, Object> input = UtilMisc.toMap("dataResourceId", null, "binData", context.get("uploadedFile"), "dataResourceTypeId", "LOCAL_FILE", "objectInfo", excelFilePath);
 		try {
 			Map<String, Object> results = dctx.getDispatcher().runSync("createAnonFile", input);
+			System.out.println("#### Results - "+results);
 			if (ServiceUtil.isError(results)) {
 				return results;
 			}
@@ -79,14 +80,19 @@ public class ContactListServices {
 				return UtilMessage.createAndLogServiceError("[" + fileFormat + "] is not a supported file format.", MODULE);
 			}
 		} catch (GenericServiceException e) {
+			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (GenericEntityException e) {
+			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (FileNotFoundException e) {
+			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (IOException e) {
+			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (Exception e) {
+			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		}
 	}
@@ -121,10 +127,12 @@ public class ContactListServices {
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createAndScheduleCampaigns(delegator, contactListId, recipientId, (Date)recipientIdAndSalesServiceDate.get("saleOrServiceDate"));
 			} catch (GenericEntityException gee) {
+				Debug.log(gee);
 				TransactionUtil.rollback();
 				failureReport.put(String.valueOf(rowIndex-1), gee.getMessage());
 				failureCount++;
 			} catch (Exception e) {
+				Debug.log(e);
 				TransactionUtil.rollback();
 				failureReport.put(String.valueOf(rowIndex-1), e.getMessage());
 				failureCount++;
