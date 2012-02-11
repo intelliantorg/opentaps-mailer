@@ -13,6 +13,7 @@ import net.intelliant.imports.UtilImport;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
+import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.util.EntityUtil;
@@ -35,6 +36,7 @@ public class ImportTests extends MailerTests {
 		}
 		String tokenizedPath = "hot-deploy/mailer/src/net/intelliant/tests/xls/import_sample.xls";
 		String excelFilePath = ofbizHome + tokenizedPath.replaceAll("/", File.separator);
+		System.out.println("#### - Excel file path : "+excelFilePath);
 		try {
 			List<String> expectedIndices = new ArrayList<String>();
 			expectedIndices.add("0");
@@ -89,7 +91,7 @@ public class ImportTests extends MailerTests {
 		return null;
 	}
 
-	private String createContentData(GenericValue userLogin) throws GenericEntityException {
+	private String createContentData(GenericDelegator delegator, GenericValue userLogin) throws GenericEntityException {
 		// Initializing excel file location
 		String ofbizHome = System.getProperty("ofbiz.home");
 		if (!ofbizHome.endsWith(File.separator)) {
@@ -123,21 +125,21 @@ public class ImportTests extends MailerTests {
 		return contentId;
 	}
 
-	private Map<String, Object> getCreateImportMapperData(GenericValue userLogin) throws GenericEntityException {
+	public Map<String, Object> getCreateImportMapperData(GenericDelegator delegator, GenericValue userLogin) throws GenericEntityException {
 		Long timeStamp = System.currentTimeMillis();
 
-		Map<String, Object> createData = UtilMisc.toMap("userLogin", admin);
+		Map<String, Object> createData = UtilMisc.toMap("userLogin", userLogin);
 		createData.put("importMapperName", "Name-" + timeStamp);
 		createData.put("ofbizEntityName", "MailerRecipient");
-		createData.put("contentId", createContentData(userLogin));
+		createData.put("contentId", createContentData(delegator, userLogin));
 		createData.put("description", "Des-" + timeStamp);
-		createData.put("isFirstRowHeader", false);
+		createData.put("isFirstRowHeader", true);
 
 		return createData;
 	}
 
 	public void testConfigureImportMapper() throws GenericEntityException {
-		Map<String, Object> inputs = getCreateImportMapperData(admin);
+		Map<String, Object> inputs = getCreateImportMapperData(delegator, admin);
 
 		Map<String, Object> inputsEntityColNames = UtilMisc.toMap("0", "firstName");
 		inputsEntityColNames.put("1", "lastName");
@@ -164,7 +166,7 @@ public class ImportTests extends MailerTests {
 		assertEquals(mailerImportMapperGV.get("ofbizEntityName"), inputs.get("ofbizEntityName"));
 		assertEquals(mailerImportMapperGV.get("contentId"), inputs.get("contentId"));
 		assertEquals(mailerImportMapperGV.get("description"), inputs.get("description"));
-		assertEquals(mailerImportMapperGV.get("isFirstRowHeader"), "N");
+		assertEquals(mailerImportMapperGV.get("isFirstRowHeader"), "Y");
 	}
 
 	// To test inserted data is expected or not?
@@ -181,7 +183,7 @@ public class ImportTests extends MailerTests {
 
 	public void testUpdateImportMapper() throws GenericEntityException {
 		// Create import mapper
-		Map<String, Object> inputs = getCreateImportMapperData(admin);
+		Map<String, Object> inputs = getCreateImportMapperData(delegator, admin);
 
 		Map<String, Object> inputsEntityColNames = UtilMisc.toMap("0", "firstName");
 		inputsEntityColNames.put("1", "lastName");
@@ -200,7 +202,7 @@ public class ImportTests extends MailerTests {
 		testConfigureImportColumnMapperData(importMapperId, inputs);
 
 		// Update import mapper.
-		Map<String, Object> updateInputs = getCreateImportMapperData(admin);
+		Map<String, Object> updateInputs = getCreateImportMapperData(delegator, admin);
 		updateInputs.put("importMapperId", importMapperId);
 		updateInputs.put("isFirstRowHeader", "Y");
 		updateInputs.remove("ofbizEntityName");
@@ -272,7 +274,7 @@ public class ImportTests extends MailerTests {
 		runAndAssertServiceFailure("mailer.updateImportMapping", inputs);
 		
 		inputs.clear();
-		inputs = getCreateImportMapperData(admin);
+		inputs = getCreateImportMapperData(delegator, admin);
 		inputs.put("importMapperId", importMapperId);
 		//inputs.remove("ofbizEntityName");
 		//inputs.remove("contentId");
@@ -288,7 +290,7 @@ public class ImportTests extends MailerTests {
 		runAndAssertServiceFailure("mailer.updateImportMapping", inputs);
 
 		inputs.clear();
-		inputs = getCreateImportMapperData(admin);
+		inputs = getCreateImportMapperData(delegator,admin);
 		inputs.put("importMapperId", importMapperId);
 		inputs.remove("ofbizEntityName");
 		inputs.remove("contentId");

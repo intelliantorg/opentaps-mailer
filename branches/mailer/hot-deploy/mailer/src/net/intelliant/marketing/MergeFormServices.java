@@ -33,7 +33,7 @@ public class MergeFormServices {
         if(UtilValidate.areEqual(mergeFormTypeId, "EMAIL") && (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilValidate.isEmail(mergeFormEmailAddress))){
         	return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCampaignTemplateForEmail", locale), module);
         }
-                
+        
         String mergeFormId = delegator.getNextSeqId("MergeForm");
         Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
         mergeForm = delegator.makeValue("MergeForm", newMergeFormMap);
