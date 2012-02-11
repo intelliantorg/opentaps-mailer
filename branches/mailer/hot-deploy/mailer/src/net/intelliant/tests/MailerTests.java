@@ -55,6 +55,8 @@ public class MailerTests extends OpentapsTestCase {
 		defaultInputs.put("scheduleAt", "1");
 		defaultInputs.put("mergeFormText", "Sample text");
 		defaultInputs.put("userLogin", admin);
+		defaultInputs.put("mergeFormTypeId", "EMAIL");
+		defaultInputs.put("fromEmailAddress", "test@email.com");
 		if (UtilValidate.isNotEmpty(overrideDefaults)) {
 			defaultInputs.putAll(overrideDefaults);
 		}
