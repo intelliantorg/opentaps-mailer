@@ -25,6 +25,15 @@ public class MergeFormServices {
         Locale locale = (Locale) context.get("locale");
 
         GenericValue mergeForm = null;
+        
+        // If template type is email, then email field must be filled with valid email id. 
+        // Note - UtilValidates in-build method is not up to the mark.
+        String mergeFormTypeId = String.valueOf(context.get("mergeFormTypeId"));
+        String mergeFormEmailAddress = String.valueOf(context.get("fromEmailAddress"));        
+        if(UtilValidate.areEqual(mergeFormTypeId, "EMAIL") && (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilValidate.isEmail(mergeFormEmailAddress))){
+        	return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCampaignTemplateForEmail", locale), module);
+        }
+                
         String mergeFormId = delegator.getNextSeqId("MergeForm");
         Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
         mergeForm = delegator.makeValue("MergeForm", newMergeFormMap);
@@ -46,13 +55,11 @@ public class MergeFormServices {
         Locale locale = (Locale) context.get("locale");
         String scheduleAt = (String) context.get("scheduleAt");
         String mergeFormId = (String) context.get("mergeFormId");
-        Boolean privateForm = "Y".equals((String) context.get("privateForm"));
         results.put("mergeFormId", mergeFormId);
-       
+
         try {
         	GenericValue mergeForm = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
             mergeForm.setNonPKFields(context);
-            if ((! privateForm)) mergeForm.set("partyId", null);
             delegator.store(mergeForm);
             
             String oldScheduleAt = mergeForm.getString("scheduleAt");            
