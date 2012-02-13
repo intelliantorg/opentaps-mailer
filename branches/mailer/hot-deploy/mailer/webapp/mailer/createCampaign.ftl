@@ -16,15 +16,16 @@
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelTemplateId />
 							</div>
 							<div class="fieldContainer">
-								<@inputSelect name="templateId" list=mergeFormList key="mergeFormId" displayField="mergeFormName" required=false  class="dropDown required" />						
+								<@inputSelect name="templateId" list=mergeFormList key="mergeFormId" displayField="mergeFormName" required=false class="dropDown required" />						
 							</div>
 						</div>
 						<div class="rowContainer">
 							<div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.CommonFrom />
+								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonFrom />
 							</div>
 							<div class="fieldContainer">
-								<@inputDateTime name="fromDate" />
+								<@inputDateTime name="fromDate" class="inputBox required" />
+								<label for="fromDate_c_date" generated="true" class="error" style="display:none">This field is required.</label>
 							</div>							
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.LabelContactList />
@@ -32,15 +33,15 @@
 							<div class="fieldContainer">
 								<#assign orderBy = Static["org.ofbiz.base.util.UtilMisc"].toList("contactListName")>
 								<#assign templateItems = delegator.findAll("ContactList",orderBy)>
-								<@inputSelect name="contactListId" list=templateItems key="contactListId" displayField="contactListName" required=true />								
+								<@inputSelect name="contactListId" list=templateItems key="contactListId" displayField="contactListName" required=false class="dropDown required" />								
 							</div>
 						</div>
 						<div class="rowContainer">
 							<div class="label">
-								<@display class="tableheadtext" text=uiLabelMap.CommonThru />
+								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonThru />
 							</div>
 							<div class="fieldContainer">
-								<@inputDateTime name="thruDate" />
+								<@inputDateTime name="thruDate" class="inputBox required" />
 							</div>
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
