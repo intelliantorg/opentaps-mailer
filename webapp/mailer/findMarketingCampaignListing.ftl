@@ -43,23 +43,23 @@
 				<td><span class="tableheadtext">Select</span></td>
 			</tr>
 			<#list campaignsListIt as campaignsListItem>
-			<tr class="${tableRowClass(campaignsListItem_index)}">
-				<td>
-					<a class="linktext" href="viewMarketingCampaign?marketingCampaignId=${campaignsListItem.marketingCampaignId}">
-						${campaignsListItem.campaignName} (${campaignsListItem.marketingCampaignId})
-					</a>
-				</td>
-				<td><span class="tabletext">${campaignsListItem.description?default("")}</span></td>
-				<td><span class="tabletext"><@displayDate date=campaignsListItem.fromDate?default("") /></span></td>
-				<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>			
-				<td>
-					<span class="tabletext">			
-						<#if campaignsListItem.statusId?exists && campaignsListItem.templateId?exists && (campaignsListItem.statusId == "MKTG_CAMP_INPROGRESS") >
-							<input type="checkbox" name="select_${campaignsListItem_index}" value="${campaignsListItem.marketingCampaignId}" />
-						</#if>
-					</span>
-				</td>
-			</tr>
+				<tr class="${tableRowClass(campaignsListItem_index)}">
+					<td>
+						<a class="linktext" href="viewMarketingCampaign?marketingCampaignId=${campaignsListItem.marketingCampaignId}">
+							${campaignsListItem.campaignName} (${campaignsListItem.marketingCampaignId})
+						</a>
+					</td>
+					<td><span class="tabletext">${campaignsListItem.description?default("")}</span></td>
+					<td><span class="tabletext"><@displayDate date=campaignsListItem.fromDate?default("") /></span></td>
+					<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>			
+					<td>
+						<span class="tabletext">			
+							<#if campaignsListItem.statusId?exists && campaignsListItem.templateId?exists && (campaignsListItem.statusId == "MKTG_CAMP_INPROGRESS")>
+								<input type="checkbox" name="select_${campaignsListItem_index}" value="${campaignsListItem.marketingCampaignId}" />
+							</#if>
+						</span>
+					</td>
+				</tr>
 			</#list>
 		</table>
 	</form>
