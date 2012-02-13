@@ -18,6 +18,10 @@ if (UtilValidate.isNotEmpty(templateId)) {
 	context.put("templateName", template.getString("mergeFormName"));
 }
 
+statusId = marketingCampaign.get("statusId");
+currentStatus =  delegator.findByPrimaryKey("StatusItem", UtilMisc.toMap("statusId", statusId));
+context.put("currentStatus", currentStatus); 
+
 context.put("marketingCampaign", marketingCampaign);
 
 //put to history
