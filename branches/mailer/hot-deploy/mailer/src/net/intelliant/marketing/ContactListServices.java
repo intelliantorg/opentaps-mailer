@@ -223,9 +223,17 @@ public class ContactListServices {
 	}
 
 	private static GenericValue createCampaignLine(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
-		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-
-		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
+		GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		GenericValue marketingCampaign = mailerMarketingCampaign.getRelatedOne("MarketingCampaign");
+		String marketingCampaignStatusId = marketingCampaign.getString("statusId");
+		String campaignLineStatusId = "MAILER_HOLD";
+		if (marketingCampaignStatusId.equals("MKTG_CAMP_INPROGRESS") || marketingCampaignStatusId.equals("MKTG_CAMP_APPROVED")) {
+			campaignLineStatusId = "MAILER_SCHEDULED";
+		} else if (marketingCampaignStatusId.equals("MKTG_CAMP_PLANNED")) {
+			campaignLineStatusId = "MAILER_HOLD";
+		}
+		
+		GenericValue configuredTemplate = mailerMarketingCampaign.getRelatedOne("MergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
 			
@@ -241,7 +249,7 @@ public class ContactListServices {
 			rowToInsertGV.put("recipientId", recipientId);
 			rowToInsertGV.put("contactListId", contactListId);
 			rowToInsertGV.put("marketingCampaignId", marketingCampaignId);
-			rowToInsertGV.put("statusId", "MAILER_SCHEDULED");
+			rowToInsertGV.put("statusId", campaignLineStatusId);
 			rowToInsertGV.put("scheduledForDate", scheduledForDate);
 			return rowToInsertGV;
 		} else {
