@@ -1,11 +1,14 @@
 package net.intelliant.tests;
 
+import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 import javolution.util.FastMap;
 
 import org.ofbiz.base.util.GeneralException;
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.util.EntityUtil;
@@ -83,7 +86,8 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testAddContactListToMarketingCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String templateId = createMergTemplate(null);
+		String scheduleAt = "1";
+		String templateId = createMergTemplate(UtilMisc.toMap("scheduleAt", scheduleAt));
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -94,8 +98,14 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		List<GenericValue> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"), UtilMisc.toList("recipientId"));
 		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		
+		for (GenericValue scheduledCampaign : scheduledCampaigns) {
+			GenericValue recipient = scheduledCampaign.getRelatedOne("MailerRecipient");
+			Date expected = UtilDateTime.addDaysToTimestamp(new Timestamp(recipient.getDate(dateOfOperationColumnName).getTime()), Integer.parseInt(scheduleAt));
+			assertEquals(new Date(expected.getTime()), scheduledCampaign.getDate("scheduledForDate"));
+		}
 	}
 
 	public void testUpdateMarketingCampaign() throws GeneralException {
