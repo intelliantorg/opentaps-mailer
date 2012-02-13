@@ -256,7 +256,7 @@ public class ContactListServices {
 		return null;
 	}
 
-	public static Map<String, Object> scheduleCampaignsForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
+	public static Map<String, Object> createCampaignLineForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		List<GenericValue> rowsToInsert = FastList.newInstance();
@@ -264,7 +264,8 @@ public class ContactListServices {
 			List<GenericValue> members = dctx.getDelegator().findByAnd("MailerRecipientContactList", UtilMisc.toMap("contactListId", contactListId));
 			if (UtilValidate.isNotEmpty(members)) {
 				for (GenericValue member : members) {
-					GenericValue rowToInsertGV = createAndScheduleCampaign(dctx.getDelegator(), marketingCampaignId, contactListId, member.getString("recipientId"), new Date());
+					GenericValue mailerRecipeint = member.getRelatedOne("MailerRecipient");
+					GenericValue rowToInsertGV = createAndScheduleCampaign(dctx.getDelegator(), marketingCampaignId, contactListId, member.getString("recipientId"), mailerRecipeint.getDate(dateOfOperationColumnName));
 					if (UtilValidate.isNotEmpty(rowToInsertGV)) {
 						rowsToInsert.add(rowToInsertGV);
 					}
