@@ -49,9 +49,10 @@
             <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
         </field>
         <field name="statusId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.CommonStatus}" position="2">
-            <drop-down allow-empty="false">
-                <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
-                    <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
+            <drop-down allow-empty="false" current-description="${currentStatus.description}">
+				<entity-options entity-name="StatusValidChangeToDetail" key-field-name="statusIdTo" description="${transitionName}">
+                    <entity-constraint name="isStatusToVisible" operator="not-equals" value="N"/>
+                    <entity-constraint name="statusId" value="${marketingCampaign.statusId}"/>
                     <entity-order-by field-name="sequenceId"/>
                 </entity-options>
             </drop-down>

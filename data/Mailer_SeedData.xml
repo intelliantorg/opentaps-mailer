@@ -8,4 +8,16 @@
 	
 	<MergeFormType mergeFormTypeId="EMAIL" description="Email"/>
 	<MergeFormType mergeFormTypeId="PRINT" description="Print"/>
+	
+    <StatusValidChange statusId="MKTG_CAMP_PLANNED" statusIdTo="MKTG_CAMP_APPROVED" transitionName="Approve Marketing Campaign"/>
+	<StatusValidChange statusId="MKTG_CAMP_PLANNED" statusIdTo="MKTG_CAMP_CANCELLED" transitionName="Cancel Marketing Campaign"/>
+	
+    <StatusValidChange statusId="MKTG_CAMP_APPROVED" statusIdTo="MKTG_CAMP_INPROGRESS" transitionName="Marketing Campaign In Progress" isStatusToVisible="N"/>
+	<StatusValidChange statusId="MKTG_CAMP_APPROVED" statusIdTo="MKTG_CAMP_CANCELLED" transitionName="Cancel Marketing Campaign"/>
+    
+	<StatusValidChange statusId="MKTG_CAMP_INPROGRESS" statusIdTo="MKTG_CAMP_PLANNED" transitionName="Plan Marketing Campaign"/>
+    <StatusValidChange statusId="MKTG_CAMP_INPROGRESS" statusIdTo="MKTG_CAMP_COMPLETED" transitionName="Complete Marketing Campaign" isStatusToVisible="N"/>
+    <StatusValidChange statusId="MKTG_CAMP_INPROGRESS" statusIdTo="MKTG_CAMP_CANCELLED" transitionName="Cancel Marketing Campaign"/>
+    
+    <StatusValidChange statusId="MKTG_CAMP_COMPLETED" statusIdTo="MKTG_CAMP_INPROGRESS" transitionName="Marketing Campaign In Progress" isStatusToVisible="N"/>
 </entity-engine-xml>
