@@ -2,6 +2,19 @@
 
 <screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/widget-screen.xsd">
 
+    <screen name="main-decorator">
+        <section>
+            <actions>
+                <property-map resource="opentaps" map-name="configProperties" global="true"/>
+                <script location="component://opentaps-common/webapp/common/WEB-INF/actions/includes/main-decorator.bsh"/>
+            </actions>
+            <widgets>
+                <!-- Instead of using the screen widget to do layout, we'll use an FTL file. -->
+                <platform-specific><html><html-template location="component://mailer/webapp/mailer/main-decorator.ftl"/></html></platform-specific>
+            </widgets>
+        </section>
+    </screen>
+
     <screen name="main-application-decorator">
         <section>
             <actions>
@@ -13,7 +26,7 @@
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/main-decorator.bsh"/>
             </actions>
             <widgets>
-                <decorator-screen name="main-decorator" location="component://opentaps-common/widget/screens/common/CommonScreens.xml">
+                <decorator-screen name="main-decorator">
                     <decorator-section name="application-layout">
                         <decorator-section-include name="section-layout"/>
                     </decorator-section>
