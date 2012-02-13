@@ -97,6 +97,9 @@ public class MarketingCampaignServices {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
 				}
 			}
+			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
+			String oldStatusId = marketingCampaign.getString("statusId");
+
 			ModelService service = dctx.getModelService("updateMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
 			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
@@ -111,7 +114,7 @@ public class MarketingCampaignServices {
 			String oldTemplateId = mailerMarketingCampaign.getString("templateId");
 			mailerMarketingCampaign.set("templateId", templateId);
 			mailerMarketingCampaign.store();
-
+			
 			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
 				service = dctx.getModelService("mailer.cancelCreatedMailers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
@@ -128,6 +131,19 @@ public class MarketingCampaignServices {
 				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
 				if (ServiceUtil.isError(serviceResults)) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+				}
+			}
+			if (Debug.infoOn()) {
+				Debug.logInfo("[mailer.updateMarketingCampaign] oldStatusId >> " + oldStatusId, module);
+				Debug.logInfo("[mailer.updateMarketingCampaign] statusId >> " + statusId, module);
+			}
+			if (UtilValidate.isNotEmpty(statusId) && !UtilValidate.areEqual(oldStatusId, statusId)) {
+				GenericValue statusVC = delegator.findByPrimaryKey("StatusValidChange", UtilMisc.toMap("statusId", oldStatusId, "statusIdTo", statusId));
+				if (UtilValidate.isNotEmpty(statusVC.getString("postChangeMessage"))) {
+					serviceResults.put(ModelService.SUCCESS_MESSAGE, UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale));
+				}
+				if (Debug.infoOn()) {
+					Debug.logInfo("[mailer.updateMarketingCampaign] postChangeMessage >> " + UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale), module);
 				}
 			}
 			return serviceResults;
