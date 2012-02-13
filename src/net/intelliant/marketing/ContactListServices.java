@@ -123,12 +123,14 @@ public class ContactListServices {
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createCampaignLines(delegator, contactListId, recipientId, customEntityObj.getDate(dateOfOperationColumnName));
 			} catch (GenericEntityException gee) {
+				Debug.logError(gee, MODULE);
 				TransactionUtil.rollback();
-				failureReport.put(String.valueOf(rowIndex-1), gee.getMessage());
+				failureReport.put(String.valueOf(rowIndex - 1), gee.getMessage());
 				failureCount++;
 			} catch (Exception e) {
+				Debug.logError(e, MODULE);
 				TransactionUtil.rollback();
-				failureReport.put(String.valueOf(rowIndex-1), e.getMessage());
+				failureReport.put(String.valueOf(rowIndex - 1), e.getMessage());
 				failureCount++;
 			} finally {
 				TransactionUtil.commit();
@@ -185,7 +187,7 @@ public class ContactListServices {
 					throw new GenericEntityException(" '" + cellValue + "' is not a valid phone no");
 				}
 			} else if (modelField.getType().equals("date")) {
-				cellValue = excelCell.getDateCellValue();
+				cellValue = new java.sql.Date(excelCell.getDateCellValue().getTime());
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isDate(simpleDateFormat.format(cellValue)))) {
 					throw new GenericEntityException(" '" + cellValue + "' is not a valid date");
 				}
