@@ -1,5 +1,6 @@
 package net.intelliant.tests;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import org.ofbiz.base.util.UtilDateTime;
@@ -75,7 +76,7 @@ public class MailerTests extends OpentapsTestCase {
 		
 		recipientId = delegator.getNextSeqId("MailerRecipient");
 		columns = UtilMisc.toMap("recipientId", recipientId);
-		columns.put(dateOfOperationColumnName, UtilDateTime.nowDate());
+		columns.put(dateOfOperationColumnName, UtilDateTime.addDaysToTimestamp(new Timestamp(UtilDateTime.nowDate().getTime()), 1));
 		delegator.create("MailerRecipient", columns);
 		delegator.create("MailerRecipientContactList", UtilMisc.toMap("recipientId", recipientId, "contactListId", contactListId));
 		
