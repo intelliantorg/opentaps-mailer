@@ -23,6 +23,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.ofbiz.base.util.Debug;
+import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
@@ -210,7 +211,7 @@ public class ContactListServices {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void createAndScheduleCampaigns(GenericDelegator delegator, String contactListId, String recipientId, Date salesAndServiceDate) throws Exception {
+	private static void createAndScheduleCampaigns(GenericDelegator delegator, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
 		List<GenericValue> rowsToInsert = FastList.newInstance();
 		EntityConditionList conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId), EntityUtil.getFilterByDateExpr()), EntityOperator.AND);
 		List<String> selectColumns = UtilMisc.toList("contactListId", "marketingCampaignId");
@@ -227,7 +228,7 @@ public class ContactListServices {
 		}
 	}
 
-	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId, Date salesAndServiceDate) throws Exception {
+	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
 		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
 		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
@@ -238,7 +239,7 @@ public class ContactListServices {
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
 				scheduledForDate = UtilDateTime.addDaysToTimestamp(new Timestamp(salesAndServiceDate.getTime()), Integer.parseInt(scheduleAt));
 			} else {
-				throw new Exception("scheduleAt must be set at Form Letter Template");
+				throw new GeneralException("scheduleAt must be set at Form Letter Template");
 			}
 			
 			GenericValue rowToInsertGV = delegator.makeValue("MailerCampaignStatus");
@@ -255,7 +256,7 @@ public class ContactListServices {
 		return null;
 	}
 
-	public static Map<String, Object> scheduleCampaignsForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) throws Exception {
+	public static Map<String, Object> scheduleCampaignsForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		List<GenericValue> rowsToInsert = FastList.newInstance();
@@ -278,6 +279,8 @@ public class ContactListServices {
 			}
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError("Encountered errors while scheduling campaigns.", MODULE);
+		} catch (GeneralException e) {
+			return UtilMessage.createAndLogServiceError("Encountered errors while scheduling campaigns. - " + e.getMessage(), MODULE);
 		}
 		return ServiceUtil.returnSuccess();
 	}
