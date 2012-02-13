@@ -404,7 +404,7 @@ public class MarketingCampaignServices {
 		String scheduleAt = (String) context.get("scheduleAt");
 		EntityListIterator iterator = null;
 		try {
-			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
             	Debug.logInfo("The conditions >> " + conditions, module);
