@@ -9,7 +9,7 @@
 	<MergeFormType mergeFormTypeId="EMAIL" description="Email"/>
 	<MergeFormType mergeFormTypeId="PRINT" description="Print"/>
 	
-    <StatusValidChange statusId="MKTG_CAMP_PLANNED" statusIdTo="MKTG_CAMP_APPROVED" transitionName="Approve Marketing Campaign"/>
+    <StatusValidChange statusId="MKTG_CAMP_PLANNED" statusIdTo="MKTG_CAMP_APPROVED" transitionName="Approve Marketing Campaign" postChangeMessage="statusChangedToApproved" preChangeMessage="statusChangeToCancel"/>
 	<StatusValidChange statusId="MKTG_CAMP_PLANNED" statusIdTo="MKTG_CAMP_CANCELLED" transitionName="Cancel Marketing Campaign"/>
 	
     <StatusValidChange statusId="MKTG_CAMP_APPROVED" statusIdTo="MKTG_CAMP_INPROGRESS" transitionName="Marketing Campaign In Progress" isStatusToVisible="N"/>
