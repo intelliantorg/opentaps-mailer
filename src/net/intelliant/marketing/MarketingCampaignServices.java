@@ -161,7 +161,7 @@ public class MarketingCampaignServices {
 				mailerMarketingCampaignContactList.create();
 				serviceResults.put("campaignListId", campaignListId);
 				
-				ModelService service = dctx.getModelService("mailer.scheduleCampaignsForListMembers");
+				ModelService service = dctx.getModelService("mailer.createCampaignLineForListMembers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
 				inputs.put("marketingCampaignId", marketingCampaignId);
 				inputs.put("contactListId", contactListId);

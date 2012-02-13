@@ -109,7 +109,7 @@
        <attribute name="failureReport" type="Map" mode="OUT" optional="true"/>
     </service>
     
-	<service name="mailer.scheduleCampaignsForListMembers" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="scheduleCampaignsForListMembers" auth="true">
+	<service name="mailer.createCampaignLineForListMembers" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="createCampaignLineForListMembers" auth="true">
 		<description>Schedule campaigns for contact list members, to be invoked when contact list is associated with campaign.</description>
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>
