@@ -192,17 +192,22 @@
         <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
         <alias-all entity-alias="MC"/>
         <alias-all entity-alias="MMC"/>
-        <view-link entity-alias="MC" rel-entity-alias="MMC" rel-optional="true">
+        <view-link entity-alias="MMC" rel-entity-alias="MC" rel-optional="true">
             <key-map field-name="marketingCampaignId"/>
         </view-link>
     </view-entity>
 
     <view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAndStatusItem" package-name="net.intelliant.mailer">
-        <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaignAndMarketingCampaignAppl"/>
+		<member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
+        <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
         <member-entity entity-alias="SI" entity-name="StatusItem"/>
+        <alias-all entity-alias="MC"/>
         <alias-all entity-alias="MMC"/>
         <alias-all entity-alias="SI"/>
-        <view-link entity-alias="MMC" rel-entity-alias="SI" rel-optional="true">
+        <view-link entity-alias="MMC" rel-entity-alias="MC" rel-optional="true">
+            <key-map field-name="marketingCampaignId"/>
+        </view-link>
+        <view-link entity-alias="MC" rel-entity-alias="SI" rel-optional="true">
             <key-map field-name="statusId"/>
         </view-link>
     </view-entity>  
