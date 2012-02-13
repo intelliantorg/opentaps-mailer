@@ -126,7 +126,7 @@
         <attribute name="campaignStatusId" type="String" mode="IN" optional="false"/>
     </service>
     
-    <service name="mailer.cancelScheduledMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="cancelScheduledMailers" auth="true">
+    <service name="mailer.cancelCreatedMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="cancelCreatedMailers" auth="true">
     	<description>Will be used to cancel scheduled mailers.</description>
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="true"/>
