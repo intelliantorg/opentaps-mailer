@@ -46,6 +46,7 @@ import org.opentaps.common.util.UtilMessage;
 public class ContactListServices {
 	private static final String MODULE = ContactListServices.class.getName();
 	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
+	protected static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 
 	/**
 	 * Gets the path for uploaded files.
@@ -123,10 +124,10 @@ public class ContactListServices {
 				rowIndex++;
 				totalCount++;
 
-				Map<String,Object> recipientIdAndSalesServiceDate = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
-				String recipientId = String.valueOf(recipientIdAndSalesServiceDate.get("recipientId"));
+				GenericValue customEntityObj = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
+				String recipientId = customEntityObj.getString("recipientId");
 				createCLRecipientRelation(delegator, contactListId, recipientId);
-				createAndScheduleCampaigns(delegator, contactListId, recipientId, (Date)recipientIdAndSalesServiceDate.get("saleOrServiceDate"));
+				createCampaignLines(delegator, contactListId, recipientId, customEntityObj.getDate(dateOfOperationColumnName));
 			} catch (GenericEntityException gee) {
 				Debug.log(gee);
 				TransactionUtil.rollback();
@@ -148,7 +149,7 @@ public class ContactListServices {
 		return results;
 	}
 
-	private static Map<String,Object> insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException, ParseException {
+	private static GenericValue insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException, ParseException {
 		ModelEntity modelEntity = delegator.getModelEntity(entityName);
 		String entityPrimaryKeyField = modelEntity.getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
@@ -159,8 +160,6 @@ public class ContactListServices {
 
 		Set<Entry<String, Object>> entries = columnMapper.entrySet();
 
-		Date salesOrServiceDate = null;
-		Map<String,Object> dataToReturn = null;
 		for (Map.Entry<String, Object> entry : entries) {
 			short columnIndex = 0;
 			HSSFCell excelCell = null;
@@ -176,7 +175,10 @@ public class ContactListServices {
 			}
 			String columnName = entry.getKey();
 			ModelField modelField = modelEntity.getField(columnName);
-
+			if (Debug.infoOn()) {
+				Debug.logInfo("On column name >> " + columnName, MODULE);
+				Debug.logInfo("Checking model field >> " + modelField.getName(), MODULE);
+			}
 			if (modelField.getIsNotNull()) {
 				if (!UtilValidate.isNotEmpty(cellValue)) {
 					throw new GenericEntityException(" '" + modelField.getName() + "' field is empty.");
@@ -191,7 +193,7 @@ public class ContactListServices {
 					throw new GenericEntityException(" '" + cellValue + "' is not a valid phone no");
 				}
 			} else if (modelField.getType().equals("date")) {
-				cellValue = salesOrServiceDate = excelCell.getDateCellValue();
+				cellValue = excelCell.getDateCellValue();
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isDate(simpleDateFormat.format(cellValue)))) {
 					throw new GenericEntityException(" '" + cellValue + "' is not a valid date");
 				}
@@ -200,10 +202,8 @@ public class ContactListServices {
 			rowToInsertGV.put(columnName, cellValue);
 		}
 		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
-		
-		dataToReturn = UtilMisc.toMap("recipientId", entityPrimaryKey);
-		dataToReturn.put("saleOrServiceDate", salesOrServiceDate);
-		return dataToReturn;
+
+		return rowToInsertGV;
 	}
 
 	private static void createCLRecipientRelation(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
@@ -235,7 +235,7 @@ public class ContactListServices {
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
 			
-			Timestamp scheduledForDate = UtilDateTime.nowTimestamp();
+			Timestamp scheduledForDate = null;
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
 				scheduledForDate = UtilDateTime.addDaysToTimestamp(new Timestamp(salesAndServiceDate.getTime()), Integer.parseInt(scheduleAt));
 			} else {
