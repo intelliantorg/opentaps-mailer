@@ -211,14 +211,14 @@ public class ContactListServices {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void createAndScheduleCampaigns(GenericDelegator delegator, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
+	private static void createCampaignLines(GenericDelegator delegator, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
 		List<GenericValue> rowsToInsert = FastList.newInstance();
 		EntityConditionList conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId), EntityUtil.getFilterByDateExpr()), EntityOperator.AND);
 		List<String> selectColumns = UtilMisc.toList("contactListId", "marketingCampaignId");
 		List<GenericValue> rows = delegator.findByCondition("MailerMarketingCampaignAndContactList", conditions, selectColumns, UtilMisc.toList("fromDate"));
 
 		for (GenericValue row : rows) {
-			GenericValue rowToInsertGV = createAndScheduleCampaign(delegator, row.getString("marketingCampaignId"), contactListId, recipientId, salesAndServiceDate);
+			GenericValue rowToInsertGV = createCampaignLine(delegator, row.getString("marketingCampaignId"), contactListId, recipientId, salesAndServiceDate);
 			if (UtilValidate.isNotEmpty(rowToInsertGV)) {
 				rowsToInsert.add(rowToInsertGV);
 			}
@@ -228,7 +228,7 @@ public class ContactListServices {
 		}
 	}
 
-	private static GenericValue createAndScheduleCampaign(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
+	private static GenericValue createCampaignLine(GenericDelegator delegator, String marketingCampaignId, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
 		GenericValue marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
 		GenericValue configuredTemplate = marketingCampaign.getRelatedOne("MergeForm");
@@ -265,7 +265,7 @@ public class ContactListServices {
 			if (UtilValidate.isNotEmpty(members)) {
 				for (GenericValue member : members) {
 					GenericValue mailerRecipeint = member.getRelatedOne("MailerRecipient");
-					GenericValue rowToInsertGV = createAndScheduleCampaign(dctx.getDelegator(), marketingCampaignId, contactListId, member.getString("recipientId"), mailerRecipeint.getDate(dateOfOperationColumnName));
+					GenericValue rowToInsertGV = createCampaignLine(dctx.getDelegator(), marketingCampaignId, contactListId, member.getString("recipientId"), mailerRecipeint.getDate(dateOfOperationColumnName));
 					if (UtilValidate.isNotEmpty(rowToInsertGV)) {
 						rowsToInsert.add(rowToInsertGV);
 					}
