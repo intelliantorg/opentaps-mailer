@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
+import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
@@ -27,7 +28,7 @@ public class MarketingCampaignTests extends MailerTests {
 
 	public void testCreateMarketingCampaign() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
-		String templateId = createMergTemplate(null);
+		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
@@ -51,14 +52,17 @@ public class MarketingCampaignTests extends MailerTests {
 		List<?> contactListsForMMC = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		assertNotEmpty("There must be atleast one active relation between MC and CL", EntityUtil.filterByDate(contactListsForMMC));
 		
-		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-		assertEmpty("There must ZERO scheduled campaings", scheduledCampaigns);
+		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertEmpty("There must ZERO scheduled campaings", campaigns);
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 0 scheduled campaigns", 0, campaigns.size());
+		
+		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,7 +91,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String scheduleAt = "1";
-		String templateId = createMergTemplate(UtilMisc.toMap("scheduleAt", scheduleAt));
+		String templateId = createMergeTemplate(UtilMisc.toMap("scheduleAt", scheduleAt));
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -98,10 +102,10 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<GenericValue> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"), UtilMisc.toList("recipientId"));
-		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"), UtilMisc.toList("recipientId"));
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 		
-		for (GenericValue scheduledCampaign : scheduledCampaigns) {
+		for (GenericValue scheduledCampaign : campaigns) {
 			GenericValue recipient = scheduledCampaign.getRelatedOne("MailerRecipient");
 			Date expected = UtilDateTime.addDaysToTimestamp(new Timestamp(recipient.getDate(dateOfOperationColumnName).getTime()), Integer.parseInt(scheduleAt));
 			assertEquals(new Date(expected.getTime()), scheduledCampaign.getDate("scheduledForDate"));
@@ -111,7 +115,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testUpdateMarketingCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String templateId = createMergTemplate(null);
+		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -121,7 +125,7 @@ public class MarketingCampaignTests extends MailerTests {
 
 		currTime = System.currentTimeMillis();
 		campaignName = "Campaign_" + currTime;
-		templateId = createMergTemplate(null);
+		templateId = createMergeTemplate(null);
 		budgetedCost = 12050.0;
 		estimatedCost = 11550.50;
 		currencyUomId = "INR";
@@ -152,7 +156,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testCancelMarketingCampaignWithNoContactList() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String templateId = createMergTemplate(null);
+		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -163,8 +167,8 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("statusId", "MKTG_CAMP_CANCELLED");
@@ -180,7 +184,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testCancelMarketingCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String templateId = createMergTemplate(null);
+		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -191,8 +195,8 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("statusId", "MKTG_CAMP_CANCELLED");
@@ -204,8 +208,8 @@ public class MarketingCampaignTests extends MailerTests {
 		GenericValue marketingCampaignGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull("Thru date must be set when campaign is cancelled.", marketingCampaignGV.getTimestamp("thruDate"));
 		
-		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 0 scheduled campaigns", 0, scheduledCampaigns.size());
+		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 0 scheduled campaigns", 0, campaigns.size());
 		
 		List<?> cancelledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_CANCELLED"));
 		assertEquals("There must 2 scheduled campaigns", 2, cancelledCampaigns.size());
@@ -214,7 +218,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testRemoveContactListFromCampaign() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String templateId = createMergTemplate(null);
+		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -226,13 +230,13 @@ public class MarketingCampaignTests extends MailerTests {
 		Map results = runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		String campaignListId = (String) results.get("campaignListId"); 
 		
-		List<?> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 
 		results = runAndAssertServiceSuccess("mailer.removeContactListFromMarketingCampaign", UtilMisc.toMap("userLogin", admin, "campaignListId", campaignListId));
 		
-		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 0, scheduledCampaigns.size());
+		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		assertEquals("There must 2 scheduled campaigns", 0, campaigns.size());
 		
 		List<?> cancelledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_CANCELLED"));
 		assertEquals("There must 2 scheduled campaigns", 2, cancelledCampaigns.size());
@@ -241,7 +245,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testUpdateMarketingCampaignByChangingTemplate() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String templateId = createMergTemplate(null);
+		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -252,23 +256,23 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<GenericValue> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 		Map expected = FastMap.newInstance();
-		for (GenericValue scheduledCampaign : scheduledCampaigns) {
+		for (GenericValue scheduledCampaign : campaigns) {
 			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
 
 		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
-		String newTemplateId = createMergTemplate(UtilMisc.toMap("scheduleAt", "2"));
+		String newTemplateId = createMergeTemplate(UtilMisc.toMap("scheduleAt", "2"));
 		inputs.put("templateId", newTemplateId);
 		inputs.put("userLogin", admin);
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
-		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
 		Map actual = FastMap.newInstance();
-		for (GenericValue scheduledCampaign : scheduledCampaigns) {
+		for (GenericValue scheduledCampaign : campaigns) {
 			GenericValue mailerRecipient = scheduledCampaign.getRelatedOne("MailerRecipient");
 			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
@@ -282,7 +286,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testUpdateMarketingCampaignNoChangeInTemplate() throws GeneralException {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
-		String templateId = createMergTemplate(null);
+		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList();
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
@@ -293,10 +297,10 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<GenericValue> scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 2, scheduledCampaigns.size());
+		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 		Map expected = FastMap.newInstance();
-		for (GenericValue scheduledCampaign : scheduledCampaigns) {
+		for (GenericValue scheduledCampaign : campaigns) {
 			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
 
@@ -306,9 +310,9 @@ public class MarketingCampaignTests extends MailerTests {
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
-		scheduledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
+		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
 		Map actual = FastMap.newInstance();
-		for (GenericValue scheduledCampaign : scheduledCampaigns) {
+		for (GenericValue scheduledCampaign : campaigns) {
 			GenericValue mailerRecipient = scheduledCampaign.getRelatedOne("MailerRecipient");
 			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
