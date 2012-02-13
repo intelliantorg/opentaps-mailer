@@ -46,3 +46,91 @@
   </select>
   <#if errorField?has_content><@displayError name=errorField index=index /></#if>
 </#macro>
+
+<#-- Parameter 'form' is decreated and leaves here for compatibility w/ existent code. Don't use it any more. -->
+<#macro inputDateTime name form="" default="" popup=true weekNumbers=false onUpdate="" onDateStatusFunc="" linkedName="" delta=0 ignoreParameters=false errorField="" class="inputBox">
+  <#assign defaultValue = getDefaultValue(name, default, -1, ignoreParameters)>
+  <#assign defaultTime = Static["org.opentaps.common.util.UtilDate"].timestampToAmPm(getLocalizedDate(defaultValue, "DATE_TIME"), Static["org.ofbiz.base.util.UtilHttp"].getTimeZone(request), Static["org.ofbiz.base.util.UtilHttp"].getLocale(request)) />
+  <input type="hidden" name="${name}_c_compositeType" value="Timestamp"/>
+      <input id="${name}_c_date" type="text" class="${class}" name="${name}_c_date" size="10" maxlength="10" value="${defaultTime.date?if_exists}"/>
+      <#if defaultTime.date?exists>
+        <#assign lookupDefault = default>
+      <#else>
+        <#assign lookupDefault = "">
+      </#if>
+      <a href="javascript:opentaps.toggleClass(document.getElementById('${name}-calendar-placeholder'), 'hidden');"><img id="${name}-button" src="/images/cal.gif" alt="View Calendar" title="View Calendar" border="0" height="16" width="16"/></a>
+      &nbsp;
+      <select name="${name}_c_hour" class="inputBox">
+        <#list 1..12 as hour>
+          <option <#if defaultTime.hour?default(12) == hour>selected="selected"</#if> value="${hour}">${hour}</option>
+        </#list>
+      </select>
+      :
+      <select name="${name}_c_minutes" class="inputBox">
+        <#list 0..59 as min>
+          <option <#if defaultTime.minute?default(-1) == min>selected="selected"</#if> value="${min}">${min?string?left_pad(2,"0")}</option>
+        </#list>
+      </select>
+      <select name="${name}_c_ampm" class="inputBox">
+        <option value="AM">AM</option>
+        <option <#if defaultTime.ampm?default("") == "PM">selected="selected"</#if> value="PM">PM</option>
+      </select>
+      <table id="${name}-calendar-placeholder" style="border: 0px; width: auto;" class="hidden"></table>
+      <#if errorField?has_content><@displayError name=errorField /></#if>
+      <script type="text/javascript">
+      /*<![CDATA[*/
+        function ${name}_onDateChange(calendar) {
+          if (calendar.dateClicked) {
+            var input = document.getElementById('${name}_c_date');
+            if (input) {
+              input.value = opentaps.formatDate(calendar.date, '${Static["org.ofbiz.base.util.UtilDateTime"].getJsDateTimeFormat(Static["org.ofbiz.base.util.UtilDateTime"].getDateFormat(locale))}');
+            }
+            opentaps.addClass(document.getElementById('${name}-calendar-placeholder'), 'hidden');
+          }
+        };
+        <#if linkedName?has_content && !onUpdate?has_content>
+        function ${name}_calcAndApplyDifference(calendar) {
+          var linkedInput = document.getElementById('${linkedName}_c_date');
+          if (!linkedInput || linkedInput.nodeName != 'INPUT') {
+            alert('Linked field with name ${linkedName} isn\'t accessible or have wrong type!');
+            return;
+          }
+      
+          var date = calendar.date;
+          var time = date.getTime();
+          time += (Date.DAY * ${delta});
+      
+          var linkedDate = new Date(time);
+          linkedInput.value = opentaps.formatDate(linkedDate, '${Static["org.ofbiz.base.util.UtilDateTime"].getJsDateTimeFormat(Static["org.ofbiz.base.util.UtilDateTime"].getDateFormat(locale))}');
+        };
+        </#if>
+        function currentDtFmt() {
+	    	return '${Static["org.ofbiz.base.util.UtilDateTime"].getJsDateTimeFormat(Static["org.ofbiz.base.util.UtilDateTime"].getDateFormat(locale))}';  
+		};
+        Calendar.setup(
+          {
+          <#if !popup>
+            flat: "${name}-calendar-placeholder",
+            flatCallback: ${name}_onDateChange,
+          <#else>
+            inputField: "${name}_c_date",
+            ifFormat: "${Static["org.ofbiz.base.util.UtilDateTime"].getJsDateTimeFormat(Static["org.ofbiz.base.util.UtilDateTime"].getDateFormat(locale))}",
+            button: "${name}-button",
+            align: "Bl",
+          </#if>
+          <#if onUpdate?has_content>
+            onUpdate: ${onUpdate},
+          </#if>
+          <#if linkedName?has_content && !onUpdate?has_content>
+            onUpdate: ${name}_calcAndApplyDifference,
+          </#if>
+          <#if weekNumbers?is_boolean>
+            weekNumbers: <#if weekNumbers>true<#else>false</#if>,
+          </#if>
+            showOthers: true,
+            cache: true
+          }
+      );
+      /*]]>*/
+      </script>
+</#macro>
