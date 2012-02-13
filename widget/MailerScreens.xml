@@ -59,6 +59,12 @@
                 <set field="findMarketingCampaignsTarget" value="findMarketingCampaigns"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/pagination.bsh"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/findMarketingCampaigns.bsh"/>
+				<entity-condition entity-name="StatusItem" list="mailerCampaignStatusList" list-name="mailerCampaignStatusList" use-cache="true">
+					<condition-list>
+						<condition-expr field-name="statusTypeId" operator="equals" value="MAILER_MC_STATUS"/>
+					</condition-list>
+                    <order-by field-name="sequenceId"/>
+                </entity-condition>
             </actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
