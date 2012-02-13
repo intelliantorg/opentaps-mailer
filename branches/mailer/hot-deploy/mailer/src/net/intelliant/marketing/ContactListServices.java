@@ -60,8 +60,8 @@ public class ContactListServices {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> importContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
 		String fileName = (String) context.get("_uploadedFile_fileName");
-		String fileFormat = (String) context.get("_uploadedFile_contentType");
-
+		String fileFormat = "EXCEL";
+		String mimeTypeId = (String) context.get("_uploadedFile_contentType");
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperId = (String) context.get("importMapperId");
 		String excelFilePath = getUploadPath() + fileName;
@@ -70,31 +70,25 @@ public class ContactListServices {
 		Map<String, Object> input = UtilMisc.toMap("dataResourceId", null, "binData", context.get("uploadedFile"), "dataResourceTypeId", "LOCAL_FILE", "objectInfo", excelFilePath);
 		try {
 			Map<String, Object> results = dctx.getDispatcher().runSync("createAnonFile", input);
-			System.out.println("#### Results - "+results);
 			if (ServiceUtil.isError(results)) {
 				return results;
 			}
 			// for now we only support EXCEL format
-			if ("EXCEL".equalsIgnoreCase(fileFormat)) {
+			if ("EXCEL".equalsIgnoreCase(fileFormat) || mimeTypeId.equals("application/vnd.ms-excel")) {
 				GenericValue mailerImportMapper = dctx.getDelegator().findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
 				return createRecords(dctx.getDelegator(), mailerImportMapper, userLogin.getString("userLoginId"), contactListId, excelFilePath);
 			} else {
 				return UtilMessage.createAndLogServiceError("[" + fileFormat + "] is not a supported file format.", MODULE);
 			}
 		} catch (GenericServiceException e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (GenericEntityException e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (FileNotFoundException e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (IOException e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (Exception e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(e, MODULE);
 		}
 	}
@@ -129,12 +123,10 @@ public class ContactListServices {
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createCampaignLines(delegator, contactListId, recipientId, customEntityObj.getDate(dateOfOperationColumnName));
 			} catch (GenericEntityException gee) {
-				Debug.log(gee);
 				TransactionUtil.rollback();
 				failureReport.put(String.valueOf(rowIndex-1), gee.getMessage());
 				failureCount++;
 			} catch (Exception e) {
-				Debug.log(e);
 				TransactionUtil.rollback();
 				failureReport.put(String.valueOf(rowIndex-1), e.getMessage());
 				failureCount++;
