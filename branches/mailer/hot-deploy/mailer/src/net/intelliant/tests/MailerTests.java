@@ -51,7 +51,7 @@ public class MailerTests extends OpentapsTestCase {
 		return (String) results.get("contactListId");
 	}
 
-	protected String createMergTemplate(Map overrideDefaults) throws GenericEntityException {
+	protected String createMergeTemplate(Map overrideDefaults) throws GenericEntityException {
 		Map<String, Object> defaultInputs = UtilMisc.toMap("mergeFormName", "mergeFormName_" + System.currentTimeMillis());
 		defaultInputs.put("scheduleAt", "1");
 		defaultInputs.put("mergeFormText", "Sample text");
