@@ -113,7 +113,7 @@ public class MarketingCampaignServices {
 			mailerMarketingCampaign.store();
 
 			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
-				service = dctx.getModelService("mailer.cancelScheduledMailers");
+				service = dctx.getModelService("mailer.cancelCreatedMailers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
 				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
 				if (ServiceUtil.isError(serviceResults)) {
@@ -195,10 +195,10 @@ public class MarketingCampaignServices {
 			marketingCampaignCL.set("thruDate", UtilDateTime.nowTimestamp());
 			marketingCampaignCL.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
 			delegator.store(marketingCampaignCL);
-			ModelService service = dctx.getModelService("mailer.cancelScheduledMailers");
+			ModelService service = dctx.getModelService("mailer.cancelCreatedMailers");
 			Map inputs = service.makeValid(context, ModelService.IN_PARAM);
 			inputs.put("marketingCampaignId", marketingCampaignCL.getString("marketingCampaignId"));
-			dctx.getDispatcher().runSync("mailer.cancelScheduledMailers", inputs);
+			dctx.getDispatcher().runSync("mailer.cancelCreatedMailers", inputs);
 		} catch (GenericEntityException gee) {
 			return UtilMessage.createAndLogServiceError(gee, module);
 		} catch (GenericServiceException gse) {
@@ -351,13 +351,13 @@ public class MarketingCampaignServices {
 	 * Will be used to cancel scheduled mailers.
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> cancelScheduledMailers(DispatchContext dctx, Map<String, Object> context) {
+	public static Map<String, Object> cancelCreatedMailers(DispatchContext dctx, Map<String, Object> context) {
 		GenericDelegator delegator = dctx.getDelegator();
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		String contactListId = (String) context.get("contactListId");
 		EntityListIterator iterator = null;
 		try {
-			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
 			if (UtilValidate.isNotEmpty(contactListId)) {
 				conditionsList.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
 			}
