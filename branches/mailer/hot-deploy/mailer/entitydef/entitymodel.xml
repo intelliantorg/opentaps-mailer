@@ -44,6 +44,16 @@
             <key-map field-name="mergeFormTypeId"/>
         </relation>
 	</extend-entity>
+	
+	<extend-entity entity-name="StatusValidChange">
+		<field name="isStatusToVisible" type="indicator"/>
+		<field name="preChangeMessage" type="short-varchar"/>
+		<field name="postChangeMessage" type="short-varchar"/>
+	</extend-entity>
+	
+	<extend-entity entity-name="StatusItem">
+		<field name="inStatusMessage" type="short-varchar"/>
+	</extend-entity>
 
 	<entity entity-name="MailerRecipient" package-name="net.intelliant.mailer" title="Mailer recipient">
     	<field name="recipientId" type="id-ne"/>
