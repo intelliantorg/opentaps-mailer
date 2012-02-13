@@ -24,12 +24,7 @@
                 <set field="sectionHeaderUiLabel" value="CreateCampaignHeader"/>
                 <entity-condition entity-name="StatusItem" list="statusItems" list-name="statusItems">
                 	<condition-list combine="and">
-                		<condition-expr field-name="statusTypeId" operator="equals" value="MKTG_CAMP_STATUS"/>
-                		<condition-list combine="or">
-                			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_PLANNED"/>
-                			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_INPROGRESS"/>
-                			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_CANCELLED"/>
-                		</condition-list>
+               			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_PLANNED"/>
                 	</condition-list>
                     <order-by field-name="sequenceId"/>
                 </entity-condition>
