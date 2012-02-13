@@ -39,19 +39,29 @@
 				<td><span class="tableheadtext"><a class="orderByHeaderLink" href="${listSortTarget}?campaignsOrderBy=campaignName${findParams}#ListMarketingCampaigns">${uiLabelMap.CommonName}<a></span></td>
 				<td><span class="tableheadtext"><a class="orderByHeaderLink" href="${listSortTarget}?campaignsOrderBy=statusId${findParams}#ListMarketingCampaigns">${uiLabelMap.CommonStatus}</a></span></td>
 				<td><span class="tableheadtext">${uiLabelMap.CommonFrom}</span></td>
-				<td><span class="tableheadtext">${uiLabelMap.CommonThru}</span></td>			
+				<td><span class="tableheadtext">${uiLabelMap.CommonThru}</span></td>
+				<#list mailerCampaignStatusList as mailerCampaignStatusListItem>
+					<td><span class="tableheadtext">${mailerCampaignStatusListItem.description}</span></td>
+				</#list>
 				<td><span class="tableheadtext">Select</span></td>
 			</tr>
 			<#list campaignsListIt as campaignsListItem>
 				<tr class="${tableRowClass(campaignsListItem_index)}">
 					<td>
 						<a class="linktext" href="viewMarketingCampaign?marketingCampaignId=${campaignsListItem.marketingCampaignId}">
-							${campaignsListItem.campaignName} (${campaignsListItem.marketingCampaignId})
+							${campaignsListItem.campaignName?default("")} (${campaignsListItem.marketingCampaignId})
 						</a>
 					</td>
 					<td><span class="tabletext">${campaignsListItem.description?default("")}</span></td>
 					<td><span class="tabletext"><@displayDate date=campaignsListItem.fromDate?default("") /></span></td>
-					<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>			
+					<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>
+					<#list mailerCampaignStatusList as mailerCampaignStatusListItem>
+						<#assign conditions = Static["org.ofbiz.base.util.UtilMisc"].toMap("marketingCampaignId", campaignsListItem.marketingCampaignId, "statusId", mailerCampaignStatusListItem.statusId)>
+      					<#assign statusCount = delegator.findCountByAnd("MailerCampaignStatus", conditions) />
+						<td>
+							<span class="tabletext">${statusCount?default("0")}</span>
+						</td>
+					</#list>		
 					<td>
 						<span class="tabletext">			
 							<#if campaignsListItem.statusId?exists && campaignsListItem.templateId?exists && (campaignsListItem.statusId == "MKTG_CAMP_INPROGRESS")>
