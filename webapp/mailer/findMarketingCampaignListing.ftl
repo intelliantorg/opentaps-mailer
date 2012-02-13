@@ -1,8 +1,7 @@
 <@import location="component://opentaps-common/webapp/common/includes/lib/opentapsFormMacros.ftl"/>
 <script type="text/javascript">
 	function validateThisForm(){		
-		var messageBox = document.getElementById("message");
-		
+		var messageBox = document.getElementById("message");		
 		var checkboxArray = document.executeBulkCampaign.select;
 		var length = checkboxArray.length;
 		var atleastOneCheckedFlag = false;
@@ -31,7 +30,9 @@
 	</div>
 </div>
 <div>
-	<div style="text-align:right;"><span id="message" class="tabletext" style="color:red;font-size: 12px;"></span></div>
+	<div style="text-align:right;">
+		<span id="message" class="tabletext" style="color:red;font-size: 12px;"></span>
+	</div>
 	<form action="" name="executeBulkCampaign" method="post">
 		<table class="crmsfaListTable">
 			<tr class="crmsfaListTableHeader">
@@ -42,16 +43,22 @@
 				<td><span class="tableheadtext">Select</span></td>
 			</tr>
 			<#list campaignsListIt as campaignsListItem>
-			<tr class="${tableRowClass(campaignsListItem_index)}" >
-				<td><a class="linktext" href="viewMarketingCampaign?marketingCampaignId=${campaignsListItem.marketingCampaignId}">${campaignsListItem.campaignName} (${campaignsListItem.marketingCampaignId})</a></td>
+			<tr class="${tableRowClass(campaignsListItem_index)}">
+				<td>
+					<a class="linktext" href="viewMarketingCampaign?marketingCampaignId=${campaignsListItem.marketingCampaignId}">
+						${campaignsListItem.campaignName} (${campaignsListItem.marketingCampaignId})
+					</a>
+				</td>
 				<td><span class="tabletext">${campaignsListItem.description?default("")}</span></td>
 				<td><span class="tabletext"><@displayDate date=campaignsListItem.fromDate?default("") /></span></td>
 				<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>			
-				<td><span class="tabletext">			
-					<#if campaignsListItem.statusId?exists && campaignsListItem.templateId?exists && (campaignsListItem.statusId == "MKTG_CAMP_INPROGRESS") >
-					<input type="checkbox" name="select" value="${campaignsListItem.marketingCampaignId}" />
-					</#if>
-				</span></td>
+				<td>
+					<span class="tabletext">			
+						<#if campaignsListItem.statusId?exists && campaignsListItem.templateId?exists && (campaignsListItem.statusId == "MKTG_CAMP_INPROGRESS") >
+							<input type="checkbox" name="select_${campaignsListItem_index}" value="${campaignsListItem.marketingCampaignId}" />
+						</#if>
+					</span>
+				</td>
 			</tr>
 			</#list>
 		</table>
