@@ -73,7 +73,7 @@
 </#if >
 
 <div class="form">
-  <form id="mergedForm" method="post" action="<@ofbizUrl>${formName}</@ofbizUrl>" name="${formName}" style="margin: 0;">
+  <form id="mergedForm" method="post" action="<@ofbizUrl>${formName}</@ofbizUrl>" name="${formName}" style="margin: 0;" enctype="multipart/form-data">
     <#if mergeFormId?exists><@inputHidden name="mergeFormId" value=mergeFormId /></#if >
     <@inputHidden name="partyId" value=userLogin.partyId />
   
