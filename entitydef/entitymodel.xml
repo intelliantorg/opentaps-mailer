@@ -7,7 +7,7 @@
 	<!-- Entity definitions and extensions -->
     <entity entity-name="MailerMarketingCampaign" package-name="net.intelliant.mailer" title="Mailer Marketing Campaign Entity">
     	<field name="marketingCampaignId" type="id-ne"/>
-    	<field name="templateId" type="id" not-null="true"/>        
+    	<field name="templateId" type="id-ne"/>        
     	<prim-key field="marketingCampaignId"/>
     	<relation type="one" fk-name="MMC_TO_MKTGCPN" rel-entity-name="MarketingCampaign">
         	<key-map field-name="marketingCampaignId"/>
