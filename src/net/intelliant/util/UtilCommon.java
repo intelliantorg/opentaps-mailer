@@ -1,5 +1,7 @@
 package net.intelliant.util;
 
+import java.io.File;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -24,5 +26,14 @@ public final class UtilCommon {
 			}
 		}
 		return html;
+	}
+
+	/**
+	 * Gets the path for uploaded files.
+	 * 
+	 * @return a <code>String</code> value
+	 */
+	public static String getUploadPath() {
+		return System.getProperty("user.dir") + File.separatorChar + "runtime" + File.separatorChar + "data" + File.separatorChar;
 	}  
 }

@@ -1,6 +1,5 @@
 package net.intelliant.marketing;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.util.Set;
 
 import javolution.util.FastList;
 import net.intelliant.imports.UtilImport;
+import net.intelliant.util.UtilCommon;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -48,15 +48,6 @@ public class ContactListServices {
 	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
 	protected static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 
-	/**
-	 * Gets the path for uploaded files.
-	 * 
-	 * @return a <code>String</code> value
-	 */
-	private static String getUploadPath() {
-		return System.getProperty("user.dir") + File.separatorChar + "runtime" + File.separatorChar + "data" + File.separatorChar;
-	}
-
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> importContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
 		String fileName = (String) context.get("_uploadedFile_fileName");
@@ -64,7 +55,7 @@ public class ContactListServices {
 		String mimeTypeId = (String) context.get("_uploadedFile_contentType");
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		String importMapperId = (String) context.get("importMapperId");
-		String excelFilePath = getUploadPath() + fileName;
+		String excelFilePath = UtilCommon.getUploadPath() + fileName;
 		String contactListId = (String) context.get("contactListId");
 		// save the file to the system using the ofbiz service
 		Map<String, Object> input = UtilMisc.toMap("dataResourceId", null, "binData", context.get("uploadedFile"), "dataResourceTypeId", "LOCAL_FILE", "objectInfo", excelFilePath);
