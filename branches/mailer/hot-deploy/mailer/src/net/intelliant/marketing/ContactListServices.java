@@ -45,8 +45,8 @@ import org.opentaps.common.util.UtilMessage;
 
 public class ContactListServices {
 	private static final String MODULE = ContactListServices.class.getName();
-	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
-	protected static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
+	private static final SimpleDateFormat configuredDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
+	private static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> importContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
@@ -179,7 +179,7 @@ public class ContactListServices {
 				}
 			} else if (modelField.getType().equals("date")) {
 				cellValue = new java.sql.Date(excelCell.getDateCellValue().getTime());
-				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isDate(simpleDateFormat.format(cellValue)))) {
+				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isDate(configuredDateFormat.format(cellValue)))) {
 					throw new GenericEntityException(" '" + cellValue + "' is not a valid date");
 				}
 			}
