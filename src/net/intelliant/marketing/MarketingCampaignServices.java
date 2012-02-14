@@ -627,5 +627,63 @@ public class MarketingCampaignServices {
 			}
 		}
 		return ServiceUtil.returnSuccess();
+	}	
+	
+	/**
+	 * Will be used to check if completed campaign can be set to in progress.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> checkIfCompletedCampaignsCanBeMarkedInProgress(DispatchContext dctx, Map<String, Object> context) {
+		GenericDelegator delegator = dctx.getDelegator();
+		EntityListIterator iterator = null;
+		try {
+			/** get all in progress campaigns. */
+            EntityCondition condition = new EntityExpr("statusId", EntityOperator.EQUALS, "MKTG_CAMP_COMPLETED");
+            if (Debug.infoOn()) {
+            	Debug.logInfo("[mailer.checkIfCompletedCampaignsCanBeMarkedInProgress] The conditions >> " + condition, MODULE);
+            }
+	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
+	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAppl", condition, null, null, null, options);
+	        GenericValue marketingCampaignGV = null;
+	        while ((marketingCampaignGV = (GenericValue) iterator.next()) != null) {
+	        	boolean canBeMarkedInProgress = false;
+	        	String marketingCampaignId = marketingCampaignGV.getString("marketingCampaignId");
+	        	Timestamp thruDate = marketingCampaignGV.getTimestamp("thruDate");
+	        	Timestamp now = UtilDateTime.nowTimestamp();
+        		long count = UtilCommon.countScheduledCampaignLines(delegator, null, marketingCampaignId);
+	        	if (thruDate != null && (now.before(thruDate) || thruDate.equals(now)) && count > 0) {
+	        		canBeMarkedInProgress = true;
+        			if (Debug.infoOn()) {
+        				Debug.logInfo(String.format("[mailer.checkIfCompletedCampaignsCanBeMarkedInProgress] campaign [%1$s] still has [%2$s] scheduled, will NOT be marked in progress..", marketingCampaignId, count), MODULE);
+        			}
+	        	}
+	        	if (canBeMarkedInProgress) {
+	        		Debug.logWarning(String.format("[mailer.checkIfCompletedCampaignsCanBeMarkedInProgress] Setting campaign [%1$s] to in progress..", marketingCampaignGV.getString("marketingCampaignId")), MODULE);
+	        		try {
+	        			ModelService service = dctx.getModelService("mailer.updateMarketingCampaign");
+	        			Map<String, Object> serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
+	        			serviceInputs.put("statusId", "MKTG_CAMP_INPROGRESS");
+	        			serviceInputs.put("marketingCampaignId", marketingCampaignId);
+	        			if (Debug.infoOn()) {
+	        				Debug.logInfo("[mailer.checkIfCompletedCampaignsCanBeMarkedInProgress] Executing mailer.updateMarketingCampaign with following parameters - " + serviceInputs, MODULE);
+	        			}
+	        			dctx.getDispatcher().runSync(service.name, serviceInputs);
+	        		} catch (GenericServiceException e) {
+	        			return UtilMessage.createAndLogServiceError(e, MODULE);
+	        		}
+	        	}
+            }
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(e, MODULE);
+		} finally {
+			if (iterator != null) {
+				try {
+					iterator.close();
+				} catch (GenericEntityException e) {
+					iterator = null;
+				}
+			}
+		}
+		return ServiceUtil.returnSuccess();
 	}
 }

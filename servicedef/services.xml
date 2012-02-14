@@ -150,4 +150,8 @@
     <service name="mailer.checkIfInProgressCampaignsCanBeMarkedComplete" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="checkIfInProgressCampaignsCanBeMarkedComplete" auth="true">
     	<description>Will be used to check if campaign can be set to complete.</description>
     </service>
+    
+	<service name="mailer.checkIfCompletedCampaignsCanBeMarkedInProgress" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="checkIfCompletedCampaignsCanBeMarkedInProgress" auth="true">
+    	<description>Will be used to check if completed campaign can be set to in progress.</description>
+    </service>
 </services>

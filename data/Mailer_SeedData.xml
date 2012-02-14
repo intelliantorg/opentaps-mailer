@@ -24,10 +24,15 @@
     <!-- Schedule mailer.checkIfApprovedCampaignsCanBeMarkedInProgress service nightly -->
 	<RecurrenceRule recurrenceRuleId="MAILER_AP_INPROG" xName="Daily" frequency="DAILY" intervalNumber="1" countNumber="-1"/>
 	<RecurrenceInfo recurrenceInfoId="MAILER_AP_INPROG" startDateTime="2007-01-01 00:00:00.000" recurrenceRuleId="MAILER_AP_INPROG" recurrenceCount="0"/>
-	<JobSandbox jobId="MAILER_AP_INPROG" jobName="Run Campaign Approval" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfApprovedCampaignsCanBeMarkedInProgress" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_AP_INPROG"/>
+	<JobSandbox jobId="MAILER_AP_INPROG" jobName="Mark Campaign Approval" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfApprovedCampaignsCanBeMarkedInProgress" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_AP_INPROG"/>
 	
-	<!-- Schedule mailer.checkIfApprovedCampaignsCanBeMarkedInProgress service nightly -->
+	<!-- Schedule mailer.checkIfInProgressCampaignsCanBeMarkedComplete service nightly -->
 	<RecurrenceRule recurrenceRuleId="MAILER_INPROG_COMP" xName="Daily" frequency="DAILY" intervalNumber="1" countNumber="-1"/>
 	<RecurrenceInfo recurrenceInfoId="MAILER_INPROG_COMP" startDateTime="2007-01-01 00:00:00.000" recurrenceRuleId="MAILER_INPROG_COMP" recurrenceCount="0"/>
-	<JobSandbox jobId="MAILER_INPROG_COMP" jobName="Run Campaign Approval" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfInProgressCampaignsCanBeMarkedComplete" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_INPROG_COMP"/>
+	<JobSandbox jobId="MAILER_INPROG_COMP" jobName="Mark Campaign Completion" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfInProgressCampaignsCanBeMarkedComplete" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_INPROG_COMP"/>
+	
+	<!-- Schedule mailer.checkIfCompletedCampaignsCanBeMarkedInProgress service nightly -->
+	<RecurrenceRule recurrenceRuleId="MAILER_COMP_INPROG" xName="Daily" frequency="DAILY" intervalNumber="1" countNumber="-1"/>
+	<RecurrenceInfo recurrenceInfoId="MAILER_COMP_INPROG" startDateTime="2007-01-01 00:00:00.000" recurrenceRuleId="MAILER_COMP_INPROG" recurrenceCount="0"/>
+	<JobSandbox jobId="MAILER_COMP_INPROG" jobName="Mark Campaign In Progress" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfCompletedCampaignsCanBeMarkedInProgress" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_INPROG_COMP"/>
 </entity-engine-xml>
