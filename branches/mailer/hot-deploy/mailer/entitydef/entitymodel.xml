@@ -201,7 +201,7 @@
 	<view-entity entity-name="MailerRecipientContactListCount" package-name="net.intelliant.mailer" title="Counts the number of Contact List members">	
         <member-entity entity-alias="CL" entity-name="ContactList"/>
         <member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>       
-        <alias entity-alias="CL" name="contactListName" group-by="contactListName"/>       
+        <alias entity-alias="CL" name="contactListName"/>       
         <alias entity-alias="CL" name="contactListId" group-by="true"/>
         <alias entity-alias="CL" name="contactMechTypeId" />
         <alias entity-alias="MRCL" name="recipientId" function="count"/> 
