@@ -19,10 +19,9 @@ import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
 
 public class ImportServices {
-	public static final String module = ImportServices.class.getName();
-	public static final String errorResource = "ErrorLabels";
-	public static final String successResource = "UILabels";
-
+	private static final String MODULE = ImportServices.class.getName();
+	private static final String errorResource = "ErrorLabels";
+	
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> configureImportMapping(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
@@ -49,10 +48,10 @@ public class ImportServices {
 			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
 			Debug.log(e.toString());
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), MODULE);
 		} catch (GenericServiceException e) {
 			Debug.log(e.toString());
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), MODULE);
 		}
 		serviceResults.put("importMapperId", importMapperId);
 		return serviceResults;
@@ -79,7 +78,7 @@ public class ImportServices {
 				try {
 					dctx.getDelegator().makeValue("MailerImportColumnMapper", inputs).create();
 				} catch (GenericEntityException e) {
-					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), MODULE);
 				}
 			}
 		}
@@ -105,7 +104,7 @@ public class ImportServices {
 			updateMailerImportMapping(delegator, importMapperId, importMapperName, description, isFirstRowHeader, userLoginId);
 			updateMailerImportColumnMapping(delegator, importMapperId, userLogin, entityColName, importFileColIdx);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "Error updating MailerImportMapping", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "Error updating MailerImportMapping", locale), MODULE);
 		}
 		return ServiceUtil.returnSuccess();
 	}

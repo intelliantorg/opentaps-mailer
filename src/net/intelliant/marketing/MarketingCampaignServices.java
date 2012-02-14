@@ -35,9 +35,9 @@ import org.opentaps.common.util.UtilMessage;
 import freemarker.template.TemplateException;
 
 public class MarketingCampaignServices {
-	public static final String module = MarketingCampaignServices.class.getName();
-	public static final String errorResource = "ErrorLabels";
-	public static final String successResource = "UILabels";
+	private static final String MODULE = MarketingCampaignServices.class.getName();
+	private static final String errorResource = "ErrorLabels";
+	private static final String successResource = "UILabels";
 
 	/**
 	 * Is a wrapper over the original marketing campaign, custom values will be
@@ -51,7 +51,7 @@ public class MarketingCampaignServices {
 		try {			
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), MODULE);
 			}
 			ModelService service = dctx.getModelService("createMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
@@ -59,7 +59,7 @@ public class MarketingCampaignServices {
 			LocalDispatcher dispatcher = dctx.getDispatcher();
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
-				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, module);
+				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, MODULE);
 			}
 			String marketingCampaignId = (String) serviceResults.get("marketingCampaignId");
 			serviceResults.put("marketingCampaignId", marketingCampaignId);
@@ -74,9 +74,9 @@ public class MarketingCampaignServices {
 			inputs.put("marketingCampaignId", marketingCampaignId);
 			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), MODULE);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), MODULE);
 		}
 		return serviceResults;
 	}
@@ -94,7 +94,7 @@ public class MarketingCampaignServices {
 			if (UtilValidate.isNotEmpty(templateId)) {
 				mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 				if (UtilValidate.isEmpty(mergeFormGV)) {
-					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), module);
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), MODULE);
 				}
 			}
 			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
@@ -107,7 +107,7 @@ public class MarketingCampaignServices {
 			} 
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
-				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, module);
+				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, MODULE);
 			}
 			
 			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
@@ -122,14 +122,14 @@ public class MarketingCampaignServices {
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
 				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
 				if (ServiceUtil.isError(serviceResults)) {
-					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
 				}
 			} else if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_INPROGRESS")) {
 				service = dctx.getModelService("mailer.scheduleAllMailers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
 				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
 				if (ServiceUtil.isError(serviceResults)) {
-					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
 				}
 			}
 			/** No point executing this campaign was cancelled. */
@@ -140,27 +140,27 @@ public class MarketingCampaignServices {
 				inputs.put("scheduleAt", mergeFormGV.getString("scheduleAt"));
 				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
 				if (ServiceUtil.isError(serviceResults)) {
-					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
 				}
 			}
 			if (Debug.infoOn()) {
-				Debug.logInfo("[mailer.updateMarketingCampaign] oldStatusId >> " + oldStatusId, module);
-				Debug.logInfo("[mailer.updateMarketingCampaign] statusId >> " + statusId, module);
+				Debug.logInfo("[mailer.updateMarketingCampaign] oldStatusId >> " + oldStatusId, MODULE);
+				Debug.logInfo("[mailer.updateMarketingCampaign] statusId >> " + statusId, MODULE);
 			}
 			if (UtilValidate.isNotEmpty(statusId) && !UtilValidate.areEqual(oldStatusId, statusId)) {
 				GenericValue statusVC = delegator.findByPrimaryKey("StatusValidChange", UtilMisc.toMap("statusId", oldStatusId, "statusIdTo", statusId));
 				if (UtilValidate.isNotEmpty(statusVC.getString("postChangeMessage"))) {
 					serviceResults.put(ModelService.SUCCESS_MESSAGE, UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale));
 					if (Debug.infoOn()) {
-						Debug.logInfo("[mailer.updateMarketingCampaign] postChangeMessage >> " + UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale), module);
+						Debug.logInfo("[mailer.updateMarketingCampaign] postChangeMessage >> " + UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale), MODULE);
 					}
 				}
 			}
 			return serviceResults;
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
 		}
 	}
 
@@ -193,12 +193,12 @@ public class MarketingCampaignServices {
 				inputs.put("contactListId", contactListId);
 				dctx.getDispatcher().runSync(service.name, inputs);
 			} else {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaignExists", locale), module);
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaignExists", locale), MODULE);
 			}
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), MODULE);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), MODULE);
 		}
 		return serviceResults;
 	}
@@ -216,7 +216,7 @@ public class MarketingCampaignServices {
 		try {
 			GenericValue marketingCampaignCL = delegator.findByPrimaryKey("MailerMarketingCampaignAndContactList", UtilMisc.toMap("campaignListId", campaignListId));
 			if (UtilValidate.isEmpty(marketingCampaignCL)) {
-				return UtilMessage.createAndLogServiceError("CrmErrorMarketingCampaignContactListNotFound", UtilMisc.toMap("campaignListId", campaignListId), locale, module);
+				return UtilMessage.createAndLogServiceError("CrmErrorMarketingCampaignContactListNotFound", UtilMisc.toMap("campaignListId", campaignListId), locale, MODULE);
 			}
 			marketingCampaignCL.set("thruDate", UtilDateTime.nowTimestamp());
 			marketingCampaignCL.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
@@ -226,9 +226,9 @@ public class MarketingCampaignServices {
 			inputs.put("marketingCampaignId", marketingCampaignCL.getString("marketingCampaignId"));
 			dctx.getDispatcher().runSync("mailer.cancelCreatedMailers", inputs);
 		} catch (GenericEntityException gee) {
-			return UtilMessage.createAndLogServiceError(gee, module);
+			return UtilMessage.createAndLogServiceError(gee, MODULE);
 		} catch (GenericServiceException gse) {
-			return UtilMessage.createAndLogServiceError(gse, module);
+			return UtilMessage.createAndLogServiceError(gse, MODULE);
 		}
 		return ServiceUtil.returnSuccess();
 	}
@@ -252,9 +252,9 @@ public class MarketingCampaignServices {
 				String emailBodyTemplate = templateGV.getString("mergeFormText");
 				String emailFromAddress = templateGV.getString("fromEmailAddress");
 				if (Debug.infoOn()) {
-					Debug.logInfo("This the email subject - " + emailSubject, module);
-					Debug.logInfo("This the email template body - " + emailBodyTemplate, module);
-					Debug.logInfo("This the email from address - " + emailFromAddress, module);					
+					Debug.logInfo("This the email subject - " + emailSubject, MODULE);
+					Debug.logInfo("This the email template body - " + emailBodyTemplate, MODULE);
+					Debug.logInfo("This the email from address - " + emailFromAddress, MODULE);					
 				}
 	            EntityCondition conditions = new EntityConditionList( 
             		UtilMisc.toList(
@@ -263,7 +263,7 @@ public class MarketingCampaignServices {
                         new EntityExpr("scheduledForDate", EntityOperator.LESS_THAN_EQUAL_TO, UtilDateTime.nowTimestamp())
             		), EntityOperator.AND);
 	            if (Debug.infoOn()) {
-	            	Debug.logInfo("The campaign status conditions >> " + conditions, module);
+	            	Debug.logInfo("The campaign status conditions >> " + conditions, MODULE);
 	            }
 		        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 		        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -275,9 +275,9 @@ public class MarketingCampaignServices {
 		        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
 		        	String sendToEmailColumn = UtilProperties.getPropertyValue("mailer", "mailer.sendToEMailColumn");
 		        	if (UtilValidate.isEmpty(sendToEmailColumn)) {
-		        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorSendToEmailColumnConfigurationMissing", locale), module);
+		        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorSendToEmailColumnConfigurationMissing", locale), MODULE);
 		        	} else if (relatedRecipientGV.containsKey(sendToEmailColumn) == false) {
-		        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorSendToEmailColumnIncorrect", locale), module);
+		        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorSendToEmailColumnIncorrect", locale), MODULE);
 		        	}
 		        	StringWriter writer = new StringWriter();
 //		        	and prepare email content,
@@ -297,7 +297,7 @@ public class MarketingCampaignServices {
 	                serviceInputs.put("partyIdFrom", "_NA_");
 	                Map<String, Object> serviceResults = dctx.getDispatcher().runSync("createCommunicationEvent", serviceInputs);
 	                if (ServiceUtil.isError(serviceResults)) {
-	                    return UtilMessage.createAndLogServiceError(serviceResults, module);
+	                    return UtilMessage.createAndLogServiceError(serviceResults, MODULE);
 	                }
 	                String communicationEventId = (String) serviceResults.get("communicationEventId");
 	                service = dctx.getModelService("mailer.sendEmailMailer");
@@ -307,16 +307,16 @@ public class MarketingCampaignServices {
 	                dctx.getDispatcher().runAsync(service.name, serviceInputs);
 	            }
 			} else {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorNoTemplateWithCampaign", locale), module);
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorNoTemplateWithCampaign", locale), MODULE);
 			}
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (TemplateException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (IOException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} finally {
 			if (iterator != null) {
 				try {
@@ -351,13 +351,13 @@ public class MarketingCampaignServices {
 	        serviceInputs.put("sendTo", commEventGV.getString("toString"));
 	        serviceInputs.put("userLogin", userLogin);
 			if (Debug.infoOn()) {
-				Debug.logInfo("[mailer.sendEmailMailer] Executing sendMail with following parameters - " + serviceInputs, module);
+				Debug.logInfo("[mailer.sendEmailMailer] Executing sendMail with following parameters - " + serviceInputs, MODULE);
 			}
 	        serviceResults = dctx.getDispatcher().runSync(service.name, serviceInputs);
 		} catch (GenericEntityException e) {
-			serviceResults = UtilMessage.createAndLogServiceError(e, module);
+			serviceResults = UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (GenericServiceException e) {
-			serviceResults = UtilMessage.createAndLogServiceError(e, module);
+			serviceResults = UtilMessage.createAndLogServiceError(e, MODULE);
 		}    	
 		try {
 			GenericValue mailerMarketingCampaignGV = dctx.getDelegator().findByPrimaryKey("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId));
@@ -368,7 +368,7 @@ public class MarketingCampaignServices {
 //	        	TODO do something for error.
 	        }
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		}
 		return ServiceUtil.returnSuccess();
 	}
@@ -389,7 +389,7 @@ public class MarketingCampaignServices {
 			}
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
-            	Debug.logInfo("[mailer.cancelCreatedMailers] The conditions >> " + conditions, module);
+            	Debug.logInfo("[mailer.cancelCreatedMailers] The conditions >> " + conditions, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -401,12 +401,12 @@ public class MarketingCampaignServices {
             }
 	        if (UtilValidate.isNotEmpty(mailersToBeCancelled)) {
 	        	if (Debug.infoOn()) {
-	        		Debug.logInfo("[mailer.cancelCreatedMailers] About to cancel " + mailersToBeCancelled.size() + " mailers.", module);
+	        		Debug.logInfo("[mailer.cancelCreatedMailers] About to cancel " + mailersToBeCancelled.size() + " mailers.", MODULE);
 	        	}
 	        	delegator.storeAll(mailersToBeCancelled);
 	        }
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} finally {
 			if (iterator != null) {
 				try {
@@ -433,7 +433,7 @@ public class MarketingCampaignServices {
 			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
-            	Debug.logInfo("[mailer.reScheduleMailers] The conditions >> " + conditions, module);
+            	Debug.logInfo("[mailer.reScheduleMailers] The conditions >> " + conditions, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -443,9 +443,9 @@ public class MarketingCampaignServices {
 	        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
 	        	String dateOfOperationColumn = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 	        	if (UtilValidate.isEmpty(dateOfOperationColumn)) {
-	        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorDateOfOperationColumnConfigurationMissing", locale), module);
+	        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorDateOfOperationColumnConfigurationMissing", locale), MODULE);
 	        	} else if (relatedRecipientGV.containsKey(dateOfOperationColumn) == false) {
-	        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorDateOfOperationColumnIncorrect", locale), module);
+	        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorDateOfOperationColumnIncorrect", locale), MODULE);
 	        	}
 	        	Timestamp newDate = UtilDateTime.addDaysToTimestamp(new Timestamp(relatedRecipientGV.getDate(dateOfOperationColumn).getTime()), Integer.valueOf(scheduleAt));
 	        	mailerCampaignStatusGV.set("scheduledForDate", newDate);	        	
@@ -453,12 +453,12 @@ public class MarketingCampaignServices {
             }
 	        if (UtilValidate.isNotEmpty(mailersToBeReScheduled)) {
 	        	if (Debug.infoOn()) {
-	        		Debug.logInfo("[mailer.reScheduleMailers] About to re-schedule " + mailersToBeReScheduled.size() + " mailers.", module);
+	        		Debug.logInfo("[mailer.reScheduleMailers] About to re-schedule " + mailersToBeReScheduled.size() + " mailers.", MODULE);
 	        	}
 	        	delegator.storeAll(mailersToBeReScheduled);
 	        }
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} finally {
 			if (iterator != null) {
 				try {
@@ -484,7 +484,7 @@ public class MarketingCampaignServices {
 			List<EntityExpr> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_IN, statusIds), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
-            	Debug.logInfo("[mailer.scheduleAllMailers] The conditions >> " + conditions, module);
+            	Debug.logInfo("[mailer.scheduleAllMailers] The conditions >> " + conditions, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -496,16 +496,16 @@ public class MarketingCampaignServices {
             }
 	        if (UtilValidate.isNotEmpty(mailersToBeScheduled)) {
 	        	if (Debug.infoOn()) {
-	        		Debug.logInfo("[mailer.scheduleAllMailers] About to schedule " + mailersToBeScheduled.size() + " mailers.", module);
+	        		Debug.logInfo("[mailer.scheduleAllMailers] About to schedule " + mailersToBeScheduled.size() + " mailers.", MODULE);
 	        	}
 	        	delegator.storeAll(mailersToBeScheduled);
 	        } else {
 	            if (Debug.infoOn()) {
-	            	Debug.logInfo("[mailer.scheduleAllMailers] No Mailers will be scheduled..", module);
+	            	Debug.logInfo("[mailer.scheduleAllMailers] No Mailers will be scheduled..", MODULE);
 	            }
 	        }
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} finally {
 			if (iterator != null) {
 				try {
@@ -530,28 +530,28 @@ public class MarketingCampaignServices {
 			List<EntityExpr> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MKTG_CAMP_APPROVED"), EntityUtil.getFilterByDateExpr());
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
-            	Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] The conditions >> " + conditions, module);
+            	Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] The conditions >> " + conditions, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAppl", conditions, null, null, null, options);
 	        GenericValue marketingCampaignGV = null;
 	        while ((marketingCampaignGV = (GenericValue) iterator.next()) != null) {
-	        	Debug.logWarning(String.format("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Setting campaign [%1$s] to in progress..", marketingCampaignGV.getString("marketingCampaignId")), module);
+	        	Debug.logWarning(String.format("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Setting campaign [%1$s] to in progress..", marketingCampaignGV.getString("marketingCampaignId")), MODULE);
 				try {
 					ModelService service = dctx.getModelService("mailer.updateMarketingCampaign");
 					Map<String, Object> serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
 			        serviceInputs.put("statusId", "MKTG_CAMP_INPROGRESS");
 			        serviceInputs.put("marketingCampaignId", marketingCampaignGV.getString("marketingCampaignId"));
 					if (Debug.infoOn()) {
-						Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Executing mailer.updateMarketingCampaign with following parameters - " + serviceInputs, module);
+						Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Executing mailer.updateMarketingCampaign with following parameters - " + serviceInputs, MODULE);
 					}
 			        dctx.getDispatcher().runSync(service.name, serviceInputs);
 				} catch (GenericServiceException e) {
-					return UtilMessage.createAndLogServiceError(e, module);
+					return UtilMessage.createAndLogServiceError(e, MODULE);
 				}
             }
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(e, module);
+			return UtilMessage.createAndLogServiceError(e, MODULE);
 		} finally {
 			if (iterator != null) {
 				try {
