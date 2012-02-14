@@ -1,13 +1,13 @@
 package net.intelliant.tests;
 
-import java.util.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javolution.util.FastMap;
+import net.intelliant.util.UtilCommon;
 
-import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
@@ -321,5 +321,95 @@ public class MarketingCampaignTests extends MailerTests {
 		for (Object key : actual.keySet()) {
 			assertEquals("Dates must NOT be equal", expected.get(key), actual.get(key));
 		}
+	}
+	
+	public void testAutoInProgressFromApproved() throws GeneralException {
+		Timestamp fromDate = UtilDateTime.nowTimestamp();
+		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
+		Long currTime = System.currentTimeMillis();
+		String campaignName = "Campaign_" + currTime;
+		String templateId = createMergeTemplate(null);
+		String contactListId = createContactList();
+		Double budgetedCost = Math.random() * 100000;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
+		String currencyUomId = "INR";
+		
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName, "templateId", templateId, "contactListId", contactListId);
+		inputs.put("userLogin", admin);
+		inputs.put("budgetedCost", budgetedCost);
+		inputs.put("estimatedCost", estimatedCost);
+		inputs.put("currencyUomId", currencyUomId);
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
+		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		
+		String marketingCampaignId1 = createMarketingCampaign(inputs);
+		
+		fromDate = UtilDateTime.addDaysToTimestamp(fromDate, -1);
+		thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
+		String marketingCampaignId2= createMarketingCampaign(inputs);
+		
+		fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
+		thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
+		String marketingCampaignId3= createMarketingCampaign(inputs);
+		
+		contactListId = createContactListWithTwoRecipients();
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId1, "contactListId", contactListId));
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId2, "contactListId", contactListId));
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId3, "contactListId", contactListId));
+		
+		long campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign1Count);
+		
+		long campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		
+		long campaign3Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId3);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign3Count);
+		
+		runAndAssertServiceSuccess("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
+		
+		campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign1Count);
+		
+		campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		
+		campaign3Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId3);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign3Count);
+
+		inputs.clear();
+		inputs.put("userLogin", admin);
+		inputs.put("statusId", "MKTG_CAMP_APPROVED");
+		inputs.put("marketingCampaignId", marketingCampaignId1);
+		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
+		inputs.put("marketingCampaignId", marketingCampaignId2);
+		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
+		inputs.put("marketingCampaignId", marketingCampaignId3);
+		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
+		
+		runAndAssertServiceSuccess("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
+		
+		campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
+		assertEquals("There must 0 'On Hold' campaigns", 0, campaign1Count);
+		
+		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId1);
+		assertEquals("There must 2 'Scheduled' campaigns", 2, campaign1Count);
+		GenericValue marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1));
+		assertEquals("Must be in 'In Progress'", "MKTG_CAMP_INPROGRESS", marketingCampaingnGV.getString("statusId"));
+		
+		campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId2));
+		assertEquals("Must NOT be in 'In Progress'", "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
+		
+		campaign3Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId3);
+		assertEquals("There must 2 'On Hold' campaigns", 2, campaign3Count);
+		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId3));
+		assertEquals("Must NOT be in 'In Progress'", "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
 }
