@@ -218,23 +218,20 @@ public class ContactListServices {
 		GenericValue marketingCampaign = mailerMarketingCampaign.getRelatedOne("MarketingCampaign");
 		String marketingCampaignStatusId = marketingCampaign.getString("statusId");
 		String campaignLineStatusId = "MAILER_HOLD";
-		if (marketingCampaignStatusId.equals("MKTG_CAMP_INPROGRESS") || marketingCampaignStatusId.equals("MKTG_CAMP_APPROVED")) {
+		if (marketingCampaignStatusId.equals("MKTG_CAMP_INPROGRESS") || marketingCampaignStatusId.equals("MKTG_CAMP_APPROVED") || marketingCampaignStatusId.equals("MKTG_CAMP_COMPLETED")) {
 			campaignLineStatusId = "MAILER_SCHEDULED";
 		} else if (marketingCampaignStatusId.equals("MKTG_CAMP_PLANNED")) {
 			campaignLineStatusId = "MAILER_HOLD";
 		}
-		
 		GenericValue configuredTemplate = mailerMarketingCampaign.getRelatedOne("MergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
-			
 			Timestamp scheduledForDate = null;
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
 				scheduledForDate = UtilDateTime.addDaysToTimestamp(new Timestamp(salesAndServiceDate.getTime()), Integer.parseInt(scheduleAt));
 			} else {
 				throw new GeneralException("scheduleAt must be set at Form Letter Template");
 			}
-			
 			GenericValue rowToInsertGV = delegator.makeValue("MailerCampaignStatus");
 			rowToInsertGV.put("campaignStatusId", delegator.getNextSeqId(rowToInsertGV.getEntityName()));
 			rowToInsertGV.put("recipientId", recipientId);
