@@ -103,17 +103,16 @@
    	</entity>
    	   	
    	<entity entity-name="MailerRecipientContactList" package-name="net.intelliant.mailer" title="Mailer recipient">
-    	<field name="contactListId" type="email"/>
+    	<field name="contactListId" type="id-ne"/>
     	<field name="recipientId" type="id-ne"/>
-    	
+    	<prim-key field="recipientId"/>
+    	<prim-key field="contactListId"/>    	
       	<relation type="one" fk-name="MRCL_TO_CL" rel-entity-name="ContactList">
         	<key-map field-name="contactListId"/>
       	</relation>
     	<relation type="one" fk-name="MRCL_TO_MR" rel-entity-name="MailerRecipient">
         	<key-map field-name="recipientId"/>
       	</relation>
-    	<prim-key field="recipientId"/>
-    	<prim-key field="contactListId"/>
    	</entity>
    	
 	<entity entity-name="MailerCampaignStatus" package-name="net.intelliant.mailer" title="To track campaign status">
