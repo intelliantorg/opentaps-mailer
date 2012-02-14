@@ -115,15 +115,25 @@ public class MarketingCampaignServices {
 			mailerMarketingCampaign.set("templateId", templateId);
 			mailerMarketingCampaign.store();
 			
+			boolean isCampaignCancelled = false;
 			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
+				isCampaignCancelled = true;
 				service = dctx.getModelService("mailer.cancelCreatedMailers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
 				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
 				if (ServiceUtil.isError(serviceResults)) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
 				}
-			} else if (UtilValidate.isNotEmpty(templateId) && !UtilValidate.areEqual(oldTemplateId, templateId)) {
-				/** No point executing this campaign was cancelled. */
+			} else if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_INPROGRESS")) {
+				service = dctx.getModelService("mailer.scheduleAllMailers");
+				inputs = service.makeValid(context, ModelService.IN_PARAM);
+				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
+				if (ServiceUtil.isError(serviceResults)) {
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), module);
+				}
+			}
+			/** No point executing this campaign was cancelled. */
+			if (UtilValidate.isNotEmpty(templateId) && !UtilValidate.areEqual(oldTemplateId, templateId) && !isCampaignCancelled) {
 				/** Check if user is actually update template Id as well. */				
 				service = dctx.getModelService("mailer.reScheduleMailers");
 				inputs = service.makeValid(context, ModelService.IN_PARAM);
@@ -141,9 +151,9 @@ public class MarketingCampaignServices {
 				GenericValue statusVC = delegator.findByPrimaryKey("StatusValidChange", UtilMisc.toMap("statusId", oldStatusId, "statusIdTo", statusId));
 				if (UtilValidate.isNotEmpty(statusVC.getString("postChangeMessage"))) {
 					serviceResults.put(ModelService.SUCCESS_MESSAGE, UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale));
-				}
-				if (Debug.infoOn()) {
-					Debug.logInfo("[mailer.updateMarketingCampaign] postChangeMessage >> " + UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale), module);
+					if (Debug.infoOn()) {
+						Debug.logInfo("[mailer.updateMarketingCampaign] postChangeMessage >> " + UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale), module);
+					}
 				}
 			}
 			return serviceResults;
@@ -341,7 +351,7 @@ public class MarketingCampaignServices {
 	        serviceInputs.put("sendTo", commEventGV.getString("toString"));
 	        serviceInputs.put("userLogin", userLogin);
 			if (Debug.infoOn()) {
-				Debug.logInfo("Executing sendMail with following parameters - " + serviceInputs, module);
+				Debug.logInfo("[mailer.sendEmailMailer] Executing sendMail with following parameters - " + serviceInputs, module);
 			}
 	        serviceResults = dctx.getDispatcher().runSync(service.name, serviceInputs);
 		} catch (GenericEntityException e) {
@@ -379,7 +389,7 @@ public class MarketingCampaignServices {
 			}
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
-            	Debug.logInfo("The conditions >> " + conditions, module);
+            	Debug.logInfo("[mailer.cancelCreatedMailers] The conditions >> " + conditions, module);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -391,7 +401,7 @@ public class MarketingCampaignServices {
             }
 	        if (UtilValidate.isNotEmpty(mailersToBeCancelled)) {
 	        	if (Debug.infoOn()) {
-	        		Debug.logInfo("About to cancel " + mailersToBeCancelled.size() + " mailers.", module);
+	        		Debug.logInfo("[mailer.cancelCreatedMailers] About to cancel " + mailersToBeCancelled.size() + " mailers.", module);
 	        	}
 	        	delegator.storeAll(mailersToBeCancelled);
 	        }
@@ -410,7 +420,7 @@ public class MarketingCampaignServices {
 	}
 	
 	/**
-	 * Will be used to cancel scheduled mailers.
+	 * Will be used to re-schedule mailers.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> reScheduleMailers(DispatchContext dctx, Map<String, Object> context) {
@@ -423,7 +433,7 @@ public class MarketingCampaignServices {
 			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
-            	Debug.logInfo("The conditions >> " + conditions, module);
+            	Debug.logInfo("[mailer.reScheduleMailers] The conditions >> " + conditions, module);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -443,7 +453,7 @@ public class MarketingCampaignServices {
             }
 	        if (UtilValidate.isNotEmpty(mailersToBeReScheduled)) {
 	        	if (Debug.infoOn()) {
-	        		Debug.logInfo("About to re-schedule " + mailersToBeReScheduled.size() + " mailers.", module);
+	        		Debug.logInfo("[mailer.reScheduleMailers] About to re-schedule " + mailersToBeReScheduled.size() + " mailers.", module);
 	        	}
 	        	delegator.storeAll(mailersToBeReScheduled);
 	        }
@@ -459,5 +469,98 @@ public class MarketingCampaignServices {
 			}
 		}
 		return ServiceUtil.returnSuccess();
-	}	
+	}
+	
+	/**
+	 * Will be used to schedule all mailers.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> scheduleAllMailers(DispatchContext dctx, Map<String, Object> context) {
+		GenericDelegator delegator = dctx.getDelegator();
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
+		EntityListIterator iterator = null;
+		try {
+			List<String> statusIds = UtilMisc.toList("MAILER_SCHEDULED", "MAILER_EXECUTED");
+			List<EntityExpr> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_IN, statusIds), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+            EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
+            if (Debug.infoOn()) {
+            	Debug.logInfo("[mailer.scheduleAllMailers] The conditions >> " + conditions, module);
+            }
+	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
+	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
+	        List<GenericValue> mailersToBeScheduled = FastList.newInstance();
+	        GenericValue mailerCampaignStatusGV = null;
+	        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
+	        	mailerCampaignStatusGV.set("statusId", "MAILER_SCHEDULED");
+	        	mailersToBeScheduled.add(mailerCampaignStatusGV);
+            }
+	        if (UtilValidate.isNotEmpty(mailersToBeScheduled)) {
+	        	if (Debug.infoOn()) {
+	        		Debug.logInfo("[mailer.scheduleAllMailers] About to schedule " + mailersToBeScheduled.size() + " mailers.", module);
+	        	}
+	        	delegator.storeAll(mailersToBeScheduled);
+	        } else {
+	            if (Debug.infoOn()) {
+	            	Debug.logInfo("[mailer.scheduleAllMailers] No Mailers will be scheduled..", module);
+	            }
+	        }
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} finally {
+			if (iterator != null) {
+				try {
+					iterator.close();
+				} catch (GenericEntityException e) {
+					iterator = null;
+				}
+			}
+		}
+		return ServiceUtil.returnSuccess();
+	}
+	
+	/**
+	 * Will be used to check if campaign can be set to "in progress".
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> checkIfApprovedCampaignsCanBeMarkedInProgress(DispatchContext dctx, Map<String, Object> context) {
+		GenericDelegator delegator = dctx.getDelegator();
+		EntityListIterator iterator = null;
+		try {
+			/** get all approved and non-expired campaigns. */
+			List<EntityExpr> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MKTG_CAMP_APPROVED"), EntityUtil.getFilterByDateExpr());
+            EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
+            if (Debug.infoOn()) {
+            	Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] The conditions >> " + conditions, module);
+            }
+	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
+	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAppl", conditions, null, null, null, options);
+	        GenericValue marketingCampaignGV = null;
+	        while ((marketingCampaignGV = (GenericValue) iterator.next()) != null) {
+	        	Debug.logWarning(String.format("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Setting campaign [%1$s] to in progress..", marketingCampaignGV.getString("marketingCampaignId")), module);
+				try {
+					ModelService service = dctx.getModelService("mailer.updateMarketingCampaign");
+					Map<String, Object> serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
+			        serviceInputs.put("statusId", "MKTG_CAMP_INPROGRESS");
+			        serviceInputs.put("marketingCampaignId", marketingCampaignGV.getString("marketingCampaignId"));
+					if (Debug.infoOn()) {
+						Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Executing mailer.updateMarketingCampaign with following parameters - " + serviceInputs, module);
+					}
+			        dctx.getDispatcher().runSync(service.name, serviceInputs);
+				} catch (GenericServiceException e) {
+					return UtilMessage.createAndLogServiceError(e, module);
+				}
+            }
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError(e, module);
+		} finally {
+			if (iterator != null) {
+				try {
+					iterator.close();
+				} catch (GenericEntityException e) {
+					iterator = null;
+				}
+			}
+		}
+		return ServiceUtil.returnSuccess();
+	}
 }

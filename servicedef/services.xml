@@ -137,4 +137,13 @@
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
     </service>
+    
+	<service name="mailer.scheduleAllMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="scheduleAllMailers" auth="true">
+    	<description>Will be used to schedule all mailers.</description>
+        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
+    </service>
+    
+    <service name="mailer.checkIfApprovedCampaignsCanBeMarkedInProgress" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="checkIfApprovedCampaignsCanBeMarkedInProgress" auth="true">
+    	<description>Will be used to check if campaign can be set to in progress.</description>
+    </service>
 </services>
