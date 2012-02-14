@@ -141,15 +141,12 @@ public class MarketingCampaignTests extends MailerTests {
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
-		Map<?, ?> results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		Map<?, ?> results = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
 		assertEquals(results.get("campaignName"), campaignName);
 		assertEquals(results.get("budgetedCost"), budgetedCost);
 		assertEquals(results.get("estimatedCost"), estimatedCost);
 		assertEquals(results.get("currencyUomId"), currencyUomId);
-
-		results = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-		assertNotNull(results);
 		assertEquals(results.get("templateId"), templateId);
 	}
 	
