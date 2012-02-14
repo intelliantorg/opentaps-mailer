@@ -223,6 +223,11 @@ public class MarketingCampaignTests extends MailerTests {
 		
 		List<?> cancelledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_CANCELLED"));
 		assertEquals("There must 2 scheduled campaigns", 2, cancelledCampaigns.size());
+		
+		contactListId = createContactListWithTwoRecipients();
+		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		
+		assertEquals("There must 2 campaign lines ONLY", 2, UtilCommon.countAllCampaignLines(delegator, null, marketingCampaignId));
 	}
 	
 	public void testRemoveContactListFromCampaign() throws GeneralException {

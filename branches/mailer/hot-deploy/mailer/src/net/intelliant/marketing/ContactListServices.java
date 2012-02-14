@@ -31,6 +31,7 @@ import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
+import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityConditionList;
 import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityOperator;
@@ -198,10 +199,12 @@ public class ContactListServices {
 	@SuppressWarnings("unchecked")
 	private static void createCampaignLines(GenericDelegator delegator, String contactListId, String recipientId, Date salesAndServiceDate) throws GeneralException {
 		List<GenericValue> rowsToInsert = FastList.newInstance();
-		EntityConditionList conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId), EntityUtil.getFilterByDateExpr()), EntityOperator.AND);
+		EntityCondition condition1 = new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId);
+		EntityCondition condition2 = EntityUtil.getFilterByDateExpr();
+		EntityCondition condition3 =  new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MKTG_CAMP_CANCELLED"); /** ignore cancelled. */
+		EntityConditionList conditions = new EntityConditionList(UtilMisc.toList(condition1, condition2, condition3), EntityOperator.AND);
 		List<String> selectColumns = UtilMisc.toList("contactListId", "marketingCampaignId");
-		List<GenericValue> rows = delegator.findByCondition("MailerMarketingCampaignAndContactList", conditions, selectColumns, UtilMisc.toList("fromDate"));
-
+		List<GenericValue> rows = delegator.findByCondition("MarketingCampaignDetailsAndContactListView", conditions, selectColumns, UtilMisc.toList("fromDate"));
 		for (GenericValue row : rows) {
 			GenericValue rowToInsertGV = createCampaignLine(delegator, row.getString("marketingCampaignId"), contactListId, recipientId, salesAndServiceDate);
 			if (UtilValidate.isNotEmpty(rowToInsertGV)) {
@@ -222,6 +225,8 @@ public class ContactListServices {
 			campaignLineStatusId = "MAILER_SCHEDULED";
 		} else if (marketingCampaignStatusId.equals("MKTG_CAMP_PLANNED")) {
 			campaignLineStatusId = "MAILER_HOLD";
+		} else if (marketingCampaignStatusId.equals("MKTG_CAMP_CANCELLED")) {
+			return null; /** No need to create for cancelled campaigns. */
 		}
 		GenericValue configuredTemplate = mailerMarketingCampaign.getRelatedOne("MergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
