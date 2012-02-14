@@ -244,4 +244,18 @@
 			<key-map field-name="contactListId"/>
 		</view-link>
 	</view-entity>
+	
+	<view-entity entity-name="MarketingCampaignDetailsAndContactListView" package-name="net.intelliant.mailer" title="mailer marketing campaign and contact list"> 
+		<member-entity entity-alias="MMCCL" entity-name="MailerMarketingCampaignAndContactList"/>
+		<member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
+		<alias entity-alias="MC" name="statusId"/>
+		<alias entity-alias="MMCCL" name="campaignListId"/>
+		<alias entity-alias="MMCCL" name="marketingCampaignId"/>
+		<alias entity-alias="MMCCL" name="contactListId"/>
+		<alias entity-alias="MMCCL" name="fromDate"/>
+		<alias entity-alias="MMCCL" name="thruDate"/>
+		<view-link entity-alias="MMCCL" rel-entity-alias="MC">
+			<key-map field-name="marketingCampaignId"/>
+		</view-link>
+	</view-entity>
 </entitymodel>
