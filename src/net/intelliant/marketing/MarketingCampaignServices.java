@@ -109,9 +109,6 @@ public class MarketingCampaignServices {
 
 			ModelService service = dctx.getModelService("updateMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
-			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
-				inputs.put("thruDate", UtilDateTime.nowTimestamp());
-			} 
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
 				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, MODULE);

@@ -188,7 +188,7 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
 		GenericValue marketingCampaignGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-		assertNotNull("Thru date must be set when campaign is cancelled.", marketingCampaignGV.getTimestamp("thruDate"));
+		assertEquals("Status must be cancelled.", "MKTG_CAMP_CANCELLED", marketingCampaignGV.getString("statusId"));
 	}
 	
 	public void testCancelMarketingCampaign() throws GeneralException {
@@ -216,7 +216,7 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
 		GenericValue marketingCampaignGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-		assertNotNull("Thru date must be set when campaign is cancelled.", marketingCampaignGV.getTimestamp("thruDate"));
+		assertEquals("Status must be cancelled.", "MKTG_CAMP_CANCELLED", marketingCampaignGV.getString("statusId"));
 		
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
 		assertEquals("There must 0 scheduled campaigns", 0, campaigns.size());
