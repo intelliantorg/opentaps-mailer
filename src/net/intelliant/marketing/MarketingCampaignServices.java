@@ -183,7 +183,7 @@ public class MarketingCampaignServices {
 				inputs.put("contactListId", contactListId);
 				dctx.getDispatcher().runSync(service.name, inputs);
 			} else {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaingExists", locale), module);
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaignExists", locale), module);
 			}
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), module);
