@@ -160,10 +160,20 @@
             <display-entity entity-name="ContactMechType"/>
         </field>
         <field name="" title="${uiLabelMap.CrmNumberOfMembers}" use-when="contactListId!=null">
-            <!-- <display description="${bsh:com.opensourcestrategies.crmsfa.marketing.MarketingHelper.countContactListMembers(contactListId, delegator)}"/> -->
             <display description="${recipientId}" />
         </field>
-
+        <field name="Scheduled" title="${uiLabelMap.MailerCampaignStatusScheduled}">
+            <display description="${bsh:net.intelliant.util.UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId)}"/>
+        </field>
+        <field name="Executed" title="${uiLabelMap.MailerCampaignStatusExecuted}">
+            <display description="${bsh:net.intelliant.util.UtilCommon.countExecutedCampaignLines(delegator, contactListId, marketingCampaignId)}"/>
+        </field>
+        <field name="On Hold" title="${uiLabelMap.MailerCampaignStatusOnHold}">
+            <display description="${bsh:net.intelliant.util.UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId)}"/>
+        </field>
+        <field name="Cancelled" title="${uiLabelMap.MailerCampaignStatusCancelled}">
+            <display description="${bsh:net.intelliant.util.UtilCommon.countCancelledCampaignLines(delegator, contactListId, marketingCampaignId)}"/>
+        </field>
         <field name="remove" title="" widget-style="buttontext" use-when="(contactListId!=null) &amp;&amp; !(&quot;${marketingCampaign.statusId}&quot;.equals(&quot;MKTG_CAMP_CANCELLED&quot;))">
           <hyperlink target="removeContactListFromMarketingCampaign?marketingCampaignId=${marketingCampaignId}&amp;campaignListId=${campaignListId}" description="${uiLabelMap.CommonRemove}" />
         </field>
