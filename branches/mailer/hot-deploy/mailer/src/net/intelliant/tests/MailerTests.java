@@ -35,11 +35,14 @@ public class MailerTests extends OpentapsTestCase {
 		inputs.put("currencyUomId", currencyUomId);
 		inputs.put("estimatedCost", estimatedCost);
 		inputs.put("statusId", "MKTG_CAMP_PLANNED");
-	
-		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createMarketingCampaign", inputs);
-		String marketingCampaignId = (String) results.get("marketingCampaignId");
-		return marketingCampaignId;
+		
+		return createMarketingCampaign(inputs);
 	}
+	
+	protected String createMarketingCampaign(Map<String, Object> inputs) {
+		Map<String, Object> results = runAndAssertServiceSuccess("mailer.createMarketingCampaign", inputs);
+		return (String) results.get("marketingCampaignId");
+	}	
 
 	protected String createContactList() throws GenericEntityException {
 		GenericValue contactListTypeGV = EntityUtil.getFirst(delegator.findAll("ContactListType"));
