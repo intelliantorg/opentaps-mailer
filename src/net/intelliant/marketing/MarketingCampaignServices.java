@@ -93,12 +93,17 @@ public class MarketingCampaignServices {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		GenericValue mergeFormGV = null;
 		try {
+			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
+			String oldTemplateId = mailerMarketingCampaign.getString("templateId");
 			if (UtilValidate.isNotEmpty(templateId)) {
 				mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 				if (UtilValidate.isEmpty(mergeFormGV)) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), MODULE);
 				}
+				mailerMarketingCampaign.set("templateId", templateId);
 			}
+			mailerMarketingCampaign.store();
+			
 			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
 			String oldStatusId = marketingCampaign.getString("statusId");
 
@@ -111,11 +116,6 @@ public class MarketingCampaignServices {
 			if (ServiceUtil.isError(serviceResults)) {
 				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, MODULE);
 			}
-			
-			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
-			String oldTemplateId = mailerMarketingCampaign.getString("templateId");
-			mailerMarketingCampaign.set("templateId", templateId);
-			mailerMarketingCampaign.store();
 			
 			boolean isCampaignCancelled = false;
 			if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_CANCELLED")) {
@@ -151,7 +151,7 @@ public class MarketingCampaignServices {
 			}
 			if (UtilValidate.isNotEmpty(statusId) && !UtilValidate.areEqual(oldStatusId, statusId)) {
 				GenericValue statusVC = delegator.findByPrimaryKey("StatusValidChange", UtilMisc.toMap("statusId", oldStatusId, "statusIdTo", statusId));
-				if (UtilValidate.isNotEmpty(statusVC.getString("postChangeMessage"))) {
+				if (UtilValidate.isNotEmpty(statusVC) && UtilValidate.isNotEmpty(statusVC.getString("postChangeMessage"))) {
 					serviceResults.put(ModelService.SUCCESS_MESSAGE, UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale));
 					if (Debug.infoOn()) {
 						Debug.logInfo("[mailer.updateMarketingCampaign] postChangeMessage >> " + UtilProperties.getMessage(successResource, statusVC.getString("postChangeMessage"), locale), MODULE);
@@ -607,7 +607,7 @@ public class MarketingCampaignServices {
 	        			serviceInputs.put("statusId", "MKTG_CAMP_COMPLETED");
 	        			serviceInputs.put("marketingCampaignId", marketingCampaignId);
 	        			if (Debug.infoOn()) {
-	        				Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Executing mailer.updateMarketingCampaign with following parameters - " + serviceInputs, MODULE);
+	        				Debug.logInfo("[mailer.checkIfInProgressCampaignsCanBeMarkedComplete] Executing mailer.updateMarketingCampaign with following parameters - " + serviceInputs, MODULE);
 	        			}
 	        			dctx.getDispatcher().runSync(service.name, serviceInputs);
 	        		} catch (GenericServiceException e) {
