@@ -13,12 +13,13 @@ import org.ofbiz.entity.util.EntityUtil;
 import org.opentaps.tests.OpentapsTestCase;
 
 public class MailerTests extends OpentapsTestCase {
-	
+	protected GenericValue system;
 	protected static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+		system = delegator.findByPrimaryKey("UserLogin", UtilMisc.toMap("userLoginId", "system"));
 	}
 
 	@Override
