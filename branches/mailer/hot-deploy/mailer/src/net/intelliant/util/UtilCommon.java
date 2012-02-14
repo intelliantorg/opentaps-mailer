@@ -43,12 +43,15 @@ public final class UtilCommon {
 	
 	@SuppressWarnings("unchecked")
 	private static long countCampaignLines(GenericDelegator delegator, String statusId, String contactListId, String marketingCampaignId) throws GenericEntityException {
-		Map<String, Object> conditions = UtilMisc.toMap("statusId", statusId);
+		Map<String, Object> conditions = UtilMisc.toMap("1", "1");
 		if (UtilValidate.isNotEmpty(contactListId)) {
 			conditions.put("contactListId", contactListId);
 		}
 		if (UtilValidate.isNotEmpty(marketingCampaignId)) {
 			conditions.put("marketingCampaignId", marketingCampaignId);
+		}
+		if (UtilValidate.isNotEmpty(statusId)) {
+			conditions.put("statusId", statusId);
 		}
 		return delegator.findCountByAnd("MailerCampaignStatus", conditions);
 	}
@@ -67,5 +70,9 @@ public final class UtilCommon {
 	
 	public static long countOnHoldCampaignLines(GenericDelegator delegator, String contactListId, String marketingCampaignId) throws GenericEntityException {
 		return countCampaignLines(delegator, "MAILER_HOLD", contactListId, marketingCampaignId);
+	}
+	
+	public static long countAllCampaignLines(GenericDelegator delegator, String contactListId, String marketingCampaignId) throws GenericEntityException {
+		return countCampaignLines(delegator, null, contactListId, marketingCampaignId);
 	}
 }
