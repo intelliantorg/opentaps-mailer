@@ -20,4 +20,9 @@
     <StatusValidChange statusId="MKTG_CAMP_INPROGRESS" statusIdTo="MKTG_CAMP_CANCELLED" transitionName="Cancel Marketing Campaign"/>
     
     <StatusValidChange statusId="MKTG_CAMP_COMPLETED" statusIdTo="MKTG_CAMP_INPROGRESS" transitionName="Marketing Campaign In Progress" isStatusToVisible="N"/>
+    
+    <!-- Schedule mailer.checkIfApprovedCampaignsCanBeMarkedInProgress service nightly -->
+	<RecurrenceRule recurrenceRuleId="MAILER_AP_INPROG" xName="Daily" frequency="DAILY" intervalNumber="1" countNumber="-1"/>
+	<RecurrenceInfo recurrenceInfoId="MAILER_AP_INPROG" startDateTime="2007-01-01 00:00:00.000" recurrenceRuleId="MAILER_AP_INPROG" recurrenceCount="0"/>
+	<JobSandbox jobId="MAILER_AP_INPROG" jobName="Run Campaign Approval" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfApprovedCampaignsCanBeMarkedInProgress" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_AP_INPROG"/>
 </entity-engine-xml>
