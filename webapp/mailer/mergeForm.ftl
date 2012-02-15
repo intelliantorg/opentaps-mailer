@@ -101,13 +101,23 @@
 	    <div class="formRow">
 	      <span class="formLabelRequired">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
 	      <span class="formInputSpan">
-	      	<@inputFile name="headerImageLocation" class="inputBox required" />
+	      	<#if mergeForm.headerImageLocation?exists >
+	      		<div id="headerImageControl"><a href="javascript:void()" onclick="preview('${mergeForm.headerImageLocation}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont')" >Remove</a></div>
+		      	<div id="headerImageLocationCont" style="display:none"><@inputFile name="headerImageLocation" class="inputBox required" /></div>
+	      	<#else>
+	      		<@inputFile name="headerImageLocation" class="inputBox required" />
+	      	</#if>
 	      </span>
 	    </div>
 	    <div class="formRow">
 	      <span class="formLabelRequired">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
 	      <span class="formInputSpan">
-	      	<@inputFile name="footerImageLocation" class="inputBox required" />
+	      	<#if mergeForm.footerImageLocation?exists >
+	      		<div id="footerImageControl"><a href="javascript:void()" onclick="preview('${mergeForm.footerImageLocation}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont')" >Remove</a></div>
+	      		<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox required" /></div>
+	      	<#else>
+	      		<@inputFile name="footerImageLocation" class="inputBox required" />
+	      	</#if>	      	
 	      </span>
 	    </div>
     </div>
