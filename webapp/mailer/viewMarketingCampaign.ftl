@@ -1,8 +1,8 @@
 <#if marketingCampaign.statusId?exists && marketingCampaign.templateId?exists>
 	<#if marketingCampaign.statusId == "MKTG_CAMP_INPROGRESS">
 		<#assign execute>
-			<a class='subMenuButton' href='#?marketingCampaignId=${marketingCampaign.marketingCampaignId}'>
-			${uiLabelMap.ButtonExecute}
+			<a class='subMenuButton' href='<@ofbizUrl>executeCampaign?marketingCampaignId=${marketingCampaign.marketingCampaignId}</@ofbizUrl>'>
+				${uiLabelMap.ButtonExecute}
 			</a>
 		</#assign>
 	</#if>

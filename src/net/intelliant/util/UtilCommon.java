@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
+import javax.servlet.http.HttpServletRequest;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -25,11 +27,13 @@ import org.jsoup.select.Elements;
 import org.ofbiz.base.location.FlexibleLocation;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.StringUtil;
+import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
+import org.ofbiz.entity.GenericValue;
 
 public final class UtilCommon {
 	private static final String module = UtilCommon.class.getName();
@@ -236,5 +240,55 @@ public final class UtilCommon {
 	
 	public static long countAllCampaignLines(GenericDelegator delegator, String contactListId, String marketingCampaignId) throws GenericEntityException {
 		return countCampaignLines(delegator, null, contactListId, marketingCampaignId);
+	}
+	
+	private static String getTemplateType(GenericValue templateGV) {
+		if (UtilValidate.isEmpty(templateGV)) {
+			return null;
+		} else {
+			return templateGV.getString("mergeFormTypeId");
+		}
+	}
+	
+	public static boolean isEmailTemplate(GenericValue templateGV) {
+		if (UtilValidate.isEmpty(templateGV)) {
+			return false;
+		} else {
+			String templateType = getTemplateType(templateGV);
+			if (templateType.equals("EMAIL")) {
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	public static boolean isPrintTemplate(GenericValue templateGV) {
+		if (UtilValidate.isEmpty(templateGV)) {
+			return false;
+		} else {
+			String templateType = getTemplateType(templateGV);
+			if (templateType.equals("PRINT")) {
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	public static boolean isEmailTemplate(GenericDelegator delegator, String templateId) throws GenericEntityException {
+		GenericValue templateGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
+		return isEmailTemplate(templateGV);
+	}
+	
+	public static void addErrorMessage(HttpServletRequest request, String resource, String label) {
+		addMessage(request, "_ERROR_MESSAGE_", resource, label);
+	}
+	
+	public static void addEventMessage(HttpServletRequest request, String resource, String label) {
+		addMessage(request, "_EVENT_MESSAGE_", resource, label);
+	}
+	
+	private static void addMessage(HttpServletRequest request, String messageType, String resource, String label) {
+		String message = UtilProperties.getMessage(resource, label, UtilHttp.getLocale(request));
+		request.setAttribute(messageType, message);
 	}
 }
