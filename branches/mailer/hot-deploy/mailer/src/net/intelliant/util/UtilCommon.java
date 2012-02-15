@@ -42,7 +42,12 @@ public final class UtilCommon {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static long countCampaignLines(GenericDelegator delegator, String statusId, String contactListId, String marketingCampaignId) throws GenericEntityException {
+	public static long countCampaignLines(GenericDelegator delegator, String statusId, String contactListId, String marketingCampaignId) throws GenericEntityException {
+		if (Debug.infoOn()) {
+			Debug.logInfo("[countCampaignLines] statusId >> " + statusId, module);
+			Debug.logInfo("[countCampaignLines] contactListId >> " + contactListId, module);
+			Debug.logInfo("[countCampaignLines] marketingCampaignId >> " + marketingCampaignId, module);
+		}
 		Map<String, Object> conditions = UtilMisc.toMap("1", "1");
 		if (UtilValidate.isNotEmpty(contactListId)) {
 			conditions.put("contactListId", contactListId);
