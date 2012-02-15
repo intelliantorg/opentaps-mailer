@@ -29,3 +29,16 @@ function campaignTypeOnChange(value){
 		document.getElementById('fromEmailAddress').value = "";
 	}
 }
+
+/* Following set of methods are required to support MergeForm page */
+function preview(url){
+	window.open(url,'Preview','location=0,menubar=0,resizable=0,scrollbars=0,status=0,toolbar=0',false);
+}
+function hideShowUploadImage(controller, target){
+	var controllerObj = document.getElementById(controller);
+	var targetObj = document.getElementById(target);
+
+	controllerObj.style.display = "none";
+	targetObj.style.display = "block";
+}
+
