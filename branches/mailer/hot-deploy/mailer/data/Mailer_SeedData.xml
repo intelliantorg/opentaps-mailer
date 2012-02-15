@@ -34,5 +34,5 @@
 	<!-- Schedule mailer.checkIfCompletedCampaignsCanBeMarkedInProgress service nightly -->
 	<RecurrenceRule recurrenceRuleId="MAILER_COMP_INPROG" xName="Daily" frequency="DAILY" intervalNumber="1" countNumber="-1"/>
 	<RecurrenceInfo recurrenceInfoId="MAILER_COMP_INPROG" startDateTime="2007-01-01 00:00:00.000" recurrenceRuleId="MAILER_COMP_INPROG" recurrenceCount="0"/>
-	<JobSandbox jobId="MAILER_COMP_INPROG" jobName="Mark Campaign In Progress" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfCompletedCampaignsCanBeMarkedInProgress" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_INPROG_COMP"/>
+	<JobSandbox jobId="MAILER_COMP_INPROG" jobName="Mark Campaign In Progress" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfCompletedCampaignsCanBeMarkedInProgress" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_COMP_INPROG"/>
 </entity-engine-xml>
