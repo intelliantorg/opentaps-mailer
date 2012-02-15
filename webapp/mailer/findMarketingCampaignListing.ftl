@@ -45,6 +45,7 @@
 				</#list>
 				<td><span class="tableheadtext">Select</span></td>
 			</tr>
+			<#assign contactListId = "" />
 			<#list campaignsListIt as campaignsListItem>
 				<tr class="${tableRowClass(campaignsListItem_index)}">
 					<td>
@@ -56,8 +57,7 @@
 					<td><span class="tabletext"><@displayDate date=campaignsListItem.fromDate?default("") /></span></td>
 					<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>
 					<#list mailerCampaignStatusList as mailerCampaignStatusListItem>
-						<#assign conditions = Static["org.ofbiz.base.util.UtilMisc"].toMap("marketingCampaignId", campaignsListItem.marketingCampaignId, "statusId", mailerCampaignStatusListItem.statusId)>
-      					<#assign statusCount = delegator.findCountByAnd("MailerCampaignStatus", conditions) />
+						<#assign statusCount = Static["net.intelliant.util.UtilCommon"].countCampaignLines(delegator, mailerCampaignStatusListItem.statusId, contactListId, campaignsListItem.marketingCampaignId)>
 						<td>
 							<span class="tabletext">${statusCount?default("0")}</span>
 						</td>
