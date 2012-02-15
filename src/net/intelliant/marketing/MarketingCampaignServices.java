@@ -237,6 +237,7 @@ public class MarketingCampaignServices {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> executeEmailMailers(DispatchContext dctx, Map<String, Object> context) {
+        int scheduledEmailsCount = 0;
 		Locale locale = (Locale) context.get("locale");
 		GenericDelegator delegator = dctx.getDelegator();
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
@@ -270,6 +271,7 @@ public class MarketingCampaignServices {
 		        GenericValue mailerCampaignStatusGV = null;
 //				Iterate over each scheduled mailer,
 		        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
+		        	scheduledEmailsCount++;
 		        	String campaignStatusId = mailerCampaignStatusGV.getString("campaignStatusId");
 //		        	TODO use a view instead of finding related one.
 		        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
@@ -327,7 +329,9 @@ public class MarketingCampaignServices {
 				}
 			}
 		}
-		return ServiceUtil.returnSuccess();
+		Map<String, Object> messageMap = UtilMisc.toMap("scheduledEmailsCount", scheduledEmailsCount);
+		String successMessage = UtilProperties.getMessage(successResource, "successEmailsScheduled", messageMap, locale);
+		return ServiceUtil.returnSuccess(successMessage);
 	}
 	
 	/**
