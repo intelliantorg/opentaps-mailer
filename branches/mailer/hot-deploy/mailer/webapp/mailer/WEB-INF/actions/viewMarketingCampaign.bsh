@@ -8,7 +8,7 @@ marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
 
 marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
-if (mailerMarketingCampaign == null) {
+if (marketingCampaign == null) {
     context.put("validView", false);
     return;
 }
