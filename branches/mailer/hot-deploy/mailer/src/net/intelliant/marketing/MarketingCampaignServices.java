@@ -250,6 +250,7 @@ public class MarketingCampaignServices {
 				String emailSubject = templateGV.getString("subject");
 				String emailBodyTemplate = templateGV.getString("mergeFormText");
 				String emailFromAddress = templateGV.getString("fromEmailAddress");
+				emailBodyTemplate = UtilCommon.parseHtmlAndGenerateCompressedImages(emailBodyTemplate);
 				if (Debug.infoOn()) {
 					Debug.logInfo("This the email subject - " + emailSubject, MODULE);
 					Debug.logInfo("This the email template body - " + emailBodyTemplate, MODULE);
@@ -257,12 +258,12 @@ public class MarketingCampaignServices {
 				}
 	            EntityCondition conditions = new EntityConditionList( 
             		UtilMisc.toList(
-        				new EntityExpr("emailStatusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"),
+        				new EntityExpr("statusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"),
         				new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId),
                         new EntityExpr("scheduledForDate", EntityOperator.LESS_THAN_EQUAL_TO, UtilDateTime.nowTimestamp())
             		), EntityOperator.AND);
 	            if (Debug.infoOn()) {
-	            	Debug.logInfo("The campaign status conditions >> " + conditions, MODULE);
+	            	Debug.logInfo("[mailer.executeEmailMailers] The conditions >> " + conditions, MODULE);
 	            }
 		        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 		        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
@@ -278,10 +279,8 @@ public class MarketingCampaignServices {
 		        	} else if (relatedRecipientGV.containsKey(sendToEmailColumn) == false) {
 		        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorSendToEmailColumnIncorrect", locale), MODULE);
 		        	}
-		        	StringWriter writer = new StringWriter();
-//		        	and prepare email content,
-		        	FreemarkerUtil.renderTemplateWithTags("relatedRecipientGV#" + relatedRecipientGV.getString("recipientId"), emailBodyTemplate, relatedRecipientGV.getAllFields(), writer, false, false);
-		            String emailBodyContent = writer.toString();
+		        	StringWriter emailBodyContent = new StringWriter();
+		        	FreemarkerUtil.renderTemplateWithTags("relatedRecipientGV#" + relatedRecipientGV.getString("recipientId"), emailBodyTemplate, relatedRecipientGV.getAllFields(), emailBodyContent, false, false);
 //		        	prepare Comm. Event, and send email.
 					ModelService service = dctx.getModelService("createCommunicationEvent");
 	                Map<String, Object> serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
@@ -289,7 +288,7 @@ public class MarketingCampaignServices {
 	                serviceInputs.put("communicationEventTypeId", "EMAIL_COMMUNICATION");
 	                serviceInputs.put("subject", emailSubject);
 	                serviceInputs.put("contentMimeTypeId", "text/html");
-	                serviceInputs.put("content", emailBodyContent);
+	                serviceInputs.put("content", emailBodyContent.toString());
 	                serviceInputs.put("fromString", emailFromAddress);
 //	              	USE recipient email address.
 	                serviceInputs.put("toString", relatedRecipientGV.getString(sendToEmailColumn));
@@ -304,6 +303,9 @@ public class MarketingCampaignServices {
 	                serviceInputs.put("communicationEventId", communicationEventId);
 	                serviceInputs.put("campaignStatusId", campaignStatusId);
 	                dctx.getDispatcher().runAsync(service.name, serviceInputs);
+	    			if (Debug.infoOn()) {
+	    				Debug.logInfo("[mailer.executeEmailMailers] Executing sendEmailMailer with following parameters - " + serviceInputs, MODULE);
+	    			}
 	            }
 			} else {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorNoTemplateWithCampaign", locale), MODULE);
@@ -362,6 +364,7 @@ public class MarketingCampaignServices {
 			GenericValue mailerMarketingCampaignGV = dctx.getDelegator().findByPrimaryKey("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId));
 	        if (!ServiceUtil.isError(serviceResults)) {
 	        	mailerMarketingCampaignGV.setString("statusId", "MAILER_EXECUTED");
+	        	mailerMarketingCampaignGV.set("actualExecutionDateTime", UtilDateTime.nowTimestamp());
 	        	mailerMarketingCampaignGV.store();
 	        } else {
 //	        	TODO do something for error.
