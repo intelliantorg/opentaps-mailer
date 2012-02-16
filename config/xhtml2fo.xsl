@@ -8,6 +8,8 @@
 <xsl:preserve-space elements="xhtml:listing listing xhtml:plaintext plaintext xhtml:pre pre xhtml:samp samp"/>
 <xsl:param name="font-size" select="''"/>
 <xsl:param name="font.symbol" select="'Arial Unicode MS'"/>
+<xsl:param name="headerImage"/>
+<xsl:param name="footerImage"/>
 
 <xsl:template name="common-atts">
   <xsl:copy-of select="@id|@color|@height|@width|@xml:lang"/>
@@ -15,31 +17,47 @@
   <xsl:if test="@nowrap"><xsl:attribute name="wrap-option">no-wrap</xsl:attribute></xsl:if>
 </xsl:template>
 
-<xsl:template match="xhtml:html|html">
+<xsl:template match="xhtml:htmls|htmls">
   <fo:root>
     <fo:layout-master-set>
       <fo:simple-page-master master-name="page">
-        <fo:region-body margin=".75in .75in .75in .75in"/>
+        <fo:region-body margin-top="2.5in" margin-bottom=".75in" margin-left=".65in" margin-right=".75in"/>
         <fo:region-before extent=".5in"/>
-        <fo:region-after extent=".5in"/>
+        <fo:region-after extent="1.0in"/>
       </fo:simple-page-master>
     </fo:layout-master-set>
     <fo:page-sequence master-reference="page">
       <fo:static-content flow-name="xsl-region-before">
+      	<!-- This way extra empty space will not appear above the header logo.
         <fo:block display-align="after" padding-before=".2in" text-align="center" font-size="9pt">
           <xsl:apply-templates select="xhtml:head/xhtml:title|head/title"/>
         </fo:block>
+        -->
+		<fo:block display-align="before" text-align="center">
+			<fo:external-graphic src="{$headerImage}"/>
+		</fo:block>
       </fo:static-content>
       <fo:static-content flow-name="xsl-region-after">
+      	<!-- page numbering not working correctly 
         <fo:block display-align="before" text-align="center" font-size="8pt">
           <xsl:text>page </xsl:text>
           <fo:page-number/><xsl:text> of </xsl:text>
           <fo:page-number-citation ref-id="__END__"/>
         </fo:block>
+        -->
+        <fo:block display-align="after" text-align="center">
+			<fo:external-graphic src="{$footerImage}"/>
+		</fo:block>
       </fo:static-content>
-      <xsl:apply-templates/>
+      <fo:flow flow-name="xsl-region-body">
+      	<xsl:apply-templates/>
+      </fo:flow>
     </fo:page-sequence>
   </fo:root>
+</xsl:template>
+
+<xsl:template match="xhtml:html|html">
+	<xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="xhtml:title|title">
@@ -63,13 +81,11 @@
 </xsl:template>
 
 <xsl:template match="xhtml:body|body">
-  <fo:flow flow-name="xsl-region-body">
     <xsl:call-template name="common-atts"/>
     <xsl:apply-templates select="//basefont[1]"/>
     <xsl:if test="$font-size"><xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute></xsl:if>
     <xsl:apply-templates/>
-    <fo:block id="__END__"/>
-  </fo:flow>
+    <fo:block id="__END__" break-after="page" /> <!-- Fix : This places an extra page with header and footer at the end  -->
 </xsl:template>
 
 <xsl:template match="xhtml:head|head|xhtml:applet|applet|xhtml:area|area|xhtml:base|base
