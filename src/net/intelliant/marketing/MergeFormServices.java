@@ -40,6 +40,7 @@ public class MergeFormServices {
 		// Note - UtilValidates in-build method is not up to the mark.
 		String mergeFormTypeId = String.valueOf(context.get("mergeFormTypeId"));
 		String mergeFormEmailAddress = String.valueOf(context.get("fromEmailAddress"));
+				
 		if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL") && (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilValidate.isEmail(mergeFormEmailAddress))) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCampaignTemplateForEmail", locale), module);
 		}
@@ -47,10 +48,12 @@ public class MergeFormServices {
 		String mergeFormId = delegator.getNextSeqId("MergeForm");
 		Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
 		mergeForm = delegator.makeValue("MergeForm", newMergeFormMap);
-		mergeForm.setNonPKFields(context);
-		mergeForm.put("headerImageLocation", "");
-		mergeForm.put("footerImageLocation", "");
+		mergeForm.set("mergeFormName", context.get("mergeFormName"));
+		mergeForm.set("mergeFormTypeId", mergeFormTypeId);
 		
+		mergeForm.set("scheduleAt", context.get("scheduleAt"));
+		mergeForm.set("mergeFormText", context.get("mergeFormText"));
+				
 		ByteWrapper binData = null;
 		String fileName = null;
 
@@ -90,8 +93,8 @@ public class MergeFormServices {
 					inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
 					dispatcher.runSync("createAnonFile", inputs);
 				}
-			}else{
-				mergeForm.put("fromEmailAddress", "");
+			}else if(UtilValidate.areEqual(mergeFormTypeId, "EMAIL")){
+				mergeForm.put("fromEmailAddress", mergeFormEmailAddress);
 			}
 		} catch (Exception e) {
 			return UtilMessage.createAndLogServiceError(e, module);
@@ -128,6 +131,8 @@ public class MergeFormServices {
 		String mergeFormTypeId = String.valueOf(context.get("mergeFormTypeId"));
 		String scheduleAt = (String) context.get("scheduleAt");
 		String mergeFormId = (String) context.get("mergeFormId");
+		String headerImageLocationRemove = String.valueOf(context.get("headerImageLocationRemove"));
+		String footerImageLocationRemove = String.valueOf(context.get("footerImageLocationRemove"));
 		results.put("mergeFormId", mergeFormId);
 
 		ByteWrapper binData = null;
@@ -140,13 +145,19 @@ public class MergeFormServices {
 		Map<String, Object> inputs = null;
 		try {
 			GenericValue mergeForm = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
-			mergeForm.setNonPKFields(context);
-			mergeForm.put("headerImageLocation", "");
-			mergeForm.put("footerImageLocation", "");
-
+			//mergeForm.setNonPKFields(context);
+			
+			mergeForm.set("mergeFormName", context.get("mergeFormName"));
+			mergeForm.set("mergeFormTypeId", mergeFormTypeId);
+			
+			mergeForm.set("scheduleAt", scheduleAt);
+			mergeForm.set("mergeFormText", context.get("mergeFormText"));
+			
 			String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
 
-			if(!UtilValidate.areEqual(mergeFormTypeId, "EMAIL")){
+			if(UtilValidate.areEqual(mergeFormTypeId, "EMAIL")){
+				mergeForm.set("fromEmailAddress", context.get("fromEmailAddress"));
+			}else{
 				mergeForm.put("fromEmailAddress", "");
 			}
 
@@ -158,12 +169,12 @@ public class MergeFormServices {
 				uploadedFilePath = writeToFile(filePath, dataResourceId, fileName, binData);
 				urlBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
 
-				mergeForm.put("headerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
+				mergeForm.set("headerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
 
 				inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
 				dispatcher.runSync("createAnonFile", inputs);
-			}else{
-				mergeForm.put("headerImageLocation", context.get("headerImageLocationStr"));
+			}else if(UtilValidate.areEqual(headerImageLocationRemove, "Y")){
+				mergeForm.put("headerImageLocation", "");
 			}
 
 			binData = (ByteWrapper) context.get("footerImageLocation");
@@ -174,13 +185,14 @@ public class MergeFormServices {
 				uploadedFilePath = writeToFile(filePath, dataResourceId, fileName, binData);
 				urlBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
 
-				mergeForm.put("footerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
+				mergeForm.set("footerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
 
 				inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
 				dispatcher.runSync("createAnonFile", inputs);
-			}else{
-				mergeForm.put("footerImageLocation", context.get("footerImageLocationStr"));
+			}else if(UtilValidate.areEqual(footerImageLocationRemove, "Y")){
+				mergeForm.put("footerImageLocation", "");
 			}
+			
 			delegator.store(mergeForm);
 
 			String oldScheduleAt = mergeForm.getString("scheduleAt");
