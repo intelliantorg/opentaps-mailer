@@ -26,10 +26,8 @@ statusItemsList.add(UtilMisc.toMap("statusIdTo","","transitionName","---"));
 statusItemsList.addAll(possibleTransitionStatus);
 
 context.put("statusItemsEdit", statusItemsList); 
-System.out.println("#### - Marketing status list : "+currentStatus);
 
 context.put("marketingCampaign", marketingCampaign);
-System.out.println("#### - Marketing Campaign : "+marketingCampaign);
 
 security = request.getAttribute("security");
 userLogin = request.getAttribute("userLogin");
