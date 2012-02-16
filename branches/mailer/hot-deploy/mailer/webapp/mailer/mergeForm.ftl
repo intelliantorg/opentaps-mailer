@@ -101,10 +101,10 @@
 	    <div class="formRow">
 	      <span class="formLabel">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
 	      <span class="formInputSpan">
-	      	<input type="hidden" name="headerImageLocationStr" value="${mergeForm.headerImageLocation?default("")}" />
+	      	<input type="hidden" id="headerImageLocationRemove" name="headerImageLocationRemove" value="N" />
 	      	<#if mergeForm.headerImageLocation?exists && mergeForm.headerImageLocation != "" >
 	      		<#assign headerLink = mergeForm.headerImageLocation >
-	      		<div id="headerImageControl"><a href="javascript:void()" onclick="preview('${headerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont')" >Remove</a></div>
+	      		<div id="headerImageControl"><a href="#" onclick="preview('${headerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')" >Remove</a></div>
 		      	<div id="headerImageLocationCont" style="display:none"><@inputFile name="headerImageLocation" class="inputBox" /></div>
 	      	<#else>
 	      		<@inputFile name="headerImageLocation" class="inputBox" />
@@ -114,10 +114,10 @@
 	    <div class="formRow">
 	      <span class="formLabel">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
 	      <span class="formInputSpan">
-	      	<input type="hidden" name="footerImageLocationStr" value="${mergeForm.footerImageLocation?default("")}" />
+	      	<input type="hidden" id="footerImageLocationRemove" name="footerImageLocationRemove" value="N" />
 	      	<#if mergeForm.footerImageLocation?exists  && mergeForm.footerImageLocation != "" >
 	      		<#assign footerLink = mergeForm.footerImageLocation >	      		
-	      		<div id="footerImageControl"><a href="javascript:void()" onclick="preview('${footerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont')" >Remove</a></div>
+	      		<div id="footerImageControl"><a href="#" onclick="preview('${footerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')" >Remove</a></div>
 	      		<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox" /></div>
 	      	<#else>
 	      		<@inputFile name="footerImageLocation" class="inputBox" />
