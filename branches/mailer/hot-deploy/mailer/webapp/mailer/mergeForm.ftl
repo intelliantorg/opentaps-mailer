@@ -99,24 +99,28 @@
     </div>
     <div id="headerFooterImageContainer" <#if !mergeForm.mergeFormTypeId?exists || mergeForm.mergeFormTypeId?if_exists != "PRINT" > style="display:none"</#if> >
 	    <div class="formRow">
-	      <span class="formLabelRequired">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
+	      <span class="formLabel">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
 	      <span class="formInputSpan">
-	      	<#if mergeForm.headerImageLocation?exists >
-	      		<div id="headerImageControl"><a href="javascript:void()" onclick="preview('${mergeForm.headerImageLocation}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont')" >Remove</a></div>
-		      	<div id="headerImageLocationCont" style="display:none"><@inputFile name="headerImageLocation" class="inputBox required" /></div>
+	      	<input type="hidden" name="headerImageLocationStr" value="${mergeForm.headerImageLocation?default("")}" />
+	      	<#if mergeForm.headerImageLocation?exists && mergeForm.headerImageLocation != "" >
+	      		<#assign headerLink = mergeForm.headerImageLocation >
+	      		<div id="headerImageControl"><a href="javascript:void()" onclick="preview('${headerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont')" >Remove</a></div>
+		      	<div id="headerImageLocationCont" style="display:none"><@inputFile name="headerImageLocation" class="inputBox" /></div>
 	      	<#else>
-	      		<@inputFile name="headerImageLocation" class="inputBox required" />
+	      		<@inputFile name="headerImageLocation" class="inputBox" />
 	      	</#if>
 	      </span>
 	    </div>
 	    <div class="formRow">
-	      <span class="formLabelRequired">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
+	      <span class="formLabel">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
 	      <span class="formInputSpan">
-	      	<#if mergeForm.footerImageLocation?exists >
-	      		<div id="footerImageControl"><a href="javascript:void()" onclick="preview('${mergeForm.footerImageLocation}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont')" >Remove</a></div>
-	      		<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox required" /></div>
+	      	<input type="hidden" name="footerImageLocationStr" value="${mergeForm.footerImageLocation?default("")}" />
+	      	<#if mergeForm.footerImageLocation?exists  && mergeForm.footerImageLocation != "" >
+	      		<#assign footerLink = mergeForm.footerImageLocation >	      		
+	      		<div id="footerImageControl"><a href="javascript:void()" onclick="preview('${footerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont')" >Remove</a></div>
+	      		<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox" /></div>
 	      	<#else>
-	      		<@inputFile name="footerImageLocation" class="inputBox required" />
+	      		<@inputFile name="footerImageLocation" class="inputBox" />
 	      	</#if>	      	
 	      </span>
 	    </div>
