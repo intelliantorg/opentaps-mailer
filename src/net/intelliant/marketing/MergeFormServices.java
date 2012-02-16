@@ -50,7 +50,9 @@ public class MergeFormServices {
 		mergeForm = delegator.makeValue("MergeForm", newMergeFormMap);
 		mergeForm.set("mergeFormName", context.get("mergeFormName"));
 		mergeForm.set("mergeFormTypeId", mergeFormTypeId);
-		
+
+		mergeForm.set("description", context.get("description"));
+		mergeForm.set("subject", context.get("subject"));
 		mergeForm.set("scheduleAt", context.get("scheduleAt"));
 		mergeForm.set("mergeFormText", context.get("mergeFormText"));
 				
@@ -150,6 +152,8 @@ public class MergeFormServices {
 			mergeForm.set("mergeFormName", context.get("mergeFormName"));
 			mergeForm.set("mergeFormTypeId", mergeFormTypeId);
 			
+			mergeForm.set("description", context.get("description"));
+			mergeForm.set("subject", context.get("subject"));
 			mergeForm.set("scheduleAt", scheduleAt);
 			mergeForm.set("mergeFormText", context.get("mergeFormText"));
 			
