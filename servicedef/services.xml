@@ -78,11 +78,11 @@
         <attribute name="mergeFormTypeId" type="String" mode="IN" optional="false"/>
         <attribute name="fromEmailAddress" type="String" mode="IN" optional="true"/>
         <attribute name="headerImageLocation" type="org.ofbiz.entity.util.ByteWrapper" mode="IN" optional="true"/>  
-       	<attribute name="_headerImageLocation_fileName" type="String" mode="IN"/>
-       	<attribute name="_headerImageLocation_contentType" type="String" mode="IN"/>
+       	<attribute name="_headerImageLocation_fileName" type="String" mode="IN" optional="true"/>
+       	<attribute name="_headerImageLocation_contentType" type="String" mode="IN" optional="true"/>
         <attribute name="footerImageLocation" type="org.ofbiz.entity.util.ByteWrapper" mode="IN" optional="true"/> 
-       	<attribute name="_footerImageLocation_fileName" type="String" mode="IN"/>
-       	<attribute name="_footerImageLocation_contentType" type="String" mode="IN"/>
+       	<attribute name="_footerImageLocation_fileName" type="String" mode="IN" optional="true"/>
+       	<attribute name="_footerImageLocation_contentType" type="String" mode="IN" optional="true"/>
         <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
         <attribute name="privateForm" type="String" mode="IN" optional="true"/>
@@ -95,11 +95,11 @@
         <attribute name="mergeFormTypeId" type="String" mode="IN" optional="false"/>
         <attribute name="fromEmailAddress" type="String" mode="IN" optional="true"/>
         <attribute name="headerImageLocation" type="org.ofbiz.entity.util.ByteWrapper" mode="IN" optional="true"/>
-       	<attribute name="_headerImageLocation_fileName" type="String" mode="IN"/>
-       	<attribute name="_headerImageLocation_contentType" type="String" mode="IN"/>
+       	<attribute name="_headerImageLocation_fileName" type="String" mode="IN" optional="true"/>
+       	<attribute name="_headerImageLocation_contentType" type="String" mode="IN" optional="true"/>
         <attribute name="footerImageLocation" type="org.ofbiz.entity.util.ByteWrapper" mode="IN" optional="true"/> 
-       	<attribute name="_footerImageLocation_fileName" type="String" mode="IN"/>
-       	<attribute name="_footerImageLocation_contentType" type="String" mode="IN"/>
+       	<attribute name="_footerImageLocation_fileName" type="String" mode="IN" optional="true"/>
+       	<attribute name="_footerImageLocation_contentType" type="String" mode="IN" optional="true"/>
         <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
         <attribute name="privateForm" type="String" mode="IN" optional="true"/>
