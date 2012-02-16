@@ -28,44 +28,9 @@
                 </entity-options>
             </drop-down>
         </field>
-
         <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit"><submit/></field>
     </form>
-
-    <form id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" type="single" 
-    	  title="${uiLabelMap.CreateCampaignHeader}" default-map-name="marketingCampaign" target="updateMarketingCampaign"
-          default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
-
-        <field name="marketingCampaignId"><hidden/></field>
-        <field widget-style="inputBox required" title-style="requiredField" name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
-        <field name="templateId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.LabelTemplateId}" position="2">
-            <drop-down allow-empty="false">
-                <entity-options entity-name="MergeForm" key-field-name="mergeFormId" description="${mergeFormName}">
-                    <entity-order-by field-name="mergeFormName"/>
-                </entity-options>
-            </drop-down>
-        </field>     
-        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1">
-            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
-        </field>
-        <field name="statusId" title-style="requiredField" widget-style="inputBox required" title="${uiLabelMap.CommonStatus}" position="2">
-            <drop-down allow-empty="false" current-description="${currentStatus.description}">
-				<entity-options entity-name="StatusValidChangeToDetail" key-field-name="statusIdTo" description="${transitionName}">
-                    <entity-constraint name="isStatusToVisible" operator="not-equals" value="N"/>
-                    <entity-constraint name="statusId" value="${marketingCampaign.statusId}"/>
-                    <entity-order-by field-name="sequenceId"/>
-                </entity-options>
-            </drop-down>
-        </field>
-        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="1">
-            <date-time type="timestamp" input-method="time-dropdown" clock="12"/>
-        </field>      
-        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}">
-        	<textarea rows="4" cols="33" />
-        </field>
-        <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
-    </form>
-    
+        
     <form name="createContactListForm" type="single" title="${uiLabelMap.CreateContactListHeader}" target="createContactList"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
         <field name="contactListName" title="${uiLabelMap.CommonName}" title-style="requiredField"><text/></field>

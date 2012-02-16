@@ -1,0 +1,39 @@
+import org.ofbiz.entity.condition.*;
+import org.ofbiz.entity.util.EntityUtil;
+import org.ofbiz.base.util.UtilValidate;
+import org.ofbiz.base.util.UtilMisc;
+import org.opentaps.common.util.UtilCommon;
+
+marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
+
+marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+
+templateId = marketingCampaign.get("templateId");
+if (UtilValidate.isNotEmpty(templateId)) {
+	template =  delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
+	context.put("templateName", template.getString("mergeFormName"));
+}
+
+statusId = marketingCampaign.get("statusId");
+conditions = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, statusId)/*,
+							 new EntityExpr("isStatusToVisible", EntityOperator.NOT_EQUAL, "N")*/);
+possibleTransitionStatus =  delegator.findByAnd("StatusValidChange", conditions);
+currentStatus = delegator.findByPrimaryKey("StatusItem", UtilMisc.toMap("statusId",statusId));
+
+statusItemsList = new ArrayList();
+statusItemsList.add(UtilMisc.toMap("statusIdTo",currentStatus.get("statusId"),"transitionName",currentStatus.get("description")));
+statusItemsList.add(UtilMisc.toMap("statusIdTo","","transitionName","---"));
+statusItemsList.addAll(possibleTransitionStatus);
+
+context.put("statusItemsEdit", statusItemsList); 
+System.out.println("#### - Marketing status list : "+currentStatus);
+
+context.put("marketingCampaign", marketingCampaign);
+System.out.println("#### - Marketing Campaign : "+marketingCampaign);
+
+security = request.getAttribute("security");
+userLogin = request.getAttribute("userLogin");
+
+if (security.hasEntityPermission("CRMSFA_CAMP", "_UPDATE", userLogin)) {
+    context.put("hasUpdatePermission", true);
+}

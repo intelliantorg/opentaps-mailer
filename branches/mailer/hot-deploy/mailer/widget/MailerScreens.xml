@@ -35,7 +35,7 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
-                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/createCampaign.ftl"/></html></platform-specific>
+                        <platform-specific><html><html-template location="component://mailer/webapp/mailer/createAndUpdateCampaign.ftl"/></html></platform-specific>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -80,6 +80,43 @@
                     </decorator-section>
                 </decorator-screen>
             </widgets>
+        </section>
+    </screen>
+
+    <screen name="updateMarketingCampaignForm">
+        <section>
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
+            <actions>
+                <set field="pageTitleLabel" value="UpdateCampaignHeader"/>
+                <set field="sectionHeaderUiLabel" value="UpdateCampaignHeader"/>
+                <set field="listSortTarget" value="viewMarketingCampaign"/>
+                <entity-condition entity-name="StatusItem" list="statusItems" list-name="statusItems">
+                	<condition-list combine="and">
+               			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_PLANNED"/>
+                	</condition-list>
+                    <order-by field-name="sequenceId"/>
+                </entity-condition>
+				<entity-condition entity-name="MergeForm" list="mergeFormList" list-name="mergeFormList">
+                    <order-by field-name="mergeFormName"/>
+                </entity-condition>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/updateMarketingCampaign.bsh"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container style="subSectionBlock">
+                        	<platform-specific><html><html-template location="component://mailer/webapp/mailer/createAndUpdateCampaign.ftl"/></html></platform-specific>                            
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+            <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">Permission denied</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
         </section>
     </screen>
 
@@ -275,37 +312,6 @@
         </section>
     </screen>
     
-    <screen name="updateMarketingCampaignForm">
-        <section>
-            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
-            <actions>
-                <set field="pageTitleLabel" value="UpdateCampaignHeader"/>
-                <set field="sectionHeaderUiLabel" value="UpdateCampaignHeader"/>
-                <set field="listSortTarget" value="viewMarketingCampaign"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewMarketingCampaign.bsh"/>
-            </actions>
-            <widgets>
-                <decorator-screen name="main-section-decorator">
-                    <decorator-section name="section-body">
-                        <container style="subSectionBlock">
-                            <container style="form">
-                                <include-form name="updateMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            </container>
-                        </container>
-                    </decorator-section>
-                </decorator-screen>
-            </widgets>
-            <fail-widgets>
-                <decorator-screen name="main-section-decorator">
-                    <decorator-section name="section-body">
-                        <label style="head2">Permission denied</label>
-                    </decorator-section>
-                </decorator-screen>
-            </fail-widgets>
-        </section>
-    </screen>
-
-    
     <!-- Merge Forms -->
     <screen name="manageMergeForms">
         <section> 
@@ -350,7 +356,7 @@
             </widgets>
         </section>
     </screen>    
-    
+
     <screen name="listConfiguredImportMappingsScreen">
 	    <section> 
 	        <actions>
@@ -368,7 +374,7 @@
 	        </widgets>
 	    </section>
 	</screen>
-	
+
 	<screen name="configureImportMappingsScreen">
 	    <section> 
 	        <actions>
@@ -385,7 +391,7 @@
 	        </widgets>
 	    </section>
 	</screen>
-	
+
 	<screen name="updateImportMappingScreen">
         <section>
             <actions>
