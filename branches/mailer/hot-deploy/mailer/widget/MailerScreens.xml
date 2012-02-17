@@ -90,15 +90,6 @@
                 <set field="pageTitleLabel" value="UpdateCampaignHeader"/>
                 <set field="sectionHeaderUiLabel" value="UpdateCampaignHeader"/>
                 <set field="listSortTarget" value="viewMarketingCampaign"/>
-                <entity-condition entity-name="StatusItem" list="statusItems" list-name="statusItems">
-                	<condition-list combine="and">
-               			<condition-expr field-name="statusId" operator="equals" value="MKTG_CAMP_PLANNED"/>
-                	</condition-list>
-                    <order-by field-name="sequenceId"/>
-                </entity-condition>
-				<entity-condition entity-name="MergeForm" list="mergeFormList" list-name="mergeFormList">
-                    <order-by field-name="mergeFormName"/>
-                </entity-condition>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/updateMarketingCampaign.bsh"/>
             </actions>
             <widgets>
