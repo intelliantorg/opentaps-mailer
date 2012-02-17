@@ -171,7 +171,7 @@ public class ContactListServices {
 				}
 			}
 			if (modelField.getType().equals("email")) {
-				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isEmail(String.valueOf(cellValue)))) {
+				if (!(UtilValidate.isNotEmpty(cellValue) && UtilCommon.isValidEmailAddress(String.valueOf(cellValue)))) {
 					throw new GenericEntityException(" '" + cellValue + "' is not a valid email id");
 				}
 			} else if (modelField.getType().equals("tel-number")) {
@@ -180,7 +180,8 @@ public class ContactListServices {
 				}
 			} else if (modelField.getType().equals("date")) {
 				cellValue = new java.sql.Date(excelCell.getDateCellValue().getTime());
-				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isDate(configuredDateFormat.format(cellValue)))) {
+
+				if (!UtilValidate.isNotEmpty(cellValue)) {
 					throw new GenericEntityException(" '" + cellValue + "' is not a valid date");
 				}
 			}
