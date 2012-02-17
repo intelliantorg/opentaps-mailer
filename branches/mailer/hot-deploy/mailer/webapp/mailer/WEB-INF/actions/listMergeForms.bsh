@@ -9,11 +9,6 @@ mergeFormLookupEntity = context.get("mergeFormLookupEntity");
 mergeFormLookupEntity = "MergeFormAndType";
 
 // Retrieve available templates
-/*
-cond = UtilMisc.toList(new EntityExpr("partyId", EntityOperator.EQUALS, userLogin.getString("partyId")), 
-					   new EntityExpr("partyId", EntityOperator.EQUALS, null));
-templates = delegator.findByCondition(mergeFormLookupEntity, new EntityConditionList(cond, EntityOperator.OR), null, UtilMisc.toList("mergeFormName"));
-*/
 templates = delegator.findAll("MergeFormAndType");
 
 context.put("templates", templates);

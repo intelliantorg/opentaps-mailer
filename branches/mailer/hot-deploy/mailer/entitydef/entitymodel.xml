@@ -47,11 +47,11 @@
 
 	<view-entity entity-name="MergeFormAndType" package-name="net.intelliant.mailer">
         <member-entity entity-alias="MF" entity-name="MergeForm"/>
-        <member-entity entity-alias="MFAT" entity-name="MergeFormType"/>
+        <member-entity entity-alias="MFT" entity-name="MergeFormType"/>
         <alias-all entity-alias="MF"/>
-        <alias-all entity-alias="MFAT"/>
-        <alias entity-alias="MFAT" name="mergeFormType" field="description"/>
-        <view-link entity-alias="MF" rel-entity-alias="MFAT" rel-optional="true">
+        <alias-all entity-alias="MFT"/>
+        <alias entity-alias="MFT" name="mergeFormType" field="description"/>
+        <view-link entity-alias="MF" rel-entity-alias="MFT" rel-optional="true">
             <key-map field-name="mergeFormTypeId"/>
         </view-link>
     </view-entity>
