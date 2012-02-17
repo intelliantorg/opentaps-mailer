@@ -230,6 +230,6 @@
         </field>
         <field name="postalCode" title="${uiLabelMap.PartyZipCode}" use-when="isAddressList==true"><text/></field>
 
-        <field name="submitButton" title="${findFormSubmitButtonName}" widget-style="smallSubmit"><submit/></field>
+        <field name="submitButton" title="${uiLabelMap.ButtonFindContactListParties}" widget-style="smallSubmit"><submit/></field>
     </form>  
 </forms>
