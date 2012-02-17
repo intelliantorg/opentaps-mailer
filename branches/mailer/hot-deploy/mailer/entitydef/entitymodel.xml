@@ -48,7 +48,7 @@
 		<field name="headerImageLocation" type="long-varchar"/>
 		<field name="footerImageLocation" type="long-varchar"/>
 		<prim-key field="mergeFormId"/>
-		<relation type="one" fk-name="MF_TO_MFT" rel-entity-name="MergeFormType">
+		<relation type="one" fk-name="MF_TO_MFT" rel-entity-name="MailerMergeFormType">
             <key-map field-name="mergeFormTypeId"/>
         </relation>		
 		<relation type="many" fk-name="PARTY_MRG_FORM_FK" rel-entity-name="Party">
@@ -58,10 +58,10 @@
     
 	<view-entity entity-name="MergeFormAndType" package-name="net.intelliant.mailer">
         <member-entity entity-alias="MF" entity-name="MailerMergeForm"/>
-        <member-entity entity-alias="MFT" entity-name="MergeFormType"/>
+        <member-entity entity-alias="MFT" entity-name="MailerMergeFormType"/>
         <alias-all entity-alias="MF"/>
         <alias-all entity-alias="MFT"/>
-        <alias entity-alias="MFT" name="mergeFormType" field="description"/>
+        <alias entity-alias="MFT" name="MailerMergeFormType" field="description"/>
         <view-link entity-alias="MF" rel-entity-alias="MFT" rel-optional="true">
             <key-map field-name="mergeFormTypeId"/>
         </view-link>
@@ -188,7 +188,7 @@
       	</relation>
    	</entity>
    	
-   	<entity entity-name="MergeFormType" package-name="net.intelliant.mailer" title="Merge Form Type Entity">
+   	<entity entity-name="MailerMergeFormType" package-name="net.intelliant.mailer" title="Merge Form Type Entity">
 		<field name="mergeFormTypeId" type="id-ne"></field>
 		<field name="description" type="description"></field>
 		<prim-key field="mergeFormTypeId"/>

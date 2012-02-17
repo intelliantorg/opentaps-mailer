@@ -28,7 +28,7 @@ if (mergeFormCategories != null) {
 }
 context.put("categories", categories);
 
-mergeFormTypes = delegator.findAll("MergeFormType");
+mergeFormTypes = delegator.findAll("MailerMergeFormType");
 mergeFormTypesCombobox = new ArrayList();
 for(GenericValue entity : mergeFormTypes){
 	mergeFormTypesCombobox.add(UtilMisc.toMap("mergeFormTypeId",entity.get("mergeFormTypeId"),"description",entity.get("description")));

@@ -6,8 +6,8 @@
 	<StatusItem description="On Hold" sequenceId="03" statusCode="MAILER_HOLD" statusId="MAILER_HOLD" statusTypeId="MAILER_MC_STATUS"/>
 	<StatusItem description="Cancelled" sequenceId="04" statusCode="MAILER_CANCELLED" statusId="MAILER_CANCELLED" statusTypeId="MAILER_MC_STATUS"/>
 	
-	<MergeFormType mergeFormTypeId="EMAIL" description="Email"/>
-	<MergeFormType mergeFormTypeId="PRINT" description="Print"/>
+	<MailerMergeFormType mergeFormTypeId="EMAIL" description="Email"/>
+	<MailerMergeFormType mergeFormTypeId="PRINT" description="Print"/>
 	
     <StatusValidChange statusId="MKTG_CAMP_PLANNED" statusIdTo="MKTG_CAMP_APPROVED" transitionName="Approve Marketing Campaign" postChangeMessage="statusChangedToApproved" preChangeMessage="statusChangeToCancel"/>
 	<StatusValidChange statusId="MKTG_CAMP_PLANNED" statusIdTo="MKTG_CAMP_CANCELLED" transitionName="Cancel"/>
