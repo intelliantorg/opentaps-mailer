@@ -39,6 +39,7 @@ public class ImportServices {
 		inputs.put("ofbizEntityName", entityName);
 		inputs.put("contentId", contentId);
 		inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
+		inputs.put("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
 		inputs.put("isFirstRowHeader", isFirstRowHeader ? "Y" : "N");
 		try {
 			dctx.getDelegator().makeValue("MailerImportMapper", inputs).create();
