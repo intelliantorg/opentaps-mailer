@@ -4,7 +4,7 @@
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaign" />
 	<entity-group group="org.ofbiz" entity="MailerMergeForm" />	
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignDetailsView" />
-	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndMarketingCampaignAndStatusItem" />
+	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignDetailsAndStatusItemView" />
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndContactList" />
 	<entity-group group="org.ofbiz" entity="MailerMarketingCampaignAndContactListDetails" />
 	<entity-group group="org.ofbiz" entity="MailerRecipient" />
