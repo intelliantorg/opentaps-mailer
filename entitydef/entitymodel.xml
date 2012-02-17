@@ -231,12 +231,11 @@
         </view-link>
 	</view-entity>
 	
-	<view-entity entity-name="MailerRecipientAndMailerRecipientContactList" package-name="net.intelliant.mailer" title="Merged MailerRecipient and ContactList entities">	
+	<view-entity entity-name="MailerRecipientAndContactListView" package-name="net.intelliant.mailer" title="Merged MailerRecipient and ContactList entities">	
         <member-entity entity-alias="MR" entity-name="MailerRecipient"/>
         <member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>
         <alias-all entity-alias="MR"/>
-        <alias-all entity-alias="MRCL"/>
-        
+        <alias-all entity-alias="MRCL"/>        
         <view-link entity-alias="MRCL" rel-entity-alias="MR">
             <key-map field-name="recipientId" rel-field-name="recipientId"/>
         </view-link>
