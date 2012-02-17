@@ -158,6 +158,7 @@ public class CampaignExecutionEvents {
 			                    response.setHeader("Content-Disposition", String.format("attachment; filename=Campaign_%1$s.pdf", mailerMarketingCampaign.getString("marketingCampaignId")));
 			                    out.writeTo(response.getOutputStream());
 			                    response.getOutputStream().flush();
+			                    return "pdfGenerationSuccess"; /** required to prevent "java.lang.IllegalStateException: getOutputStream() has already been called for this response" */
 					        }
 						}
 					} else {

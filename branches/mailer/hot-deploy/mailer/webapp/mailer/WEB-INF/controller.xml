@@ -85,6 +85,7 @@
 		<security https="true" auth="true" />
 		<event type="java" path="net.intelliant.marketing.CampaignExecutionEvents" invoke="executeCampaign" />
 		<response name="success" type="request-redirect-filterparam" value="viewMarketingCampaign" allowed-params="marketingCampaignId" allowed-attributes="marketingCampaignId" />
+		<response name="pdfGenerationSuccess" type="none"/>
 		<response name="error" type="view" value="viewMarketingCampaign" />
 	</request-map>
 	
