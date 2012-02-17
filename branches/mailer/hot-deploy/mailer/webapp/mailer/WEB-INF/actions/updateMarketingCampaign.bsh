@@ -1,4 +1,6 @@
-import org.ofbiz.entity.condition.*;
+import org.ofbiz.entity.condition.EntityConditionList;
+import org.ofbiz.entity.condition.EntityOperator;
+import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.base.util.UtilMisc;
 import org.opentaps.common.util.UtilCommon;
 
@@ -6,27 +8,22 @@ marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
 
 marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
-mergeFormList = delegator.findAll("MergeForm");
+mergeFormList = delegator.findAllCache("MergeForm");
 context.put("mergeFormList", mergeFormList);
 
 statusId = marketingCampaign.get("statusId");
-conditions = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, statusId)/*,
-							 new EntityExpr("isStatusToVisible", EntityOperator.NOT_EQUAL, "N")*/);
-possibleTransitionStatus =  delegator.findByAnd("StatusValidChange", conditions);
-currentStatus = delegator.findByPrimaryKey("StatusItem", UtilMisc.toMap("statusId",statusId));
+currentStatus = delegator.findByPrimaryKeyCache("StatusItem", UtilMisc.toMap("statusId",statusId));
+context.put("currentStatus", currentStatus);
 
-statusItemsList = new ArrayList();
-statusItemsList.add(UtilMisc.toMap("statusIdTo",currentStatus.get("statusId"),"transitionName",currentStatus.get("description")));
-statusItemsList.add(UtilMisc.toMap("statusIdTo","","transitionName","---"));
-statusItemsList.addAll(possibleTransitionStatus);
-
-context.put("statusItemsEdit", statusItemsList); 
+orConditions = UtilMisc.toList(
+	new EntityExpr("isStatusToVisible", EntityOperator.NOT_EQUAL, "N"),
+	new EntityExpr("isStatusToVisible", EntityOperator.EQUALS, null)
+);
+orConditions = new EntityConditionList(orConditions, EntityOperator.OR);
+conditions = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, statusId), orConditions);
+							 
+conditions = new EntityConditionList(conditions, EntityOperator.AND);
+allowedTransitions =  delegator.findByConditionCache("StatusValidChangeToDetail", conditions, null, UtilMisc.toList("sequenceId"));
+context.put("allowedTransitions", allowedTransitions);
 
 context.put("marketingCampaign", marketingCampaign);
-
-security = request.getAttribute("security");
-userLogin = request.getAttribute("userLogin");
-
-if (security.hasEntityPermission("CRMSFA_CAMP", "_UPDATE", userLogin)) {
-    context.put("hasUpdatePermission", true);
-}
