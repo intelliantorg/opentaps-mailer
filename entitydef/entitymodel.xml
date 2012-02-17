@@ -195,7 +195,7 @@
     </entity>
    	
    	<!-- Views entities -->
-   	<view-entity entity-name="MailerMarketingCampaignAndMarketingCampaignAppl" package-name="net.intelliant.mailer">
+   	<view-entity entity-name="MailerMarketingCampaignDetailsView" package-name="net.intelliant.mailer">
         <member-entity entity-alias="MC" entity-name="MarketingCampaign"/>
         <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
         <alias-all entity-alias="MC"/>
