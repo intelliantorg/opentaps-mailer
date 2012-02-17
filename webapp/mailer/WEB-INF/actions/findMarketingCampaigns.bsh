@@ -34,7 +34,7 @@ if (statusId != null && !statusId.equals("")) {
 //if (searchConditions.size() == 0) return;
 searchConditionList = new EntityConditionList(searchConditions, EntityOperator.AND);
 
-listIt = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAndStatusItem", searchConditionList, null, 
+listIt = delegator.findListIteratorByCondition("MailerMarketingCampaignDetailsAndStatusItemView", searchConditionList, null, 
         null,  
         orderBy, // fields to order by
         // the first true here is for "specifyTypeAndConcur"
