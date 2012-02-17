@@ -8,11 +8,11 @@
       <span class="formLabelRequired">${uiLabelMap.LabelContactListFile}</span>
       <span class="formInputSpan">
         <input type="file" class="inputBox required" name="uploadedFile" size="50" maxlength="100"/><br>
-		<span>Supported file type : .xls</span>
+		<span>${uiLabelMap.LabelSupportedFileType}</span>
       </span>
     </div>
     <div class="formRow">
-      <span class="formLabelRequired">Mapper</span>
+      <span class="formLabelRequired">${uiLabelMap.LabelMapper}</span>
       <span class="formInputSpan">
       	<@inputSelect name="importMapperId" list=mailerImportMapperList displayField="importMapperName" key="importMapperId" />
       </span>
@@ -24,11 +24,11 @@
     </div>
 	<#if parameters.totalCount?exists && parameters.failureCount?exists && parameters.failureReport?exists >
   	<div class="reportPanel" style="clear:both">
-  		<div>Import status:</div>
+  		<div>${uiLabelMap.LabelImportStatus}</div>
   		<#assign successCount = parameters.totalCount?int - parameters.failureCount?int /> 
-  		<div>Total records in XLS: ${parameters.totalCount}</div>
-  		<div>Total records successfully imported: ${successCount}</div>
-  		<div>Total records with failure: ${parameters.failureCount}</div>
+  		<div>${uiLabelMap.LabelTotalRecordsInFile} ${parameters.totalCount}</div>
+  		<div>${uiLabelMap.LabelRecordsImportSuccess} ${successCount}</div>
+  		<div>${uiLabelMap.LabelRecordsImportFailure} ${parameters.failureCount}</div>
 		<#assign report = parameters.failureReport>
 		<#assign keys = report.keySet()>
 		<#if (keys?size > 0) >
@@ -36,9 +36,9 @@
 				<div><strong>Full report:</strong></div>
 					<table class="listTable">
 						<tr>
-							<th align="left" width="60px">Sr No.</th>
-							<th align="left" width="130px">Excel row #</th>
-							<th align="left">Reason</th>						
+							<th align="left" width="60px">${uiLabelMap.LabelSNo}</th>
+							<th align="left" width="130px">${uiLabelMap.LabelRow}</th>
+							<th align="left">${uiLabelMap.LabelFailureReason}</th>						
 						</tr>
 						<#list keys as key>
 							<tr>							
