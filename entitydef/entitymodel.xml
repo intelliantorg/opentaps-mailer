@@ -55,17 +55,6 @@
 			<key-map field-name="partyId"/>
 		</relation>
 	</entity>
-    
-	<view-entity entity-name="MergeFormAndType" package-name="net.intelliant.mailer">
-        <member-entity entity-alias="MF" entity-name="MailerMergeForm"/>
-        <member-entity entity-alias="MFT" entity-name="MailerMergeFormType"/>
-        <alias-all entity-alias="MF"/>
-        <alias-all entity-alias="MFT"/>
-        <alias entity-alias="MFT" name="MailerMergeFormType" field="description"/>
-        <view-link entity-alias="MF" rel-entity-alias="MFT" rel-optional="true">
-            <key-map field-name="mergeFormTypeId"/>
-        </view-link>
-    </view-entity>
 
 	<extend-entity entity-name="StatusValidChange">
 		<field name="isStatusToVisible" type="indicator"/>
@@ -279,5 +268,16 @@
 		<view-link entity-alias="MMCCL" rel-entity-alias="MC">
 			<key-map field-name="marketingCampaignId"/>
 		</view-link>
-	</view-entity>
+	</view-entity>	
+	    
+	<view-entity entity-name="MailerMergeFormDetailsView" package-name="net.intelliant.mailer">
+        <member-entity entity-alias="MF" entity-name="MailerMergeForm"/>
+        <member-entity entity-alias="MFT" entity-name="MailerMergeFormType"/>
+        <alias-all entity-alias="MF"/>
+        <alias-all entity-alias="MFT"/>
+        <alias entity-alias="MFT" name="MailerMergeFormType" field="description"/>
+        <view-link entity-alias="MF" rel-entity-alias="MFT" rel-optional="true">
+            <key-map field-name="mergeFormTypeId"/>
+        </view-link>
+    </view-entity>
 </entitymodel>

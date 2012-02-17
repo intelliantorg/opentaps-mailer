@@ -5,11 +5,11 @@ import org.ofbiz.entity.util.EntityUtil;
 userLogin = request.getAttribute("userLogin");
 
 mergeFormLookupEntity = context.get("mergeFormLookupEntity");
-//if (UtilValidate.isEmpty(mergeFormLookupEntity)) mergeFormLookupEntity = "MergeFormAndType";
-mergeFormLookupEntity = "MergeFormAndType";
+//if (UtilValidate.isEmpty(mergeFormLookupEntity)) mergeFormLookupEntity = "MailerMergeFormDetailsView";
+mergeFormLookupEntity = "MailerMergeFormDetailsView";
 
 // Retrieve available templates
-templates = delegator.findAll("MergeFormAndType");
+templates = delegator.findAll("MailerMergeFormDetailsView");
 
 context.put("templates", templates);
 System.out.println("Templates : "+templates);
