@@ -1,2 +1,0 @@
-mailerImportMapperList = delegator.findAll("MailerImportMapper");
-context.put("mailerImportMapperList", mailerImportMapperList);

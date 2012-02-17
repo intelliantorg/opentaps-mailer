@@ -408,7 +408,9 @@
                 <set field="pageTitleLabel" value="ImportContactListHeader"/>
                 <set field="sectionHeaderUiLabel" value="ImportContactListHeader"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/importContactList.bsh"/>
+	        	<entity-condition entity-name="MailerImportMapper" list="mailerImportMapperList" list-name="mailerImportMapperList" use-cache="true">
+                	<order-by field-name="importMapperName"/>
+                </entity-condition>
             </actions>
             <widgets>
             	<decorator-screen name="main-section-decorator">
