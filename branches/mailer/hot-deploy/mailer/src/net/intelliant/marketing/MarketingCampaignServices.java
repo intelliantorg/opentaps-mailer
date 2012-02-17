@@ -51,7 +51,7 @@ public class MarketingCampaignServices {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
 		try {			
-			GenericValue mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
+			GenericValue mergeFormGV = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), MODULE);
 			}
@@ -96,7 +96,7 @@ public class MarketingCampaignServices {
 			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
 			String oldTemplateId = mailerMarketingCampaign.getString("templateId");
 			if (UtilValidate.isNotEmpty(templateId)) {
-				mergeFormGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
+				mergeFormGV = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 				if (UtilValidate.isEmpty(mergeFormGV)) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), MODULE);
 				}
@@ -245,7 +245,7 @@ public class MarketingCampaignServices {
 		try {
 			GenericValue campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 //			find out the template
-			GenericValue templateGV = campaignGV.getRelatedOne("MergeForm");
+			GenericValue templateGV = campaignGV.getRelatedOne("MailerMergeForm");
 			if (UtilValidate.isNotEmpty(templateGV)) {
 //				TODO do some changes on the template
 				String emailSubject = templateGV.getString("subject");

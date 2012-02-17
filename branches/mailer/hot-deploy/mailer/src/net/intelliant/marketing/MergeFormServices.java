@@ -32,7 +32,6 @@ public class MergeFormServices {
 		GenericDelegator delegator = dctx.getDelegator();
 		LocalDispatcher dispatcher = dctx.getDispatcher();
 		Locale locale = (Locale) context.get("locale");
-
 		GenericValue mergeForm = null;
 
 		// If template type is email, then email field must be filled with valid
@@ -51,16 +50,12 @@ public class MergeFormServices {
 			}
 		}
 
-		String mergeFormId = delegator.getNextSeqId("MergeForm");
+		String mergeFormId = delegator.getNextSeqId("MailerMergeForm");
 		Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
-		mergeForm = delegator.makeValue("MergeForm", newMergeFormMap);
-		mergeForm.set("mergeFormName", context.get("mergeFormName"));
-		mergeForm.set("mergeFormTypeId", mergeFormTypeId);
-
-		mergeForm.set("description", context.get("description"));
-		mergeForm.set("subject", subject);
-		mergeForm.set("scheduleAt", context.get("scheduleAt"));
-		mergeForm.set("mergeFormText", context.get("mergeFormText"));
+		mergeForm = delegator.makeValue("MailerMergeForm", newMergeFormMap);
+		mergeForm.setNonPKFields(context);
+		mergeForm.remove("headerImageLocation");
+		mergeForm.remove("footerImageLocation");
 
 		ByteWrapper binData = null;
 		String fileName = null;
@@ -152,17 +147,11 @@ public class MergeFormServices {
 
 		Map<String, Object> inputs = null;
 		try {
-			GenericValue mergeForm = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
-			// mergeForm.setNonPKFields(context);
-
-			mergeForm.set("mergeFormName", context.get("mergeFormName"));
-			mergeForm.set("mergeFormTypeId", mergeFormTypeId);
-
-			mergeForm.set("description", context.get("description"));
-			mergeForm.set("subject", context.get("subject"));
-			mergeForm.set("scheduleAt", scheduleAt);
-			mergeForm.set("mergeFormText", context.get("mergeFormText"));
-
+			GenericValue mergeForm = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
+			mergeForm.setNonPKFields(context);
+			mergeForm.remove("headerImageLocation");
+			mergeForm.remove("footerImageLocation");
+			
 			String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
 
 			if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
@@ -243,7 +232,7 @@ public class MergeFormServices {
 		Locale locale = (Locale) context.get("locale");
 		String mergeFormId = (String) context.get("mergeFormId");
 		try {
-			delegator.removeByAnd("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
+			delegator.removeByAnd("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_DeleteMergeFormFail", locale), module);
 		}

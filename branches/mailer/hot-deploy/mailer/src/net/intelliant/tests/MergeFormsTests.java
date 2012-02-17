@@ -49,7 +49,7 @@ public class MergeFormsTests extends MailerTests {
 		Map<String, Object> results = runAndAssertServiceSuccess("mailer.createMergeForm", inputs);
 		String mergeFormId = (String) results.get("mergeFormId");
 
-		results = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
+		results = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
 
 		assertNotNull(results);
 		assertEquals(mergeFormName, results.get("mergeFormName"));
@@ -87,7 +87,7 @@ public class MergeFormsTests extends MailerTests {
 			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
 
-		Map<String, Object> inputs = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
+		Map<String, Object> inputs = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", templateId));
 		ModelService service = dispatcher.getDispatchContext().getModelService("mailer.updateMergeForm");
 		inputs = service.makeValid(inputs, ModelService.IN_PARAM);
 		inputs.put("scheduleAt", "2");

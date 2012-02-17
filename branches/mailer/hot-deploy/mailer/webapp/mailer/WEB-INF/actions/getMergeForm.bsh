@@ -9,14 +9,14 @@ mergeFormCategories = null;
 
 if (UtilValidate.isNotEmpty(mergeFormId)) {
 	// Find the specified MergeForm
-	mergeForm = delegator.findByPrimaryKeyCache("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId) );
-	context.put("mergeForm", mergeForm);
+	mergeForm = delegator.findByPrimaryKeyCache("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId) );
+	context.put("MailerMergeForm", mergeForm);
 
     // Find associated categories
     mergeFormCategories = mergeForm.getRelatedMulti("MergeFormToCategory", "MergeFormCategory");
     context.put("mergeFormCategories", mergeFormCategories);
 }else{
-	context.put("mergeForm", "");
+	context.put("MailerMergeForm", "");
 }
 
 // Find the list of assignable categories

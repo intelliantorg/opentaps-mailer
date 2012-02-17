@@ -28,7 +28,7 @@
                 	</condition-list>
                     <order-by field-name="sequenceId"/>
                 </entity-condition>
-				<entity-condition entity-name="MergeForm" list="mergeFormList" list-name="mergeFormList">
+				<entity-condition entity-name="MailerMergeForm" list="mergeFormList" list-name="mergeFormList">
                     <order-by field-name="mergeFormName"/>
                 </entity-condition>
 			</actions>

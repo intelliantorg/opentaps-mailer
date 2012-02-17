@@ -14,7 +14,7 @@ if (marketingCampaign == null) {
 }
 templateId = marketingCampaign.get("templateId");
 if (UtilValidate.isNotEmpty(templateId)) {
-	template =  delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
+	template =  delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", templateId));
 	context.put("templateName", template.getString("mergeFormName"));
 }
 

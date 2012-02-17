@@ -228,7 +228,7 @@ public class ContactListServices {
 		} else if (marketingCampaignStatusId.equals("MKTG_CAMP_CANCELLED")) {
 			return null; /** No need to create for cancelled campaigns. */
 		}
-		GenericValue configuredTemplate = mailerMarketingCampaign.getRelatedOne("MergeForm");
+		GenericValue configuredTemplate = mailerMarketingCampaign.getRelatedOne("MailerMergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
 			Timestamp scheduledForDate = null;
