@@ -310,7 +310,7 @@
             <actions>
                 <set field="pageTitleLabel" value="FormLetterTemplateHeader"/>    <!-- this is uiLabelMap property for the title of the HTML page -->
                 <set field="mergeFormLookupEntity" value="MergeFormAndCategory"/>  <!-- Override the entity name in getMergeFormsForCurrentUser.bsh -->
-                <script location="component://opentaps-common/webapp/common/WEB-INF/actions/includes/getMergeFormsForCurrentUser.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/listMergeForms.bsh" />
             </actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
