@@ -10,7 +10,7 @@
 </div>
 
 <#if templates?has_content>
-  <table class="listTable" style="border:none">
+  <table class="listTable">
     <tr class="listTableHeader" style="border:none">
       <td class="titleCellAutoWidth" style="text-align:left">${uiLabelMap.OpentapsTemplateName}</td>
       <td class="titleCellAutoWidth" style="text-align:left">${uiLabelMap.LabelTemplateType}</td>
