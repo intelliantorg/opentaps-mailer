@@ -52,6 +52,17 @@
 									<#assign templateItems = delegator.findAll("ContactList",orderBy)>
 									<@inputSelect name="contactListId" list=templateItems key="contactListId" displayField="contactListName" required=false class="dropDown required" />								
 								</div>
+							<#else>
+								<div class="label">
+									<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
+								</div>
+								<select name="statusId" class="dropDown required">
+							    	<option value="${marketingCampaign.statusId}" selected="selected">${currentStatus.description}</option>
+							    	<option value="${marketingCampaign.statusId}">---</option>
+							    	<#list allowedTransitions as allowedTransition>
+							        	<option value="${allowedTransition.statusIdTo}">${allowedTransition.transitionName}</option>
+							    	</#list>
+								</select>
 							</#if>
 						</div>
 						<div class="rowContainer">
@@ -62,22 +73,14 @@
 								<@inputDateTime default=marketingCampaign.thruDate?if_exists name="thruDate" class="inputBox required" />
 								<label for="thruDate_c_date" generated="true" class="error" style="display:none">This field is required.</label>
 							</div>
-							<div class="label">
-								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
-							</div>
-							<div class="fieldContainer" style="padding: 2px;">
-								<#if isCreateMode>
+							<#if isCreateMode>
+								<div class="label">
+									<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
+								</div>
+								<div class="fieldContainer" style="padding: 2px;">
 									<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
-								<#else>
-									<select name="statusId" class="dropDown required">
-									    <option value="${marketingCampaign.statusId}" selected="selected">${currentStatus.description}</option>
-									    <option value="${marketingCampaign.statusId}">---</option>
-									    <#list allowedTransitions as allowedTransition>
-									        <option value="${allowedTransition.statusIdTo}">${allowedTransition.transitionName}</option>
-									    </#list>
-									</select>
-								</#if>															
-							</div>
+								</div>
+							</#if>
 						</div>
 						<div class="rowContainer">
 							<div class="label">
