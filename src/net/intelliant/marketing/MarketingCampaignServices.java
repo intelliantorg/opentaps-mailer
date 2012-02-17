@@ -359,23 +359,16 @@ public class MarketingCampaignServices {
 				Debug.logInfo("[mailer.sendEmailMailer] Executing sendMail with following parameters - " + serviceInputs, MODULE);
 			}
 	        serviceResults = dctx.getDispatcher().runSync(service.name, serviceInputs);
+	        if (!ServiceUtil.isError(serviceResults)) {
+	        	dctx.getDispatcher().runSync("mailer.markMailersAsExecuted", UtilMisc.toMap("campaignStatusIds", UtilMisc.toList(campaignStatusId)));
+	        } else {
+//	        	TODO do something for error.
+	        }
 		} catch (GenericEntityException e) {
 			serviceResults = UtilMessage.createAndLogServiceError(e, MODULE);
 		} catch (GenericServiceException e) {
 			serviceResults = UtilMessage.createAndLogServiceError(e, MODULE);
 		}    	
-		try {
-			GenericValue mailerMarketingCampaignGV = dctx.getDelegator().findByPrimaryKey("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId));
-	        if (!ServiceUtil.isError(serviceResults)) {
-	        	mailerMarketingCampaignGV.setString("statusId", "MAILER_EXECUTED");
-	        	mailerMarketingCampaignGV.set("actualExecutionDateTime", UtilDateTime.nowTimestamp());
-	        	mailerMarketingCampaignGV.store();
-	        } else {
-//	        	TODO do something for error.
-	        }
-		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(e, MODULE);
-		}
 		return ServiceUtil.returnSuccess();
 	}
 	
@@ -685,6 +678,30 @@ public class MarketingCampaignServices {
 					iterator.close();
 				} catch (GenericEntityException e) {
 					iterator = null;
+				}
+			}
+		}
+		return ServiceUtil.returnSuccess();
+	}
+	
+	/**
+	 * Will be used to mark mailer as executed.	 
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> markMailersAsExecuted(DispatchContext dctx, Map<String, Object> context) {
+		List campaignStatusIds = (List) context.get("campaignStatusIds");
+		if (Debug.infoOn()) {
+			Debug.logInfo("[mailer.markMailersAsExecuted] campaignStatusIds >> " + campaignStatusIds, MODULE);
+		}
+		if (UtilValidate.isNotEmpty(campaignStatusIds)) {
+			for (Object campaignStatusId : campaignStatusIds) {
+				try {
+					GenericValue mailerMarketingCampaignGV = dctx.getDelegator().findByPrimaryKey("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId));
+			    	mailerMarketingCampaignGV.setString("statusId", "MAILER_EXECUTED");
+			    	mailerMarketingCampaignGV.set("actualExecutionDateTime", UtilDateTime.nowTimestamp());
+			    	mailerMarketingCampaignGV.store();
+				} catch (GenericEntityException e) {
+					return UtilMessage.createAndLogServiceError(e, MODULE);
 				}
 			}
 		}

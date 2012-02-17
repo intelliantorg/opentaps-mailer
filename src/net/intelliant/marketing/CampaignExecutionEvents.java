@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
+
+import javolution.util.FastList;
 
 import net.intelliant.util.UtilCommon;
 import net.intelliant.util.XslFoConversion;
@@ -124,15 +127,15 @@ public class CampaignExecutionEvents {
 							iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
 					        GenericValue mailerCampaignStatusGV = null;
 //							Iterate over each scheduled mailer,
-					        boolean mailersScheduled = false;
+					        List<String> campaignStatusIds = FastList.newInstance();
 					        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
-					        	mailersScheduled = true;
+					        	campaignStatusIds.add(mailerCampaignStatusGV.getString("campaignStatusId"));
 					        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
 					        	StringWriter emailBodyContent = new StringWriter();
 					        	FreemarkerUtil.renderTemplateWithTags("relatedRecipientGV#" + relatedRecipientGV.getString("recipientId"), pdfTemplate, relatedRecipientGV.getAllFields(), emailBodyContent, false, false);
 					        	xhtmls.append(conversion.convertHtml2Xhtml(emailBodyContent.toString()));
 				            }
-					        if (mailersScheduled) {
+					        if (UtilValidate.isNotEmpty(campaignStatusIds)) {
 					        	String reportType = "application/pdf";
 						        xhtmls.append("</htmls>");
 						        Document xslfo = conversion.convertXHtml2XslFo(xhtmls.toString(), stylesheetLocation);
@@ -158,6 +161,7 @@ public class CampaignExecutionEvents {
 			                    response.setHeader("Content-Disposition", String.format("attachment; filename=Campaign_%1$s.pdf", mailerMarketingCampaign.getString("marketingCampaignId")));
 			                    out.writeTo(response.getOutputStream());
 			                    response.getOutputStream().flush();
+			                    dispatcher.runSync("mailer.markMailersAsExecuted", UtilMisc.toMap("campaignStatusIds", UtilMisc.toList(campaignStatusIds)));
 			                    return "pdfGenerationSuccess"; /** required to prevent "java.lang.IllegalStateException: getOutputStream() has already been called for this response" */
 					        }
 						}
@@ -182,6 +186,9 @@ public class CampaignExecutionEvents {
 				Debug.logError(e, module);
 				return "error";
 			} catch (TransformerException e) {
+				Debug.logError(e, module);
+				return "error";
+			} catch (GenericServiceException e) {
 				Debug.logError(e, module);
 				return "error";
 			} finally {
