@@ -84,7 +84,7 @@ public final class UtilCommon {
 						if (separatorIndex != -1) {
 							String originalFileName = srcAttributeValue.substring(separatorIndex + 1);
 							String outputFileName = originalFileName;
-							/** Compression works for jpeg's only. */
+							/** Compression works for jpeg's only. 
 							if (originalFileName.endsWith("jpg") || originalFileName.endsWith("jpeg")) {
 								try {
 									outputFileName = generateCompressedImageForInputFile(imageUploadLocation, originalFileName);
@@ -93,6 +93,7 @@ public final class UtilCommon {
 									return html;
 								}
 							}
+							*/
 							StringBuilder finalLocation = new StringBuilder(campaignBaseURL);
 							finalLocation.append(imageUploadWebApp).append(outputFileName);
 							html = StringUtil.replaceString(html, srcAttributeValue, finalLocation.toString());
