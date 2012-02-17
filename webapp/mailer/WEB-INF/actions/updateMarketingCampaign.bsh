@@ -1,6 +1,4 @@
 import org.ofbiz.entity.condition.*;
-import org.ofbiz.entity.util.EntityUtil;
-import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.base.util.UtilMisc;
 import org.opentaps.common.util.UtilCommon;
 
@@ -8,11 +6,8 @@ marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
 
 marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
-templateId = marketingCampaign.get("templateId");
-if (UtilValidate.isNotEmpty(templateId)) {
-	template =  delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
-	context.put("templateName", template.getString("mergeFormName"));
-}
+mergeFormList = delegator.findAll("MergeForm");
+context.put("mergeFormList", mergeFormList);
 
 statusId = marketingCampaign.get("statusId");
 conditions = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, statusId)/*,
