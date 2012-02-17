@@ -1,15 +1,23 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
+
 <div class="allSubSectionBlocks">
 	<div class="form">
-		<#if !marketingCampaign?exists >
-		<#assign marketingCampaign=Static["org.ofbiz.base.util.UtilMisc"].toMap("","") >
-		<#assign mode="create" >
-		<form class="basic-form" id="createMarketingCampaignForm" name="createMarketingCampaignForm" action="<@ofbizUrl>createMarketingCampaign</@ofbizUrl>" method="post">
+		<#assign isCreateMode = false />
+		<#if !marketingCampaign?exists>
+			<#assign isCreateMode = true />
+			<#assign marketingCampaign=Static["org.ofbiz.base.util.UtilMisc"].toMap("", "") />
+			<#assign actionUrl>
+				<@ofbizUrl>createMarketingCampaign</@ofbizUrl>
+			</#assign>
 		<#else>
-		<#assign mode="edit" >
-		<form class="basic-form" id="updateMarketingCampaignForm" name="updateMarketingCampaignForm" action="<@ofbizUrl>updateMarketingCampaign</@ofbizUrl>" method="post" onsubmit="javascript:submitFormDisableSubmits(this)" novalidate="novalidate">
-			<input type="hidden" value="${marketingCampaign.marketingCampaignId?if_exists}" name="marketingCampaignId" />
+			<#assign actionUrl>
+				<@ofbizUrl>updateMarketingCampaign</@ofbizUrl>
+			</#assign>				
 		</#if>
+		<form class="basic-form" id="createOrUpdateMarketingCampaignForm" name="createOrUpdateMarketingCampaignForm" action="${actionUrl}" method="post">
+			<#if !isCreateMode>
+				<input type="hidden" value="${marketingCampaign.marketingCampaignId?if_exists}" name="marketingCampaignId" />
+			</#if>
 			<table width="100%">
 				<tr>
 					<td>
@@ -35,7 +43,7 @@
 								<@inputDateTime default=marketingCampaign.fromDate?if_exists name="fromDate" class="inputBox required" />
 								<label for="fromDate_c_date" generated="true" class="error" style="display:none">This field is required.</label>
 							</div>
-							<#if mode == "create" >
+							<#if isCreateMode>
 								<div class="label">
 									<@display class="tableheadtext requiredField" text=uiLabelMap.LabelContactList />
 								</div>
@@ -52,15 +60,22 @@
 							</div>
 							<div class="fieldContainer">
 								<@inputDateTime default=marketingCampaign.thruDate?if_exists name="thruDate" class="inputBox required" />
+								<label for="thruDate_c_date" generated="true" class="error" style="display:none">This field is required.</label>
 							</div>
 							<div class="label">
 								<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
 							</div>
 							<div class="fieldContainer" style="padding: 2px;">
-								<#if mode == "create" >
-								<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
+								<#if isCreateMode>
+									<@inputStatusItemSelect list=statusItems defaultStatusId="MKTG_CAMP_PLANNED" class="dropDown required"/>
 								<#else>
-								<@inputSelect name="statusId" default=marketingCampaign.statusId?if_exists list=statusItemsEdit key="statusIdTo" displayField="transitionName" required=true class="dropDown required" />
+									<select name="statusId" class="dropDown required">
+									    <option value="${marketingCampaign.statusId}" selected="selected">${currentStatus.description}</option>
+									    <option value="${marketingCampaign.statusId}">---</option>
+									    <#list allowedTransitions as allowedTransition>
+									        <option value="${allowedTransition.statusIdTo}">${allowedTransition.transitionName}</option>
+									    </#list>
+									</select>
 								</#if>															
 							</div>
 						</div>
@@ -75,10 +90,10 @@
 						<div class="rowContainer">
 							<div class="label">&nbsp;</div>
 							<div class="fieldContainer">
-								<#if !marketingCampaign?exists >
-								<@inputSubmit title=uiLabelMap.CrmCreateMarketingCampaign onClick="" class=smallSubmit />
+								<#if isCreateMode>
+									<@inputSubmit title=uiLabelMap.CrmCreateMarketingCampaign onClick="" class=smallSubmit />
 								<#else>
-								<@inputSubmit title=uiLabelMap.UpdateCampaignHeader onClick="" class=smallSubmit />
+									<@inputSubmit title=uiLabelMap.UpdateCampaignHeader onClick="" class=smallSubmit />
 								</#if>
 							</div>
 						</div>					
