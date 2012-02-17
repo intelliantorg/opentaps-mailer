@@ -532,7 +532,7 @@ public class MarketingCampaignServices {
             	Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] The conditions >> " + conditions, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
-	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAppl", conditions, null, null, null, options);
+	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignDetailsView", conditions, null, null, null, options);
 	        GenericValue marketingCampaignGV = null;
 	        while ((marketingCampaignGV = (GenericValue) iterator.next()) != null) {
 	        	Debug.logWarning(String.format("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] Setting campaign [%1$s] to in progress..", marketingCampaignGV.getString("marketingCampaignId")), MODULE);
@@ -577,7 +577,7 @@ public class MarketingCampaignServices {
             	Debug.logInfo("[mailer.checkIfInProgressCampaignsCanBeMarkedComplete] The conditions >> " + condition, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
-	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAppl", condition, null, null, null, options);
+	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignDetailsView", condition, null, null, null, options);
 	        GenericValue marketingCampaignGV = null;
 	        while ((marketingCampaignGV = (GenericValue) iterator.next()) != null) {
 	        	boolean canBeMarkedComplete = false;
@@ -640,7 +640,7 @@ public class MarketingCampaignServices {
             	Debug.logInfo("[mailer.checkIfCompletedCampaignsCanBeMarkedInProgress] The conditions >> " + condition, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
-	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignAndMarketingCampaignAppl", condition, null, null, null, options);
+	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignDetailsView", condition, null, null, null, options);
 	        GenericValue marketingCampaignGV = null;
 	        while ((marketingCampaignGV = (GenericValue) iterator.next()) != null) {
 	        	boolean canBeMarkedInProgress = false;

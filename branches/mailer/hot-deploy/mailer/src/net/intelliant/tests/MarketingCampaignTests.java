@@ -141,7 +141,7 @@ public class MarketingCampaignTests extends MailerTests {
 		 
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
-		Map<?, ?> campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		Map<?, ?> campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaignDetailsView", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(campaignGV);
 		assertEquals(campaignGV.get("campaignName"), campaignName);
 		assertEquals(campaignGV.get("budgetedCost"), budgetedCost);
@@ -154,7 +154,7 @@ public class MarketingCampaignTests extends MailerTests {
 		inputs.put("marketingCampaignId", marketingCampaignId);
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
-		campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaignDetailsView", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(campaignGV);
 		assertEquals(campaignGV.get("campaignName"), campaignName);
 		assertEquals(campaignGV.get("budgetedCost"), budgetedCost);

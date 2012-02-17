@@ -6,7 +6,7 @@ import org.opentaps.common.util.UtilCommon;
 
 marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
 
-marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignDetailsView", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
 if (marketingCampaign == null) {
     context.put("validView", false);
