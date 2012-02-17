@@ -13,7 +13,7 @@
 	<entity-group group="org.ofbiz" entity="MailerImportColumnMapper" />
 	<entity-group group="org.ofbiz" entity="MailerRecipientContactList" />
 	<entity-group group="org.ofbiz" entity="MailerRecipientContactListCount" />
-	<entity-group group="org.ofbiz" entity="MailerRecipientAndMailerRecipientContactList" />
+	<entity-group group="org.ofbiz" entity="MailerRecipientAndContactListView" />
 	<entity-group group="org.ofbiz" entity="MailerRecipientContactListContactListType" />
 	<entity-group group="org.ofbiz" entity="MailerMergeFormType" />
 	<entity-group group="org.ofbiz" entity="MarketingCampaignDetailsAndContactListView" />
