@@ -56,12 +56,21 @@
 								<div class="label">
 									<@display class="tableheadtext requiredField" text=uiLabelMap.CommonStatus />
 								</div>
-								<select name="statusId" class="dropDown required">
+								<#assign statusChangeMessages = "{" />
+								<select name="statusId" class="dropDown required" onChange="displayPreChangeMsg(this);">
 							    	<option value="${marketingCampaign.statusId}" selected="selected">${currentStatus.description}</option>
 							    	<option value="${marketingCampaign.statusId}">---</option>
 							    	<#list allowedTransitions as allowedTransition>
 							        	<option value="${allowedTransition.statusIdTo}">${allowedTransition.transitionName}</option>
+							        	<#if allowedTransition.preChangeMessage?exists>
+							        		<#if allowedTransition_index != 0 && statusChangeMessages?length gt 1>
+							        			<#assign statusChangeMessages = ", " + statusChangeMessages />
+							        		</#if>
+							        		<#assign localizedMsg = Static["org.ofbiz.base.util.UtilProperties"].getMessage("UILabels", allowedTransition.preChangeMessage, locale)>
+							        		<#assign statusChangeMessages = statusChangeMessages + "'${allowedTransition.statusIdTo}' : '${localizedMsg}'" />
+							        	</#if>
 							    	</#list>
+							    	<#assign statusChangeMessages = statusChangeMessages + "}" />
 								</select>
 							</#if>
 						</div>
@@ -106,3 +115,11 @@
 		</form>
 	</div>
 </div>
+<script type="text/javascript">
+	var statusChangeMessages = ${statusChangeMessages};
+	displayPreChangeMsg = function(selectedElement) {
+		if (statusChangeMessages[selectedElement.value]) {
+			alert(statusChangeMessages[selectedElement.value]);
+		}
+	}
+</script>
