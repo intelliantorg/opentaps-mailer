@@ -40,9 +40,15 @@ public class MergeFormServices {
 		// Note - UtilValidates in-build method is not up to the mark.
 		String mergeFormTypeId = String.valueOf(context.get("mergeFormTypeId"));
 		String mergeFormEmailAddress = String.valueOf(context.get("fromEmailAddress"));
-				
-		if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL") && (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilValidate.isEmail(mergeFormEmailAddress))) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCampaignTemplateForEmail", locale), module);
+		String subject = String.valueOf(context.get("subject"));
+
+		if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
+			if (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilValidate.isEmail(mergeFormEmailAddress)) {
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "ErrorMergeFormValidEmail", locale), module);
+			}
+			if (UtilValidate.isEmpty(subject)) {
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "ErrorMergeFormSubjectNotNullForEmailTypeTemplate", locale), module);
+			}
 		}
 
 		String mergeFormId = delegator.getNextSeqId("MergeForm");
@@ -52,10 +58,10 @@ public class MergeFormServices {
 		mergeForm.set("mergeFormTypeId", mergeFormTypeId);
 
 		mergeForm.set("description", context.get("description"));
-		mergeForm.set("subject", context.get("subject"));
+		mergeForm.set("subject", subject);
 		mergeForm.set("scheduleAt", context.get("scheduleAt"));
 		mergeForm.set("mergeFormText", context.get("mergeFormText"));
-				
+
 		ByteWrapper binData = null;
 		String fileName = null;
 
@@ -95,7 +101,7 @@ public class MergeFormServices {
 					inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
 					dispatcher.runSync("createAnonFile", inputs);
 				}
-			}else if(UtilValidate.areEqual(mergeFormTypeId, "EMAIL")){
+			} else if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
 				mergeForm.put("fromEmailAddress", mergeFormEmailAddress);
 			}
 		} catch (Exception e) {
@@ -147,21 +153,21 @@ public class MergeFormServices {
 		Map<String, Object> inputs = null;
 		try {
 			GenericValue mergeForm = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
-			//mergeForm.setNonPKFields(context);
-			
+			// mergeForm.setNonPKFields(context);
+
 			mergeForm.set("mergeFormName", context.get("mergeFormName"));
 			mergeForm.set("mergeFormTypeId", mergeFormTypeId);
-			
+
 			mergeForm.set("description", context.get("description"));
 			mergeForm.set("subject", context.get("subject"));
 			mergeForm.set("scheduleAt", scheduleAt);
 			mergeForm.set("mergeFormText", context.get("mergeFormText"));
-			
+
 			String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
 
-			if(UtilValidate.areEqual(mergeFormTypeId, "EMAIL")){
+			if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
 				mergeForm.set("fromEmailAddress", context.get("fromEmailAddress"));
-			}else{
+			} else {
 				mergeForm.put("fromEmailAddress", "");
 			}
 
@@ -177,7 +183,7 @@ public class MergeFormServices {
 
 				inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
 				dispatcher.runSync("createAnonFile", inputs);
-			}else if(UtilValidate.areEqual(headerImageLocationRemove, "Y")){
+			} else if (UtilValidate.areEqual(headerImageLocationRemove, "Y")) {
 				mergeForm.put("headerImageLocation", "");
 			}
 
@@ -193,10 +199,10 @@ public class MergeFormServices {
 
 				inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
 				dispatcher.runSync("createAnonFile", inputs);
-			}else if(UtilValidate.areEqual(footerImageLocationRemove, "Y")){
+			} else if (UtilValidate.areEqual(footerImageLocationRemove, "Y")) {
 				mergeForm.put("footerImageLocation", "");
 			}
-			
+
 			delegator.store(mergeForm);
 
 			String oldScheduleAt = mergeForm.getString("scheduleAt");

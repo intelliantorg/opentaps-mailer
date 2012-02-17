@@ -83,8 +83,8 @@
         <attribute name="footerImageLocation" type="org.ofbiz.entity.util.ByteWrapper" mode="IN" optional="true"/> 
        	<attribute name="_footerImageLocation_fileName" type="String" mode="IN" optional="true"/>
        	<attribute name="_footerImageLocation_contentType" type="String" mode="IN" optional="true"/>
-        <attribute name="description" type="String" mode="IN" optional="false"/>
-        <attribute name="subject" type="String" mode="IN" optional="false"/>
+        <attribute name="description" type="String" mode="IN" optional="true"/>
+        <attribute name="subject" type="String" mode="IN" optional="true"/>
         <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
     </service>
@@ -103,8 +103,8 @@
        	<attribute name="_footerImageLocation_fileName" type="String" mode="IN" optional="true"/>
        	<attribute name="_footerImageLocation_contentType" type="String" mode="IN" optional="true"/>
        	<attribute name="footerImageLocationRemove" type="String" mode="IN" optional="true"/>
-        <attribute name="description" type="String" mode="IN" optional="false"/>
-        <attribute name="subject" type="String" mode="IN" optional="false"/>
+        <attribute name="description" type="String" mode="IN" optional="true"/>
+        <attribute name="subject" type="String" mode="IN" optional="true"/>
         <attribute name="scheduleAt" type="String" mode="IN" optional="false"/>
         <attribute name="mergeFormText" type="String" mode="IN" optional="false"/>
     </service>

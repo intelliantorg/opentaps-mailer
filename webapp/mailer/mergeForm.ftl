@@ -134,9 +134,16 @@
     </div>
 
     <div class="formRow">
-      <span class="formLabel">${uiLabelMap.PartySubject}</span>
+      <#if (mergeForm.mergeFormTypeId?if_exists) == "EMAIL" >
+      	<#assign labelClass="formLabelRequired">
+      	<#assign fieldClass="inputBox required">
+      <#else>
+      	<#assign labelClass="formLabel">
+      	<#assign fieldClass="inputBox">
+      </#if>
+      <span class="${labelClass}" id="subjectLabel">${uiLabelMap.PartySubject}</span>
       <span class="formInputSpan">
-        <input type="text" class="inputBox" name="subject" size="50" value="${(mergeForm.subject)?if_exists}" maxlength="255"/>
+        <input type="text" class="${fieldClass}" id="subject" name="subject" size="50" value="${(mergeForm.subject)?if_exists}" maxlength="255"/>
       </span>
     </div>
 

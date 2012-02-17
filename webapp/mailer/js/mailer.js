@@ -19,18 +19,27 @@ function campaignTypeOnChange(value){
 	var haderImageRemove = document.getElementById('headerImageLocationRemove');
 	var footerImageLocation = document.getElementById('footerImageLocation');
 	var footerImageRemove = document.getElementById('footerImageLocationRemove');
+	var subjectLabelObj = document.getElementById('subjectLabel');
+	var subjectObj = document.getElementById('subject');
 	
 	if(value == "PRINT"){  	
 		emailAddressContainer.style.display = "none";
 		headerFooterImageContainer.style.display = "block";
 		document.getElementById('headerImageLocation').value = "";
 		document.getElementById('footerImageLocation').value = "";
+		
+		subjectLabelObj.className="formLabel";
+		subjectObj.className="inputBox";
 	}else{
 		emailAddressContainer.style.display = "block";
 		headerFooterImageContainer.style.display = "none";
-		document.getElementById('fromEmailAddress').value = "";
+		//fromEmailAddress.value = "";
+		
 		haderImageRemove.value = "Y";
 		footerImageRemove.value = "Y";
+		
+		subjectLabelObj.className="formLabelRequired";
+		subjectObj.className="inputBox required";
 	}
 }
 
