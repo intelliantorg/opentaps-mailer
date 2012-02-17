@@ -276,7 +276,7 @@ public final class UtilCommon {
 	}
 	
 	public static boolean isEmailTemplate(GenericDelegator delegator, String templateId) throws GenericEntityException {
-		GenericValue templateGV = delegator.findByPrimaryKey("MergeForm", UtilMisc.toMap("mergeFormId", templateId));
+		GenericValue templateGV = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", templateId));
 		return isEmailTemplate(templateGV);
 	}
 	

@@ -12,7 +12,7 @@
     	<relation type="one" fk-name="MMC_TO_MKTGCPN" rel-entity-name="MarketingCampaign">
         	<key-map field-name="marketingCampaignId"/>
       	</relation>
-      	<relation type="one" fk-name="MMC_TO_MERGEFORM" rel-entity-name="MergeForm">
+      	<relation type="one" fk-name="MMC_TO_MERGEFORM" rel-entity-name="MailerMergeForm">
         	<key-map field-name="templateId" rel-field-name="mergeFormId"/>
       	</relation>
     </entity> 
@@ -34,19 +34,30 @@
         </relation>
     </entity>
     
-	<extend-entity entity-name="MergeForm">
+	<entity entity-name="MailerMergeForm" package-name="net.intelliant.mailer" title="Mailer Merge Form Entity">
+		<field name="mergeFormId" type="id-ne"></field>
+		<field name="partyId" type="id"></field>
+		<field name="mergeFormName" type="name"></field>
+		<field name="subject" type="long-varchar"></field>
+		<field name="description" type="description"></field>
+		<field name="mergeFormText" type="very-long"></field>
+		<field name="showInSelect" type="indicator"></field>
 		<field name="scheduleAt" type="id"/>
 		<field name="mergeFormTypeId" type="id"/>
 		<field name="fromEmailAddress" type="email"/>
 		<field name="headerImageLocation" type="long-varchar"/>
 		<field name="footerImageLocation" type="long-varchar"/>
+		<prim-key field="mergeFormId"/>
 		<relation type="one" fk-name="MF_TO_MFT" rel-entity-name="MergeFormType">
             <key-map field-name="mergeFormTypeId"/>
-        </relation>
-	</extend-entity>
-
+        </relation>		
+		<relation type="many" fk-name="PARTY_MRG_FORM_FK" rel-entity-name="Party">
+			<key-map field-name="partyId"/>
+		</relation>
+	</entity>
+    
 	<view-entity entity-name="MergeFormAndType" package-name="net.intelliant.mailer">
-        <member-entity entity-alias="MF" entity-name="MergeForm"/>
+        <member-entity entity-alias="MF" entity-name="MailerMergeForm"/>
         <member-entity entity-alias="MFT" entity-name="MergeFormType"/>
         <alias-all entity-alias="MF"/>
         <alias-all entity-alias="MFT"/>

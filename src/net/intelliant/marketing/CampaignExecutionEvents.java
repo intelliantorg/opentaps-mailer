@@ -77,7 +77,7 @@ public class CampaignExecutionEvents {
 					UtilCommon.addErrorMessage(request, errorResource, "errorInvalidCampaign");
 					return "error";
 				} else {
-					GenericValue templateGV = mailerMarketingCampaign.getRelatedOne("MergeForm");
+					GenericValue templateGV = mailerMarketingCampaign.getRelatedOne("MailerMergeForm");
 					if (UtilValidate.isNotEmpty(templateGV)) {
 						if (UtilCommon.isEmailTemplate(templateGV)) {
 							Map<String, Object> serviceInputs = UtilMisc.toMap("userLogin", userLogin);

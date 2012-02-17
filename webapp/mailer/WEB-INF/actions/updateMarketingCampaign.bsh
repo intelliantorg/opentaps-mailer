@@ -8,7 +8,7 @@ marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
 
 marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignAndMarketingCampaignAppl", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 
-mergeFormList = delegator.findAllCache("MergeForm");
+mergeFormList = delegator.findAllCache("MailerMergeForm");
 context.put("mergeFormList", mergeFormList);
 
 statusId = marketingCampaign.get("statusId");
