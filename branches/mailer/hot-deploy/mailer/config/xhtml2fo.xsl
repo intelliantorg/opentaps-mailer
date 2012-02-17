@@ -8,8 +8,21 @@
 <xsl:preserve-space elements="xhtml:listing listing xhtml:plaintext plaintext xhtml:pre pre xhtml:samp samp"/>
 <xsl:param name="font-size" select="''"/>
 <xsl:param name="font.symbol" select="'Arial Unicode MS'"/>
-<xsl:param name="headerImage"/>
+<xsl:param name="headerImage" select="'DUMMY'"/>
 <xsl:param name="footerImage"/>
+
+<xsl:variable name="header-top-margin">
+	<xsl:choose>
+		<xsl:when test="contains($headerImage, 'DUMMY')">
+			<xsl:value-of select="'0.5in'"/>
+		</xsl:when>
+		<xsl:otherwise>2.5in
+		<!-- 
+			<xsl:value-of select="'2.5in'"/>
+			 -->
+		</xsl:otherwise>
+	</xsl:choose> 
+</xsl:variable>
 
 <xsl:template name="common-atts">
   <xsl:copy-of select="@id|@color|@height|@width|@xml:lang"/>
@@ -21,7 +34,7 @@
   <fo:root>
     <fo:layout-master-set>
       <fo:simple-page-master master-name="page">
-        <fo:region-body margin-top="2.5in" margin-bottom=".75in" margin-left=".65in" margin-right=".75in"/>
+        <fo:region-body margin-top="{$header-top-margin}" margin-bottom=".75in" margin-left=".65in" margin-right=".75in"/>
         <fo:region-before extent=".5in"/>
         <fo:region-after extent="1.0in"/>
       </fo:simple-page-master>
