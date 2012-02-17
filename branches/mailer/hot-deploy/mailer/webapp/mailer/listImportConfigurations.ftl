@@ -8,7 +8,7 @@
 </div>
 
 <#if listOfMappings?has_content>
-  <table class="listTable" style="border:none">
+  <table class="listTable">
     <tr class="listTableHeader" style="border:none">
       <td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.LabelName}</td>
       <td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.CommonDescription}</td>
