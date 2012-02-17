@@ -16,11 +16,7 @@
 		<xsl:when test="contains($headerImage, 'DUMMY')">
 			<xsl:value-of select="'0.5in'"/>
 		</xsl:when>
-		<xsl:otherwise>2.5in
-		<!-- 
-			<xsl:value-of select="'2.5in'"/>
-			 -->
-		</xsl:otherwise>
+		<xsl:otherwise>2.5in</xsl:otherwise>
 	</xsl:choose> 
 </xsl:variable>
 
@@ -71,6 +67,16 @@
 
 <xsl:template match="xhtml:html|html">
 	<xsl:apply-templates/>
+	<xsl:choose>
+		<xsl:when test="position() = last()">
+			<fo:block id="__END__" />  <!-- page break is NOT required in last page  -->
+		</xsl:when> 
+	</xsl:choose>
+	<xsl:choose>
+		<xsl:when test="position() != last()">
+			<fo:block id="__END__" break-after="page" />		
+		</xsl:when> 
+	</xsl:choose>
 </xsl:template>
 
 <xsl:template match="xhtml:title|title">
@@ -98,7 +104,6 @@
     <xsl:apply-templates select="//basefont[1]"/>
     <xsl:if test="$font-size"><xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute></xsl:if>
     <xsl:apply-templates/>
-    <fo:block id="__END__" break-after="page" /> <!-- Fix : This places an extra page with header and footer at the end  -->
 </xsl:template>
 
 <xsl:template match="xhtml:head|head|xhtml:applet|applet|xhtml:area|area|xhtml:base|base
