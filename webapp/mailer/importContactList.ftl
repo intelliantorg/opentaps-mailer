@@ -1,4 +1,4 @@
-<@import location="component://opentaps-common/webapp/common/includes/lib/opentapsFormMacros.ftl"/>
+<@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <div class="form">
   <form id="importContactListForm" method="post" action="<@ofbizUrl>importContactList</@ofbizUrl>" name="importContactListForm" style="margin: 0;" enctype="multipart/form-data">
@@ -14,7 +14,7 @@
     <div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.LabelMapper}</span>
       <span class="formInputSpan">
-      	<@inputSelect name="importMapperId" list=mailerImportMapperList displayField="importMapperName" key="importMapperId" />
+      	<@inputSelect name="importMapperId" list=mailerImportMapperList displayField="importMapperName" key="importMapperId" class="dropDown required" required=false />
       </span>
     </div>
     <div class="formRow">
