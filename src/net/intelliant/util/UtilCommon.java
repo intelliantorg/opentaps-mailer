@@ -299,4 +299,15 @@ public final class UtilCommon {
 		}
 		return EmailValidator.getInstance().isValid(emailAddress);
 	}
+		
+	public static final String getModifiedMessage(String baseString, String [][]replacer){
+		Debug.log(baseString);
+		
+		for(String []replace : replacer){
+			Debug.log(replace[0]+":"+replace[1]);
+			baseString = baseString.replace(replace[0], replace[1]);
+		}
+		Debug.log(baseString);
+		return baseString;
+	}
 }
