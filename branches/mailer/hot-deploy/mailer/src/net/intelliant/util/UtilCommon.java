@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -22,6 +20,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.validator.EmailValidator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -294,10 +293,10 @@ public final class UtilCommon {
 		request.setAttribute(messageType, message);
 	}
 	
-	public static boolean isValidEmailAddress(String emailId) {
-		String regex = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
-		Pattern pattern = Pattern.compile(regex,Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(emailId);		
-		return matcher.matches();
+	public static boolean isValidEmailAddress(String emailAddress) {
+		if (UtilValidate.isEmpty(emailAddress)) {
+			return false;
+		}
+		return EmailValidator.getInstance().isValid(emailAddress);
 	}
 }
