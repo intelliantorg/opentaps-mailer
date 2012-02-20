@@ -127,6 +127,9 @@
         <field name="" title="${uiLabelMap.CrmNumberOfMembers}" use-when="contactListId!=null">
             <display description="${recipientId}" />
         </field>
+		<field name="NextRun" title="${uiLabelMap.LabelNextRun}">
+            <display description="${bsh:net.intelliant.util.UtilCommon.countAllCampaignLinesPendingTillDate(delegator, marketingCampaignId, contactListId)}"/>
+        </field>
         <field name="Scheduled" title="${uiLabelMap.MailerCampaignStatusScheduled}">
             <display description="${bsh:net.intelliant.util.UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId)}"/>
         </field>
