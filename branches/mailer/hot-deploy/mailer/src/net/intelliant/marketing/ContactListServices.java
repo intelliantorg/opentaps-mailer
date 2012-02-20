@@ -168,26 +168,26 @@ public class ContactListServices {
 			}
 			if (modelField.getIsNotNull()) {
 				if (!UtilValidate.isNotEmpty(cellValue)) {
-					throw new GenericEntityException(" '" + modelField.getName() + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperIsEmpty", locale));
+					throw new GenericEntityException(UtilCommon.getModifiedMessage(UtilProperties.getMessage(resource, "ErrorImportMapperIsEmpty", locale), new String[][] { { "{0}", "'" + modelField.getName() + "'" } }));
 				}
 			}
 			if (modelField.getType().equals("email")) {
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilCommon.isValidEmailAddress(String.valueOf(cellValue)))) {
-					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidEmail", locale));
+					throw new GenericEntityException(UtilCommon.getModifiedMessage(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidEmail", locale), new String[][] { { "{0}", "'" + String.valueOf(cellValue) + "'" } }));
 				}
 			} else if (modelField.getType().equals("tel-number")) {
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue)))) {
-					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", locale));
+					throw new GenericEntityException(UtilCommon.getModifiedMessage(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", locale), new String[][] { { "{0}", "'" + String.valueOf(cellValue) + "'" } }));
 				}
 			} else if (modelField.getType().equals("date")) {
 				try {
 					cellValue = new java.sql.Date(excelCell.getDateCellValue().getTime());
 				} catch (Exception e) {
 					cellValue = excelCell.toString();
-					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", locale));
+					throw new GenericEntityException(UtilCommon.getModifiedMessage(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", locale), new String[][] { { "{0}", "'" + String.valueOf(cellValue) + "'" } }));
 				}
 				if (!UtilValidate.isNotEmpty(cellValue)) {
-					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", locale));
+					throw new GenericEntityException(UtilCommon.getModifiedMessage(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", locale), new String[][] { { "{0}", "'" + String.valueOf(cellValue) + "'" } }));
 				}
 			}
 
