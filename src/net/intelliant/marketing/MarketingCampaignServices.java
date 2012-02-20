@@ -130,6 +130,13 @@ public class MarketingCampaignServices {
 				if (ServiceUtil.isError(serviceResults)) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
 				}
+			} else if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_APPROVED")) {
+				service = dctx.getModelService("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress");
+				inputs = service.makeValid(context, ModelService.IN_PARAM);
+				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
+				if (ServiceUtil.isError(serviceResults)) {
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
+				}
 			}
 			/** No point executing this campaign was cancelled. */
 			if (UtilValidate.isNotEmpty(templateId) && !UtilValidate.areEqual(oldTemplateId, templateId) && !isCampaignCancelled) {
@@ -171,12 +178,12 @@ public class MarketingCampaignServices {
 		Locale locale = (Locale) context.get("locale");
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
-		List andConditions = UtilMisc.toList(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+		List<EntityCondition> andConditions = UtilMisc.toList(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
 		andConditions.add(EntityUtil.getFilterByDateExpr());
 		andConditions.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
 		EntityConditionList conditions = new EntityConditionList(andConditions, EntityOperator.AND);
 		try {
-			List marketingCampaignContactLists = dctx.getDelegator().findByCondition("MailerMarketingCampaignAndContactList", conditions, null, UtilMisc.toList("fromDate"));
+			List<GenericValue> marketingCampaignContactLists = dctx.getDelegator().findByCondition("MailerMarketingCampaignAndContactList", conditions, null, UtilMisc.toList("fromDate"));
 			if (UtilValidate.isEmpty(marketingCampaignContactLists)) {
 				String campaignListId = dctx.getDelegator().getNextSeqId("MailerMarketingCampaignAndContactList");
 				Map<String, Object> inputs = UtilMisc.toMap("campaignListId", campaignListId, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId);
@@ -221,7 +228,7 @@ public class MarketingCampaignServices {
 			marketingCampaignCL.set("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
 			delegator.store(marketingCampaignCL);
 			ModelService service = dctx.getModelService("mailer.cancelCreatedMailers");
-			Map inputs = service.makeValid(context, ModelService.IN_PARAM);
+			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
 			inputs.put("marketingCampaignId", marketingCampaignCL.getString("marketingCampaignId"));
 			dctx.getDispatcher().runSync("mailer.cancelCreatedMailers", inputs);
 		} catch (GenericEntityException gee) {
@@ -382,7 +389,7 @@ public class MarketingCampaignServices {
 		String contactListId = (String) context.get("contactListId");
 		EntityListIterator iterator = null;
 		try {
-			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			List<EntityCondition> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
 			if (UtilValidate.isNotEmpty(contactListId)) {
 				conditionsList.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
 			}
@@ -392,7 +399,7 @@ public class MarketingCampaignServices {
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
-	        List mailersToBeCancelled = FastList.newInstance();
+	        List<GenericValue> mailersToBeCancelled = FastList.newInstance();
 	        GenericValue mailerCampaignStatusGV = null;
 	        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
 	        	mailerCampaignStatusGV.set("statusId", "MAILER_CANCELLED");
@@ -429,14 +436,14 @@ public class MarketingCampaignServices {
 		String scheduleAt = (String) context.get("scheduleAt");
 		EntityListIterator iterator = null;
 		try {
-			List conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			List<EntityCondition> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
             	Debug.logInfo("[mailer.reScheduleMailers] The conditions >> " + conditions, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
 	        iterator = delegator.findListIteratorByCondition("MailerCampaignStatus", conditions, null, null, null, options);
-	        List mailersToBeReScheduled = FastList.newInstance();
+	        List<GenericValue> mailersToBeReScheduled = FastList.newInstance();
 	        GenericValue mailerCampaignStatusGV = null;
 	        while ((mailerCampaignStatusGV = (GenericValue) iterator.next()) != null) {
 	        	GenericValue relatedRecipientGV = mailerCampaignStatusGV.getRelatedOne("MailerRecipient");
@@ -524,9 +531,14 @@ public class MarketingCampaignServices {
 	public static Map<String, Object> checkIfApprovedCampaignsCanBeMarkedInProgress(DispatchContext dctx, Map<String, Object> context) {
 		GenericDelegator delegator = dctx.getDelegator();
 		EntityListIterator iterator = null;
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		try {
 			/** get all approved and non-expired campaigns. */
 			List<EntityExpr> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MKTG_CAMP_APPROVED"), EntityUtil.getFilterByDateExpr());
+			/** Use this to check for a particular marketing campaign. */
+			if (UtilValidate.isNotEmpty(marketingCampaignId)) {
+				conditionsList.add(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			}
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
             	Debug.logInfo("[mailer.checkIfApprovedCampaignsCanBeMarkedInProgress] The conditions >> " + conditions, MODULE);
