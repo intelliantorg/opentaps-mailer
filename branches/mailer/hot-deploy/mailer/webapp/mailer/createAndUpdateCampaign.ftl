@@ -115,11 +115,13 @@
 		</form>
 	</div>
 </div>
-<script type="text/javascript">
-	var statusChangeMessages = ${statusChangeMessages};
-	displayPreChangeMsg = function(selectedElement) {
-		if (statusChangeMessages[selectedElement.value]) {
-			alert(statusChangeMessages[selectedElement.value]);
+<#if !isCreateMode>
+	<script type="text/javascript">
+		var statusChangeMessages = ${statusChangeMessages};
+		displayPreChangeMsg = function(selectedElement) {
+			if (statusChangeMessages[selectedElement.value]) {
+				alert(statusChangeMessages[selectedElement.value]);
+			}
 		}
-	}
-</script>
+	</script>
+</#if>
