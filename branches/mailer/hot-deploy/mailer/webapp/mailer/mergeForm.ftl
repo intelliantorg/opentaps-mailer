@@ -80,30 +80,30 @@
     <div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.OpentapsTemplateName}</span>
       <span class="formInputSpan">
-        <input type="text" class="inputBox required" name="mergeFormName" value="${(mergeForm.mergeFormName)?if_exists}" size="50" maxlength="100"/>
+        <input type="text" class="inputBox required" name="mergeFormName" value="${(MailerMergeForm.mergeFormName)?if_exists}" size="50" maxlength="100"/>
       </span>
     </div>
 
 	<div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.LabelTemplateType}</span>
       <span class="formInputSpan">
-		<@inputSelect name="mergeFormTypeId" default=mergeForm.mergeFormTypeId?if_exists list=mergeFormTypesCombobox displayField="description" key="mergeFormTypeId" onChange="campaignTypeOnChange(this.value)" />  
+		<@inputSelect name="mergeFormTypeId" default=MailerMergeForm.mergeFormTypeId?if_exists list=mergeFormTypesCombobox displayField="description" key="mergeFormTypeId" onChange="campaignTypeOnChange(this.value)" />  
       </span>
     </div>
     
-    <div class="formRow" id="emailAddressContainer" <#if mergeForm.mergeFormTypeId?exists && (mergeForm.mergeFormTypeId?if_exists != "EMAIL") >style="display:none"</#if> >
+    <div class="formRow" id="emailAddressContainer" <#if MailerMergeForm.mergeFormTypeId?exists && (MailerMergeForm.mergeFormTypeId?if_exists != "EMAIL") >style="display:none"</#if> >
       <span class="formLabelRequired">${uiLabelMap.LabelFromEmailAddress}</span>
       <span class="formInputSpan">
-        <input type="text" class="inputBox required" name="fromEmailAddress" value="${(mergeForm.fromEmailAddress)?if_exists}" size="50" maxlength="100"/>
+        <input type="text" class="inputBox required" name="fromEmailAddress" value="${(MailerMergeForm.fromEmailAddress)?if_exists}" size="50" maxlength="100"/>
       </span>
     </div>
-    <div id="headerFooterImageContainer" <#if !mergeForm.mergeFormTypeId?exists || mergeForm.mergeFormTypeId?if_exists != "PRINT" > style="display:none"</#if> >
+    <div id="headerFooterImageContainer" <#if !MailerMergeForm.mergeFormTypeId?exists || MailerMergeForm.mergeFormTypeId?if_exists != "PRINT" > style="display:none"</#if> >
 	    <div class="formRow">
 	      <span class="formLabel">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
 	      <span class="formInputSpan">
 	      	<input type="hidden" id="headerImageLocationRemove" name="headerImageLocationRemove" value="N" />
-	      	<#if mergeForm.headerImageLocation?exists && mergeForm.headerImageLocation != "" >
-	      		<#assign headerLink = mergeForm.headerImageLocation >
+	      	<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "" >
+	      		<#assign headerLink = MailerMergeForm.headerImageLocation >
 	      		<div id="headerImageControl"><a href="#" onclick="preview('${headerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')" >Remove</a></div>
 		      	<div id="headerImageLocationCont" style="display:none"><@inputFile name="headerImageLocation" class="inputBox" /></div>
 	      	<#else>
@@ -115,8 +115,8 @@
 	      <span class="formLabel">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
 	      <span class="formInputSpan">
 	      	<input type="hidden" id="footerImageLocationRemove" name="footerImageLocationRemove" value="N" />
-	      	<#if mergeForm.footerImageLocation?exists  && mergeForm.footerImageLocation != "" >
-	      		<#assign footerLink = mergeForm.footerImageLocation >	      		
+	      	<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "" >
+	      		<#assign footerLink = MailerMergeForm.footerImageLocation >	      		
 	      		<div id="footerImageControl"><a href="#" onclick="preview('${footerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')" >Remove</a></div>
 	      		<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox" /></div>
 	      	<#else>
@@ -129,12 +129,12 @@
     <div class="formRow">
       <span class="formLabel">${uiLabelMap.CommonDescription}</span>
       <span class="formInputSpan">
-        <input type="text" class="inputBox" name="description" size="50" value="${(mergeForm.description)?if_exists}" maxlength="255"/>
+        <input type="text" class="inputBox" name="description" size="50" value="${(MailerMergeForm.description)?if_exists}" maxlength="255"/>
       </span>
     </div>
 
     <div class="formRow">
-      <#if (mergeForm.mergeFormTypeId?if_exists) == "EMAIL" >
+      <#if (MailerMergeForm.mergeFormTypeId?if_exists) == "EMAIL" >
       	<#assign labelClass="formLabelRequired">
       	<#assign fieldClass="inputBox required">
       <#else>
@@ -143,14 +143,14 @@
       </#if>
       <span class="${labelClass}" id="subjectLabel">${uiLabelMap.PartySubject}</span>
       <span class="formInputSpan">
-        <input type="text" class="${fieldClass}" id="subject" name="subject" size="50" value="${(mergeForm.subject)?if_exists}" maxlength="255"/>
+        <input type="text" class="${fieldClass}" id="subject" name="subject" size="50" value="${(MailerMergeForm.subject)?if_exists}" maxlength="255"/>
       </span>
     </div>
 
     <div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.LabelScheduledAt}</span>
       <span class="formInputSpan">
-        <input type="text" class="inputBox smallTextfield required digits" name="scheduleAt" size="50" value="${(mergeForm.scheduleAt)?if_exists}" maxlength="255"/>
+        <input type="text" class="inputBox smallTextfield required digits" name="scheduleAt" size="50" value="${(MailerMergeForm.scheduleAt)?if_exists}" maxlength="255"/>
         <span>[No of days]</span>
       </span>
     </div>
@@ -158,7 +158,7 @@
     <div class="formRow">
       <span class="formLabelRequired">${uiLabelMap.OpentapsTemplate}</span>
       <span class="formInputSpan">
-        <@htmlTextArea class="required" textAreaId="mergeFormText" value=(mergeForm.mergeFormText)?if_exists tagFileLocation="component://mailer/webapp/mailer/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>
+        <@htmlTextArea class="required" textAreaId="mergeFormText" value=(MailerMergeForm.mergeFormText)?if_exists tagFileLocation="component://mailer/webapp/mailer/crmsfaFormEditorTags.ftl" style="width: 100%; height: 100%"/>
       </span>
     </div>
 

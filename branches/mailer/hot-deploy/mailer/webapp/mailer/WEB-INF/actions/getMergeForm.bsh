@@ -10,23 +10,24 @@ mergeFormCategories = null;
 if (UtilValidate.isNotEmpty(mergeFormId)) {
 	// Find the specified MergeForm
 	mergeForm = delegator.findByPrimaryKeyCache("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId) );
+	System.out.println("Mailer merge form : "+mergeForm);
 	context.put("MailerMergeForm", mergeForm);
 
     // Find associated categories
-    mergeFormCategories = mergeForm.getRelatedMulti("MergeFormToCategory", "MergeFormCategory");
-    context.put("mergeFormCategories", mergeFormCategories);
+    //mergeFormCategories = mergeForm.getRelatedMulti("MergeFormToCategory", "MergeFormCategory");
+    //context.put("mergeFormCategories", mergeFormCategories);
 }else{
 	context.put("MailerMergeForm", "");
 }
 
 // Find the list of assignable categories
-categories = delegator.findAll("MergeFormCategory");
+//categories = delegator.findAll("MergeFormCategory");
 
 // Remove already associated categories from the previous list
-if (mergeFormCategories != null) {
-    categories.removeAll(mergeFormCategories);
-}
-context.put("categories", categories);
+//if (mergeFormCategories != null) {
+//    categories.removeAll(mergeFormCategories);
+//}
+//context.put("categories", categories);
 
 mergeFormTypes = delegator.findAll("MailerMergeFormType");
 mergeFormTypesCombobox = new ArrayList();
