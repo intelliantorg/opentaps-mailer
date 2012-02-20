@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +25,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
-import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
@@ -49,7 +47,6 @@ import org.opentaps.common.util.UtilMessage;
 public class ContactListServices {
 	private static final String resource = "ErrorLabels";
 	private static final String MODULE = ContactListServices.class.getName();
-	private static final SimpleDateFormat configuredDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
 	private static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 
 	@SuppressWarnings("unchecked")
