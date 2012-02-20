@@ -8,11 +8,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -299,18 +294,10 @@ public final class UtilCommon {
 		request.setAttribute(messageType, message);
 	}
 	
-	public static boolean isValidDate(String date, String format) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		sdf.setLenient(false);
-		return sdf.parse(date) != null;
-	}
-	
-	public static boolean isValidEmailAddress(String emailId){
-		//String regex = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@([A-Za-z0-9-])+((\\.com)|(\\.net)|(\\.org)|(\\.info)|(\\.edu)|(\\.mil)|(\\.gov)|(\\.biz)|(\\.ws)|(\\.us)|(\\.tv)|(\\.cc)|(\\.aero)|(\\.arpa)|(\\.coop)|(\\.int)|(\\.jobs)|(\\.museum)|(\\.name)|(\\.pro)|(\\.travel)|(\\.nato)|(\\..{2,3})|(\\..{2,3}\\..{2,3}))$";
+	public static boolean isValidEmailAddress(String emailId) {
 		String regex = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
 		Pattern pattern = Pattern.compile(regex,Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(emailId);
-		
+		Matcher matcher = pattern.matcher(emailId);		
 		return matcher.matches();
 	}
 }
