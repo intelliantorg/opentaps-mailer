@@ -163,23 +163,23 @@ public class ContactListServices {
 			String columnName = entry.getKey();
 			ModelField modelField = modelEntity.getField(columnName);
 			if (Debug.infoOn()) {
-				Debug.logInfo("On column name >> " + columnName, MODULE);
-				Debug.logInfo("Checking model field >> " + modelField.getName(), MODULE);
+				Debug.logInfo("[insertIntoConfiguredCustomEntity] On column name >> " + columnName, MODULE);
+				Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking model field >> " + modelField.getName(), MODULE);
 			}
 			if (modelField.getIsNotNull()) {
 				if (!UtilValidate.isNotEmpty(cellValue)) {
-					Map<String, Object> messageMap = UtilMisc.toMap("{0}", "'" + modelField.getDescription() + "'");
+					Map<String, Object> messageMap = UtilMisc.toMap("{0}", modelField.getDescription());
 					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperIsEmpty", messageMap, locale));
 				}
 			}
 			if (modelField.getType().equals("email")) {
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilCommon.isValidEmailAddress(String.valueOf(cellValue)))) {
-					Map<String, Object> messageMap = UtilMisc.toMap("{0}", "'" + cellValue + "'");
+					Map<String, Object> messageMap = UtilMisc.toMap("{0}", cellValue);
 					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidEmail", messageMap, locale));
 				}
 			} else if (modelField.getType().equals("tel-number")) {
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue)))) {
-					Map<String, Object> messageMap = UtilMisc.toMap("{0}", "'" + cellValue + "'");
+					Map<String, Object> messageMap = UtilMisc.toMap("{0}", cellValue);
 					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
 				}
 			} else if (modelField.getType().equals("date")) {
@@ -187,11 +187,11 @@ public class ContactListServices {
 					cellValue = new java.sql.Date(excelCell.getDateCellValue().getTime());
 				} catch (Exception e) {
 					cellValue = excelCell.toString();
-					Map<String, Object> messageMap = UtilMisc.toMap("{0}", "'" + cellValue + "'");
+					Map<String, Object> messageMap = UtilMisc.toMap("{0}", cellValue);
 					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", messageMap, locale));
 				}
 				if (!UtilValidate.isNotEmpty(cellValue)) {
-					Map<String, Object> messageMap = UtilMisc.toMap("{0}", "'" + cellValue + "'");
+					Map<String, Object> messageMap = UtilMisc.toMap("{0}", cellValue);
 					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", messageMap, locale));
 				}
 			}
