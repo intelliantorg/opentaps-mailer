@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import org.jsoup.select.Elements;
 import org.ofbiz.base.location.FlexibleLocation;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.StringUtil;
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
@@ -34,6 +36,10 @@ import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
+import org.ofbiz.entity.condition.EntityCondition;
+import org.ofbiz.entity.condition.EntityConditionList;
+import org.ofbiz.entity.condition.EntityExpr;
+import org.ofbiz.entity.condition.EntityOperator;
 
 public final class UtilCommon {
 	private static final String module = UtilCommon.class.getName();
@@ -241,6 +247,18 @@ public final class UtilCommon {
 	
 	public static long countAllCampaignLines(GenericDelegator delegator, String contactListId, String marketingCampaignId) throws GenericEntityException {
 		return countCampaignLines(delegator, null, contactListId, marketingCampaignId);
+	}
+	
+	public static long countAllCampaignLinesPendingTillDate(GenericDelegator delegator, String marketingCampaignId, String contactListId) throws GenericEntityException {
+		List<EntityCondition> conditions = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MAILER_SCHEDULED"));
+		conditions.add(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+		conditions.add(new EntityExpr("scheduledForDate", EntityOperator.LESS_THAN_EQUAL_TO, UtilDateTime.nowTimestamp()));
+		if (UtilValidate.isNotEmpty(contactListId)) {
+			conditions.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
+		}
+
+		EntityCondition whereConditions = new EntityConditionList(conditions, EntityOperator.AND);
+		return delegator.findCountByCondition("MailerCampaignStatus", whereConditions, null);
 	}
 	
 	private static String getTemplateType(GenericValue templateGV) {

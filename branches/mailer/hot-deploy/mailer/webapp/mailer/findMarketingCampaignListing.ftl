@@ -40,6 +40,7 @@
 				<td><span class="tableheadtext"><a class="orderByHeaderLink" href="${listSortTarget}?campaignsOrderBy=statusId${findParams}#ListMarketingCampaigns">${uiLabelMap.CommonStatus}</a></span></td>
 				<td><span class="tableheadtext">${uiLabelMap.CommonFrom}</span></td>
 				<td><span class="tableheadtext">${uiLabelMap.CommonThru}</span></td>
+				<td><span class="tableheadtext">${uiLabelMap.LabelNextRun}</span></td>
 				<#list mailerCampaignStatusList as mailerCampaignStatusListItem>
 					<td><span class="tableheadtext">${mailerCampaignStatusListItem.description}</span></td>
 				</#list>
@@ -56,6 +57,10 @@
 					<td><span class="tabletext">${campaignsListItem.description?default("")}</span></td>
 					<td><span class="tabletext"><@displayDate date=campaignsListItem.fromDate?default("") /></span></td>
 					<td><span class="tabletext"><@displayDate date=campaignsListItem.thruDate?default("") /></span></td>
+					<td>
+						<#assign statusCount = Static["net.intelliant.util.UtilCommon"].countAllCampaignLinesPendingTillDate(delegator, campaignsListItem.marketingCampaignId, contactListId)>
+						<span class="tabletext">${statusCount?default("0")}</span>
+					</td>
 					<#list mailerCampaignStatusList as mailerCampaignStatusListItem>
 						<#assign statusCount = Static["net.intelliant.util.UtilCommon"].countCampaignLines(delegator, mailerCampaignStatusListItem.statusId, contactListId, campaignsListItem.marketingCampaignId)>
 						<td>
