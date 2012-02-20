@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -25,6 +26,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
+import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
@@ -45,12 +47,14 @@ import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
 
 public class ContactListServices {
+	private static final String resource = "ErrorLabels";
 	private static final String MODULE = ContactListServices.class.getName();
 	private static final SimpleDateFormat configuredDateFormat = new SimpleDateFormat(UtilProperties.getPropertyValue("mailer.properties", "mailer.importDataDateFormat"));
 	private static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> importContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
+		Locale locale = (Locale) context.get("locale");
 		String fileName = (String) context.get("_uploadedFile_fileName");
 		String fileFormat = "EXCEL";
 		String mimeTypeId = (String) context.get("_uploadedFile_contentType");
@@ -68,7 +72,7 @@ public class ContactListServices {
 			// for now we only support EXCEL format
 			if ("EXCEL".equalsIgnoreCase(fileFormat) || mimeTypeId.equals("application/vnd.ms-excel")) {
 				GenericValue mailerImportMapper = dctx.getDelegator().findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-				return createRecords(dctx.getDelegator(), mailerImportMapper, userLogin.getString("userLoginId"), contactListId, excelFilePath);
+				return createRecords(dctx.getDelegator(), locale, mailerImportMapper, userLogin.getString("userLoginId"), contactListId, excelFilePath);
 			} else {
 				return UtilMessage.createAndLogServiceError("[" + fileFormat + "] is not a supported file format.", MODULE);
 			}
@@ -86,7 +90,7 @@ public class ContactListServices {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Map<String, Object> createRecords(GenericDelegator delegator, GenericValue mailerImportMapper, String userLoginId, String contactListId, String excelFilePath) throws GenericEntityException, FileNotFoundException, IOException {
+	private static Map<String, Object> createRecords(GenericDelegator delegator, Locale locale, GenericValue mailerImportMapper, String userLoginId, String contactListId, String excelFilePath) throws GenericEntityException, FileNotFoundException, IOException {
 		int rowIndex = 0, totalCount = 0, failureCount = 0;
 		String ofbizEntityName = mailerImportMapper.getString("ofbizEntityName");
 		String importMapperId = mailerImportMapper.getString("importMapperId");
@@ -97,7 +101,7 @@ public class ContactListServices {
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
-		
+
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
 				excelRowIterator.next();
@@ -110,7 +114,7 @@ public class ContactListServices {
 				rowIndex++;
 				totalCount++;
 
-				GenericValue customEntityObj = insertIntoConfiguredCustomEntity(delegator, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
+				GenericValue customEntityObj = insertIntoConfiguredCustomEntity(delegator, locale, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
 				String recipientId = customEntityObj.getString("recipientId");
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createCampaignLines(delegator, contactListId, recipientId, customEntityObj.getDate(dateOfOperationColumnName));
@@ -135,7 +139,7 @@ public class ContactListServices {
 		return results;
 	}
 
-	private static GenericValue insertIntoConfiguredCustomEntity(GenericDelegator delegator, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException, ParseException {
+	private static GenericValue insertIntoConfiguredCustomEntity(GenericDelegator delegator, Locale locale, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException, ParseException {
 		ModelEntity modelEntity = delegator.getModelEntity(entityName);
 		String entityPrimaryKeyField = modelEntity.getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
@@ -149,7 +153,7 @@ public class ContactListServices {
 		for (Map.Entry<String, Object> entry : entries) {
 			short columnIndex = 0;
 			HSSFCell excelCell = null;
-			Object cellValue = null; 
+			Object cellValue = null;
 
 			try {
 				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
@@ -167,22 +171,26 @@ public class ContactListServices {
 			}
 			if (modelField.getIsNotNull()) {
 				if (!UtilValidate.isNotEmpty(cellValue)) {
-					throw new GenericEntityException(" '" + modelField.getName() + "' field is empty.");
+					throw new GenericEntityException(" '" + modelField.getName() + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperIsEmpty", locale));
 				}
 			}
 			if (modelField.getType().equals("email")) {
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilCommon.isValidEmailAddress(String.valueOf(cellValue)))) {
-					throw new GenericEntityException(" '" + cellValue + "' is not a valid email id");
+					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidEmail", locale));
 				}
 			} else if (modelField.getType().equals("tel-number")) {
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue)))) {
-					throw new GenericEntityException(" '" + cellValue + "' is not a valid phone no");
+					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", locale));
 				}
 			} else if (modelField.getType().equals("date")) {
-				cellValue = new java.sql.Date(excelCell.getDateCellValue().getTime());
-
+				try {
+					cellValue = new java.sql.Date(excelCell.getDateCellValue().getTime());
+				} catch (Exception e) {
+					cellValue = excelCell.toString();
+					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", locale));
+				}
 				if (!UtilValidate.isNotEmpty(cellValue)) {
-					throw new GenericEntityException(" '" + cellValue + "' is not a valid date");
+					throw new GenericEntityException(" '" + cellValue + "' " + UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", locale));
 				}
 			}
 
@@ -202,7 +210,8 @@ public class ContactListServices {
 		List<GenericValue> rowsToInsert = FastList.newInstance();
 		EntityCondition condition1 = new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId);
 		EntityCondition condition2 = EntityUtil.getFilterByDateExpr();
-		EntityCondition condition3 =  new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MKTG_CAMP_CANCELLED"); /** ignore cancelled. */
+		EntityCondition condition3 = new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MKTG_CAMP_CANCELLED");
+		/** ignore cancelled. */
 		EntityConditionList conditions = new EntityConditionList(UtilMisc.toList(condition1, condition2, condition3), EntityOperator.AND);
 		List<String> selectColumns = UtilMisc.toList("contactListId", "marketingCampaignId");
 		List<GenericValue> rows = delegator.findByCondition("MarketingCampaignDetailsAndContactListView", conditions, selectColumns, UtilMisc.toList("fromDate"));
@@ -227,7 +236,8 @@ public class ContactListServices {
 		} else if (marketingCampaignStatusId.equals("MKTG_CAMP_PLANNED")) {
 			campaignLineStatusId = "MAILER_HOLD";
 		} else if (marketingCampaignStatusId.equals("MKTG_CAMP_CANCELLED")) {
-			return null; /** No need to create for cancelled campaigns. */
+			return null;
+			/** No need to create for cancelled campaigns. */
 		}
 		GenericValue configuredTemplate = mailerMarketingCampaign.getRelatedOne("MailerMergeForm");
 		if (UtilValidate.isNotEmpty(configuredTemplate)) {
