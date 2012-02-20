@@ -84,8 +84,8 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
     </script>
   </#if>
 
-  <div style="float: left; margin-left: 10px; margin-top: 5px; margin-bottom: 10px;">
-    <img alt="${configProperties.get(opentapsApplicationName+".title")}" src="<@ofbizContentUrl>${configProperties.get("opentaps.logo")}</@ofbizContentUrl>"/>
+  <div style="float: left;">
+    <img alt="${configProperties.get(opentapsApplicationName+".title")}" src="<@ofbizContentUrl>${configProperties.get("mailer.logo")}</@ofbizContentUrl>"/>
   </div>
   <div align="right" style="margin-left: 300px; margin-right: 10px; margin-top: 10px;">
 
