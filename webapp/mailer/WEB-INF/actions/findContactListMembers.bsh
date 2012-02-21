@@ -24,17 +24,17 @@ searchConditionList = new ArrayList();
 parametersMap = UtilHttp.getParameterMap(request);
 parametersMapKeys = parametersMap.keySet();
 
-for(String key : parametersMapKeys){
-	if(modelEntity.isField(key)){
+for(String key : parametersMapKeys) {
+	if(modelEntity.isField(key)) {
 		value = parametersMap.get(key);
 		modelField = modelEntity.getField(key);
 		fieldType = modelField.getType();
 		
-		if("name".equals(fieldType)){
-			if(!UtilValidate.isEmpty(value)){
+		if("name".equals(fieldType)) {
+			if(!UtilValidate.isEmpty(value)) {
 				searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.LIKE, value+"%"));
 			}
-		}else{
+		}else {
 			searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.EQUALS, value));
 		}
 	}
