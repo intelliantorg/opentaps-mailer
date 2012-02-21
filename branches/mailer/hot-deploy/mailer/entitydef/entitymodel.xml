@@ -109,8 +109,12 @@
     	 	<description>Country</description>
     	</field>
 
-    	<field name="importedOnDateTime" type="date-time"/>
-    	<field name="importedByUserLogin" type="id-vlong"/>
+    	<field name="importedOnDateTime" type="date-time">
+    	 	<description>Imported on</description>
+    	 </field>    	 	
+    	<field name="importedByUserLogin" type="id-vlong">
+    	 	<description>Imported by</description>
+    	</field>
     	<prim-key field="recipientId"/>
    	</entity>
 

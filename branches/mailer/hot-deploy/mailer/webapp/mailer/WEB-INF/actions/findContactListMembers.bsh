@@ -1,6 +1,8 @@
 
 import java.util.StringTokenizer;
 
+import net.intelliant.imports.UtilImport;
+
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityComparisonOperator;
 import org.ofbiz.entity.condition.EntityConditionList;
@@ -24,18 +26,24 @@ searchConditionList = new ArrayList();
 parametersMap = UtilHttp.getParameterMap(request);
 parametersMapKeys = parametersMap.keySet();
 
+columsToIgnore = UtilMisc.toList("lastUpdatedStamp","lastUpdatedTxStamp","createdStamp","createdTxStamp");
+entityColumns = UtilImport.getEntityColumns("MailerRecipient", columsToIgnore);
+context.put("entityColumns", entityColumns);
+
 for(String key : parametersMapKeys) {
 	if(modelEntity.isField(key)) {
 		value = parametersMap.get(key);
 		modelField = modelEntity.getField(key);
 		fieldType = modelField.getType();
 		
-		if("name".equals(fieldType)) {
+		if("name".equals(fieldType) || "email".equals(fieldType)) {
 			if(!UtilValidate.isEmpty(value)) {
 				searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.LIKE, value+"%"));
 			}
 		}else {
-			searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.EQUALS, value));
+			if(!UtilValidate.isEmpty(value)) {
+				searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.EQUALS, value));
+			}
 		}
 	}
 }
@@ -44,6 +52,7 @@ entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperato
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
 tokenizer = new StringTokenizer(UtilProperties.getPropertyValue("mailer", "findcampaignListingColumns"), ", ");
+modelEntity = modelReader.getModelEntity("MailerRecipient");
 while(tokenizer.hasMoreTokens()) {
 	modelField = modelEntity.getField(tokenizer.nextToken());
 	fieldsToSelect.add(modelField.getName());
