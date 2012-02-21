@@ -8,10 +8,12 @@
         <attribute name="statusId" type="String" mode="IN" optional="false"/>
         <attribute name="templateId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="false"/>
+        <attribute name="description" type="String" mode="IN" optional="true"/>        
     </service>
     <service name="mailer.updateMarketingCampaign" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="updateMarketingCampaign" auth="true">
         <implements service="updateMarketingCampaign"/>
         <attribute name="templateId" type="String" mode="IN" optional="true"/>
+        <attribute name="description" type="String" mode="IN" optional="true"/>
     </service>
     
     <service name="mailer.addContactListToCampaign" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="addContactListToCampaign" auth="true">

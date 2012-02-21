@@ -33,8 +33,18 @@ public class MarketingCampaignTests extends MailerTests {
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
-
-		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
+		String description = "Some description for this campaign";
+		
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
+		inputs.put("userLogin", admin);
+		inputs.put("templateId", templateId);
+		inputs.put("contactListId", contactListId);
+		inputs.put("budgetedCost", budgetedCost);
+		inputs.put("currencyUomId", currencyUomId);
+		inputs.put("estimatedCost", estimatedCost);
+		inputs.put("description", description);
+		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		String marketingCampaignId = createMarketingCampaign(inputs);
 
 		Map<?, ?> results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
@@ -48,6 +58,7 @@ public class MarketingCampaignTests extends MailerTests {
 		results = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
 		assertEquals(results.get("templateId"), templateId);
+		assertEquals(results.get("description"), description);
 
 		List<?> contactListsForMMC = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		assertNotEmpty("There must be atleast one active relation between MC and CL", EntityUtil.filterByDate(contactListsForMMC));
@@ -120,9 +131,19 @@ public class MarketingCampaignTests extends MailerTests {
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
+		String description = "Some description for this campaign";
 		
-		String marketingCampaignId = createMarketingCampaign(campaignName, templateId, contactListId, budgetedCost, estimatedCost, currencyUomId);
-
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
+		inputs.put("userLogin", admin);
+		inputs.put("templateId", templateId);
+		inputs.put("contactListId", contactListId);
+		inputs.put("budgetedCost", budgetedCost);
+		inputs.put("currencyUomId", currencyUomId);
+		inputs.put("estimatedCost", estimatedCost);
+		inputs.put("description", description);
+		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		String marketingCampaignId = createMarketingCampaign(inputs);
+		
 		currTime = System.currentTimeMillis();
 		campaignName = "Campaign_" + currTime;
 		templateId = createMergeTemplate(null);
@@ -130,7 +151,7 @@ public class MarketingCampaignTests extends MailerTests {
 		estimatedCost = 11550.50;
 		currencyUomId = "INR";
 		
-		Map<String, Object> inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
+		inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("campaignName", campaignName);
 		inputs.put("userLogin", admin);
 		inputs.put("templateId", templateId);
@@ -148,10 +169,12 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals(campaignGV.get("estimatedCost"), estimatedCost);
 		assertEquals(campaignGV.get("currencyUomId"), currencyUomId);
 		assertEquals(campaignGV.get("templateId"), templateId);
+		assertEquals(campaignGV.get("description"), description);
 		
 		inputs.clear();
 		inputs.put("userLogin", admin);
 		inputs.put("marketingCampaignId", marketingCampaignId);
+		inputs.put("description", "");
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
 		campaignGV = delegator.findByPrimaryKey("MailerMarketingCampaignDetailsView", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
@@ -161,6 +184,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals(campaignGV.get("estimatedCost"), estimatedCost);
 		assertEquals(campaignGV.get("currencyUomId"), currencyUomId);
 		assertEquals(campaignGV.get("templateId"), templateId);
+		assertEquals(campaignGV.get("description"), "");
 	}
 	
 	public void testCancelMarketingCampaignWithNoContactList() throws GeneralException {
