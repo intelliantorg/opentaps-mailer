@@ -9,96 +9,37 @@ import org.ofbiz.entity.condition.EntityJoinOperator;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.base.util.UtilProperties;
+import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.entity.model.ModelEntity;
 import org.ofbiz.entity.model.ModelReader;
 
 import org.opentaps.common.util.UtilCommon;
 
+modelReader = ModelReader.getModelReader("default");
+modelEntity = modelReader.getModelEntity("MailerRecipientAndContactListView");
+
 contactListId = UtilCommon.getParameter(request, "contactListId");
 searchConditionList = new ArrayList();
 
-if(!UtilValidate.isEmpty(contactListId)) {
-	searchConditionList.add(new EntityExpr("contactListId", EntityComparisonOperator.EQUALS, contactListId));
-}
+parametersMap = UtilHttp.getParameterMap(request);
+parametersMapKeys = parametersMap.keySet();
 
-salesOrServiceDate = UtilCommon.getParameter(request, "salesOrServiceDate");
-if(!UtilValidate.isEmpty(salesOrServiceDate)) {
-	searchConditionList.add(new EntityExpr("salesOrServiceDate", EntityComparisonOperator.EQUALS, salesOrServiceDate));
-}
-
-firstName = UtilCommon.getParameter(request, "firstName");
-if(!UtilValidate.isEmpty(firstName)) {
-	searchConditionList.add(new EntityExpr("firstName", EntityComparisonOperator.LIKE, firstName+"%"));
-}
-
-middleName = UtilCommon.getParameter(request, "middleName");
-if(!UtilValidate.isEmpty(middleName)) {
-	searchConditionList.add(new EntityExpr("middleName", EntityComparisonOperator.LIKE, middleName+"%"));
-}
-
-lastName = UtilCommon.getParameter(request, "lastName");
-if(!UtilValidate.isEmpty(lastName)) {
-	searchConditionList.add(new EntityExpr("lastName", EntityComparisonOperator.LIKE, lastName+"%"));
-}
-
-emailAddress = UtilCommon.getParameter(request, "emailAddress");
-if(!UtilValidate.isEmpty(emailAddress)) {
-	searchConditionList.add(new EntityExpr("emailAddress", EntityComparisonOperator.LIKE, emailAddress+"%"));
-}
-
-phoneNo = UtilCommon.getParameter(request, "phoneNo");
-if(!UtilValidate.isEmpty(phoneNo)) {
-	searchConditionList.add(new EntityExpr("phoneNo", EntityComparisonOperator.EQUALS, phoneNo));
-}
-
-mobileNo = UtilCommon.getParameter(request, "mobileNo");
-if(!UtilValidate.isEmpty(mobileNo)) {
-	searchConditionList.add(new EntityExpr("mobileNo", EntityComparisonOperator.EQUALS, mobileNo));
-}
-
-organisationName = UtilCommon.getParameter(request, "organisationName");
-if(!UtilValidate.isEmpty(organisationName)) {
-	searchConditionList.add(new EntityExpr("organisationName", EntityComparisonOperator.LIKE, organisationName+"%"));
-}
-
-address1 = UtilCommon.getParameter(request, "address1");
-if(!UtilValidate.isEmpty(address1)) {
-	searchConditionList.add(new EntityExpr("address1", EntityComparisonOperator.LIKE, address1+"%"));
-}
-
-address2 = UtilCommon.getParameter(request, "address2");
-if(!UtilValidate.isEmpty(address2)) {
-	searchConditionList.add(new EntityExpr("address2", EntityComparisonOperator.LIKE, address2+"%"));
-}
-
-postalCode = UtilCommon.getParameter(request, "postalCode");
-if(!UtilValidate.isEmpty(postalCode)) {
-	searchConditionList.add(new EntityExpr("postalCode", EntityComparisonOperator.EQUALS, postalCode));
-}
-
-stateName = UtilCommon.getParameter(request, "stateName");
-if(!UtilValidate.isEmpty(stateName)) {
-	searchConditionList.add(new EntityExpr("stateName", EntityComparisonOperator.LIKE, stateName+"%"));
-}
-
-countyName = UtilCommon.getParameter(request, "countyName");
-if(!UtilValidate.isEmpty(countyName)) {
-	searchConditionList.add(new EntityExpr("countyName", EntityComparisonOperator.LIKE, countyName+"%"));
-}
-
-importedOnDateTime = UtilCommon.getParameter(request, "importedOnDateTime");
-if(!UtilValidate.isEmpty(importedOnDateTime)) {
-	searchConditionList.add(new EntityExpr("importedOnDateTime", EntityComparisonOperator.EQUALS, importedOnDateTime));
-}
-
-importedByUserLogin = UtilCommon.getParameter(request, "importedByUserLogin");
-if(!UtilValidate.isEmpty(importedByUserLogin)) {
-	searchConditionList.add(new EntityExpr("importedByUserLogin", EntityComparisonOperator.EQUALS, importedByUserLogin));
+for(String key : parametersMapKeys){
+	if(modelEntity.isField(key)){
+		value = parametersMap.get(key);
+		modelField = modelEntity.getField(key);
+		fieldType = modelField.getType();
+		
+		if("name".equals(fieldType)){
+			if(!UtilValidate.isEmpty(value)){
+				searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.LIKE, value+"%"));
+			}
+		}else{
+			searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.EQUALS, value));
+		}
+	}
 }
 entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperator.AND);
-
-modelReader = ModelReader.getModelReader("default");
-modelEntity = modelReader.getModelEntity("MailerRecipient");
 
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
