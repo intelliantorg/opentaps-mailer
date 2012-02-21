@@ -279,4 +279,14 @@
             <key-map field-name="mergeFormTypeId"/>
         </view-link>
     </view-entity>
+    
+    <view-entity entity-name="ContactListMailerRecipient" package-name="net.intelliant.mailer">
+    	<member-entity entity-alias="MRCL" entity-name="MailerRecipientContactList"/>
+    	<member-entity entity-alias="MR" entity-name="MailerRecipient"/>    	
+        <alias entity-alias="MRCL" name="contactListId" />
+        <alias-all entity-alias="MR"/>
+        <view-link entity-alias="MRCL" rel-entity-alias="MR" rel-optional="true">
+            <key-map field-name="recipientId" rel-field-name="recipientId"/>
+        </view-link>
+    </view-entity>
 </entitymodel>

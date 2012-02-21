@@ -18,4 +18,5 @@
 	<entity-group group="org.ofbiz" entity="MailerMergeFormType" />
 	<entity-group group="org.ofbiz" entity="MarketingCampaignDetailsAndContactListView" />
 	<entity-group group="org.ofbiz" entity="MailerMergeFormDetailsView" />
+	<entity-group group="org.ofbiz" entity="ContactListMailerRecipient" />	
 </entitygroup>
