@@ -13,7 +13,7 @@
         <field name="templateId" title="${uiLabelMap.LabelTemplateId}" position="1" widget-style="linktext">
 			<hyperlink target="editMergeForms?mergeFormId=${marketingCampaign.templateId}" description="${templateName}" />
         </field>      
-        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display description="${marketingCampaign.campaignSummary}"/></field>
+        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display description="${marketingCampaign.description}"/></field>
     </form>
     
     <form name="FindMarketingCampaign" type="single" target="${findMarketingCampaignsTarget}"
