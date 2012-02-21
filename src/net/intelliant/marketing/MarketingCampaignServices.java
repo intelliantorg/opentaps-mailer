@@ -395,7 +395,7 @@ public class MarketingCampaignServices {
 		String contactListId = (String) context.get("contactListId");
 		EntityListIterator iterator = null;
 		try {
-			List<EntityCondition> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_CANCELLED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			List<EntityCondition> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_EXECUTED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
 			if (UtilValidate.isNotEmpty(contactListId)) {
 				conditionsList.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
 			}
