@@ -91,7 +91,6 @@ public class MarketingCampaignServices {
 		Locale locale = (Locale) context.get("locale");
 		String statusId = (String) context.get("statusId");
 		String templateId = (String) context.get("templateId");
-		String description = (String) context.get("description");
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		GenericValue mergeFormGV = null;
 		try {
@@ -104,8 +103,8 @@ public class MarketingCampaignServices {
 				}
 				mailerMarketingCampaign.set("templateId", templateId);
 			}
-			if (description != null) {
-				mailerMarketingCampaign.put("description", description);
+			if (context.containsKey("description")) {
+				mailerMarketingCampaign.put("description", context.get("description"));
 			}
 			mailerMarketingCampaign.store();
 			
