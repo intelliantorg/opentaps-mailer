@@ -5,12 +5,14 @@
 		<#list contactListHeaders as contactListHeader>
 			<th align="left">${contactListHeader}</th>
 		</#list>
+		<th align="left"></th>
 	</tr>
-	<#list formattedContactListMembers as formattedContactListMember>
-		<tr class="${tableRowClass(formattedContactListMember_index)}">
-			<#list formattedContactListMember as coloum>
-				<td>${coloum}</td>
+	<#list contactListMembers as contactListMember>
+		<tr class="${tableRowClass(contactListMember_index)}">
+			<#list contactListFields as contactListField>
+				<td>${contactListMember.get(contactListField)}</td>
 			</#list>
+			<td><input type="checkbox" name="select" value="${contactListMember.recipientId}" /></td>
 		</tr>
 	</#list>
 </table>
