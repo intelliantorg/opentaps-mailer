@@ -77,6 +77,11 @@ public class CampaignExecutionEvents {
 					UtilCommon.addErrorMessage(request, errorResource, "errorInvalidCampaign");
 					return "error";
 				} else {
+					long count = UtilCommon.countAllCampaignLinesPendingTillDate(delegator, marketingCampaignId, null);
+					if (count <= 0) {
+						UtilCommon.addErrorMessage(request, errorResource, "errorExecutingCampaignNoScheduledCampaigns");
+						return "success";
+					}
 					GenericValue templateGV = mailerMarketingCampaign.getRelatedOne("MailerMergeForm");
 					if (UtilValidate.isNotEmpty(templateGV)) {
 						if (UtilCommon.isEmailTemplate(templateGV)) {
