@@ -64,16 +64,16 @@ public class MarketingCampaignTests extends MailerTests {
 		assertNotEmpty("There must be atleast one active relation between MC and CL", EntityUtil.filterByDate(contactListsForMMC));
 		
 		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-		assertEmpty("There must ZERO scheduled campaings", campaigns);
+		assertEmpty("There must be ZERO scheduled campaings", campaigns);
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 0 scheduled campaigns", 0, campaigns.size());
+		assertEquals("There must be ZERO scheduled campaigns", 0, campaigns.size());
 		
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -112,7 +112,7 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
 		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"), UtilMisc.toList("recipientId"));
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
 		
 		for (GenericValue scheduledCampaign : campaigns) {
 			GenericValue recipient = scheduledCampaign.getRelatedOne("MailerRecipient");
@@ -247,16 +247,16 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals("Status must be cancelled.", "MKTG_CAMP_CANCELLED", marketingCampaignGV.getString("statusId"));
 		
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 0 scheduled campaigns", 0, campaigns.size());
+		assertEquals("There must be ZERO scheduled campaigns", 0, campaigns.size());
 		
-		assertEquals("There must 1 ONLY executed campaign line", 1, UtilCommon.countExecutedCampaignLines(delegator, null, marketingCampaignId));
+		assertEquals("There must be ONLY 1 executed campaign line", 1, UtilCommon.countExecutedCampaignLines(delegator, null, marketingCampaignId));
 		
-		assertEquals("There must 1 ONLY cancelled campaign", 1, UtilCommon.countCancelledCampaignLines(delegator, null, marketingCampaignId));
+		assertEquals("There must be ONLY 1 cancelled campaign", 1, UtilCommon.countCancelledCampaignLines(delegator, null, marketingCampaignId));
 		
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		assertEquals("There must 2 campaign lines ONLY", 2, UtilCommon.countAllCampaignLines(delegator, null, marketingCampaignId));
+		assertEquals("There must be ONLY 2 campaign lines", 2, UtilCommon.countAllCampaignLines(delegator, null, marketingCampaignId));
 	}
 	
 	public void testRemoveContactListFromCampaign() throws GeneralException {
@@ -275,15 +275,15 @@ public class MarketingCampaignTests extends MailerTests {
 		String campaignListId = (String) results.get("campaignListId"); 
 		
 		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
 
 		results = runAndAssertServiceSuccess("mailer.removeContactListFromMarketingCampaign", UtilMisc.toMap("userLogin", admin, "campaignListId", campaignListId));
 		
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must 2 scheduled campaigns", 0, campaigns.size());
+		assertEquals("There must be 2 scheduled campaigns", 0, campaigns.size());
 		
 		List<?> cancelledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_CANCELLED"));
-		assertEquals("There must 2 scheduled campaigns", 2, cancelledCampaigns.size());
+		assertEquals("There must be 2 scheduled campaigns", 2, cancelledCampaigns.size());
 	}
 	
 	public void testUpdateMarketingCampaignByChangingTemplate() throws GeneralException {
@@ -342,7 +342,7 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
 		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
 		Map expected = FastMap.newInstance();
 		for (GenericValue scheduledCampaign : campaigns) {
 			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
@@ -407,25 +407,25 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId3, "contactListId", contactListId));
 		
 		long campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign1Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign1Count);
 		
 		long campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign2Count);
 		
 		long campaign3Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId3);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign3Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign3Count);
 		
 		/** Executing this is to simulate the execution of scheduled service */
 		runAndAssertServiceSuccess("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
 		
 		campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign1Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign1Count);
 		
 		campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign2Count);
 		
 		campaign3Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId3);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign3Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign3Count);
 
 		inputs.clear();
 		inputs.put("userLogin", admin);
@@ -441,20 +441,20 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
 		
 		campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals("There must 0 'On Hold' campaigns", 0, campaign1Count);
+		assertEquals("There must be ZERO 'On Hold' campaigns", 0, campaign1Count);
 		
 		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals("There must 2 'Scheduled' campaigns", 2, campaign1Count);
+		assertEquals("There must be 2 'Scheduled' campaigns", 2, campaign1Count);
 		GenericValue marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1));
 		assertEquals("Must be in 'In Progress'", "MKTG_CAMP_INPROGRESS", marketingCampaingnGV.getString("statusId"));
 		
 		campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign2Count);
 		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId2));
 		assertEquals("Must NOT be in 'In Progress'", "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 		
 		campaign3Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId3);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign3Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign3Count);
 		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId3));
 		assertEquals("Must NOT be in 'In Progress'", "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
@@ -492,10 +492,10 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId2, "contactListId", contactListId));
 		
 		long campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign1Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign1Count);
 		
 		long campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign2Count);
 		
 		inputs.clear();
 		inputs.put("userLogin", admin);
@@ -512,7 +512,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals("Must be in 'In Progress'", "MKTG_CAMP_INPROGRESS", marketingCampaingnGV.getString("statusId"));
 		
 		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals("There must 2 'Scheduled' campaigns", 2, campaign1Count);
+		assertEquals("There must be 2 'Scheduled' campaigns", 2, campaign1Count);
 		
 		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1));
 		for (GenericValue scheduledCampaign : campaigns) {
@@ -563,10 +563,10 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId2, "contactListId", contactListId));
 		
 		long campaign1Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign1Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign1Count);
 		
 		long campaign2Count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId2);
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaign2Count);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, campaign2Count);
 		
 		inputs.clear();
 		inputs.put("userLogin", admin);
@@ -606,12 +606,12 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId1, "contactListId", contactListId));
 		
 		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId1);
-		assertEquals(String.format("There must 2 'Scheduled' campaigns for campaign [%1$s]", marketingCampaignId1), 2, campaign1Count);
+		assertEquals(String.format("There must be 2 'Scheduled' campaigns for campaign [%1$s]", marketingCampaignId1), 2, campaign1Count);
 		
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId2, "contactListId", contactListId));
 		
 		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId2);
-		assertEquals(String.format("There must 2 'Scheduled' campaigns for campaign [%1$s]", marketingCampaignId2), 2, campaign1Count);
+		assertEquals(String.format("There must be 2 'Scheduled' campaigns for campaign [%1$s]", marketingCampaignId2), 2, campaign1Count);
 		
 		/** Executing this is to simulate the execution of scheduled service */
 		runAndAssertServiceSuccess("mailer.checkIfCompletedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
@@ -622,6 +622,5 @@ public class MarketingCampaignTests extends MailerTests {
 		
 		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId2));
 		assertEquals(String.format("Campaign [%1$s] must be in appproved state", marketingCampaignId2), "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
-
 	}
 }
