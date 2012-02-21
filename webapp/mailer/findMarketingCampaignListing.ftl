@@ -44,7 +44,7 @@
 					<td>
 						<span class="tabletext">			
 							<#if campaignsListItem.statusId?exists && campaignsListItem.templateId?exists && (campaignsListItem.statusId == "MKTG_CAMP_INPROGRESS")>
-								<a class='subMenuButton' href='<@ofbizUrl>executeCampaign?marketingCampaignId=${campaignsListItem.marketingCampaignId}</@ofbizUrl>'>
+								<a class='subMenuButton' href='<@ofbizUrl>executeCampaignFromFind?marketingCampaignId=${campaignsListItem.marketingCampaignId}</@ofbizUrl>'>
 									${uiLabelMap.ButtonExecute}
 								</a>
 							</#if>
