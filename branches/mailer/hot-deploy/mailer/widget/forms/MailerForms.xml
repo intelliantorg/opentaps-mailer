@@ -4,16 +4,16 @@
 	<form name="viewMarketingCampaign" type="single" title="View Marketing Campaign" default-map-name="marketingCampaign"
         default-title-style="tableheadtext" default-widget-style="tabletext" default-tooltip-style="tabletext">
         
-        <field name="campaignName" title="${uiLabelMap.CommonName}" position="1"><display/></field>
+        <field name="campaignName" title="${uiLabelMap.CommonName}" position="1"><display description="${marketingCampaign.campaignName}"/></field>
         <field name="statusId" title="${uiLabelMap.CommonStatus}" position="2">
-            <display-entity entity-name="StatusItem"/>
+            <display description="${currentStatus.description}"/>
         </field>
-        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1"><display/></field>
-        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="2"><display/></field>
+        <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1"><display description="${marketingCampaign.fromDate}"/></field>
+        <field name="thruDate" title="${uiLabelMap.CommonThru}" position="2"><display description="${marketingCampaign.thruDate}"/></field>
         <field name="templateId" title="${uiLabelMap.LabelTemplateId}" position="1" widget-style="linktext">
 			<hyperlink target="editMergeForms?mergeFormId=${marketingCampaign.templateId}" description="${templateName}" />
         </field>      
-        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display/></field>
+        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display description="${marketingCampaign.campaignSummary}"/></field>
     </form>
     
     <form name="FindMarketingCampaign" type="single" target="${findMarketingCampaignsTarget}"
