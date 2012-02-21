@@ -68,6 +68,7 @@ public class MarketingCampaignServices {
 
 			inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 			inputs.put("templateId", context.get("templateId"));
+			inputs.put("description", context.get("description"));
 			GenericValue mailerMarketingCampaign = delegator.makeValue("MailerMarketingCampaign", inputs);
 			mailerMarketingCampaign.create();
 
@@ -90,6 +91,7 @@ public class MarketingCampaignServices {
 		Locale locale = (Locale) context.get("locale");
 		String statusId = (String) context.get("statusId");
 		String templateId = (String) context.get("templateId");
+		String description = (String) context.get("description");
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		GenericValue mergeFormGV = null;
 		try {
@@ -102,6 +104,9 @@ public class MarketingCampaignServices {
 				}
 				mailerMarketingCampaign.set("templateId", templateId);
 			}
+			if (description != null) {
+				mailerMarketingCampaign.put("description", description);
+			}
 			mailerMarketingCampaign.store();
 			
 			GenericValue marketingCampaign = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
@@ -109,6 +114,8 @@ public class MarketingCampaignServices {
 
 			ModelService service = dctx.getModelService("updateMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
+			Debug.logInfo("The inputs >> " + inputs, "");
+			Debug.logInfo("The context >> " + context, "");
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
 				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, MODULE);
