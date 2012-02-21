@@ -79,7 +79,6 @@ public class MarketingCampaignTests extends MailerTests {
 	@SuppressWarnings("unchecked")
 	public void testCreateMarketingCampaignWithIncorrectTemplateId() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
-		String fromEmailAddress = "email@email.com";
 		String templateId = "XYZ";
 		String contactListId = createContactList();
 		Double budgetedCost = new Double("12000.00");
@@ -88,7 +87,6 @@ public class MarketingCampaignTests extends MailerTests {
 
 		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
 		inputs.put("userLogin", admin);
-		inputs.put("fromEmailAddress", fromEmailAddress);
 		inputs.put("templateId", templateId);
 		inputs.put("contactListId", contactListId);
 		inputs.put("budgetedCost", budgetedCost);
