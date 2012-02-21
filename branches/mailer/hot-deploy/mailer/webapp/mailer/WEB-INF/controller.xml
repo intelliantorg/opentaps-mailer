@@ -88,6 +88,13 @@
 		<response name="pdfGenerationSuccess" type="none"/>
 		<response name="error" type="view" value="viewMarketingCampaign" />
 	</request-map>
+	<request-map uri="executeCampaignFromFind">
+		<security https="true" auth="true" />
+		<event type="java" path="net.intelliant.marketing.CampaignExecutionEvents" invoke="executeCampaign" />
+		<response name="success" type="view" value="findMarketingCampaigns" />
+		<response name="pdfGenerationSuccess" type="none"/>
+		<response name="error" type="view" value="findMarketingCampaigns" />
+	</request-map>
 	
 	<request-map uri="createContactListForm">
 		<security https="true" auth="true" />
