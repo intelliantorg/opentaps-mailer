@@ -182,7 +182,7 @@
                 <set field="isContactListSearch" value="Y"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/pagination.bsh"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewContactList.bsh"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/findContactListParties.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/findContactListMembers.bsh"/>
             </actions>
             <widgets>
                 <decorator-screen name="main-section-decorator">
@@ -195,9 +195,10 @@
                         </container>
                         <container style="subSectionBlock">
                             <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.FindListMembersHeader}</label></container>
-                            <container style="form">
+                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/findContactListMembers.ftl"/></html></platform-specific>                            
+                            <!-- <container style="form">                            
                                 <include-form name="FindContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            </container>
+                            </container> -->
                         </container>
                         <container style="subSectionBlock">
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>

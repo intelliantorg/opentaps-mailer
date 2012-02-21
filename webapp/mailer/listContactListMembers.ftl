@@ -2,17 +2,15 @@
 
 <table class="listTable">
 	<tr class="listTableHeader" style="border:none">
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.NameHeader}</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.EmailHeader}</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.ImportOnHeader}</td>
-		<td class="titleCell titleCellAutoWidth" style="text-align:left">${uiLabelMap.ImportByHeader}</td>
+		<#list contactListHeaders as contactListHeader>
+			<th align="left">${contactListHeader}</th>
+		</#list>
 	</tr>
-	<#list contactListPartiesX as contactListParty>
-	<tr class="${tableRowClass(contactListParty_index)}">
-		<td>${contactListParty.firstName} ${contactListParty.lastName}</td>
-		<td>${contactListParty.emailAddress}</td>
-		<td>${contactListParty.importedOnDateTime?if_exists?string("dd/MM/yyyy")}</td>
-		<td>${contactListParty.importedByUserLogin}</td>
-	</tr>
+	<#list formattedContactListMembers as formattedContactListMember>
+		<tr class="${tableRowClass(formattedContactListMember_index)}">
+			<#list formattedContactListMember as coloum>
+				<td>${coloum}</td>
+			</#list>
+		</tr>
 	</#list>
 </table>
