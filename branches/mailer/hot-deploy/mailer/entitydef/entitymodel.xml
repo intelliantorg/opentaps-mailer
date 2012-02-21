@@ -200,7 +200,9 @@
         <member-entity entity-alias="MMC" entity-name="MailerMarketingCampaign"/>
         <member-entity entity-alias="SI" entity-name="StatusItem"/>
         <alias-all entity-alias="MC"/>
-        <alias-all entity-alias="MMC"/>
+        <alias-all entity-alias="MMC">
+        	<exclude field="description"/>
+        </alias-all>
         <alias-all entity-alias="SI"/>
         <view-link entity-alias="MMC" rel-entity-alias="MC" rel-optional="true">
             <key-map field-name="marketingCampaignId"/>
