@@ -33,7 +33,7 @@
 		<#assign keys = report.keySet()>
 		<#if (keys?size > 0) >
 			<div style="margin-top:10px;">
-				<div><strong>Full report:</strong></div>
+				<div><strong>${uiLabelMap.FullReport}</strong></div>
 					<table class="listTable">
 						<tr>
 							<th align="left" width="60px">${uiLabelMap.LabelSNo}</th>
