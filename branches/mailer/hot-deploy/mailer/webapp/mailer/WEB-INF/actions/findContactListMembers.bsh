@@ -22,10 +22,10 @@ import org.opentaps.common.util.UtilCommon;
 modelReader = ModelReader.getModelReader("default");
 modelEntity = modelReader.getModelEntity("MailerRecipientAndContactListView");
 
-contactListId = UtilCommon.getParameter(request, "contactListId");
 searchConditionList = new ArrayList();
 
 parametersMap = UtilHttp.getParameterMap(request);
+parametersMap.remove("contactListId");
 parametersMapKeys = parametersMap.keySet();
 
 columsToIgnore = UtilMisc.toList("lastUpdatedStamp","lastUpdatedTxStamp","createdStamp","createdTxStamp");

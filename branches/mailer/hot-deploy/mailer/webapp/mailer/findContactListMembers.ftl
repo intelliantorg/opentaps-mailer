@@ -1,6 +1,6 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 <div class="form">
-	<form name="findContactList" action="<@ofbizUrl>filterContactListMembers</@ofbizUrl>" method="post">
+	<form name="findContactList" action="<@ofbizUrl>filterContactListMembers?contactListId=${contactList.contactListId}</@ofbizUrl>" method="post">
 		<@inputHidden name="contactListId" value=contactList.contactListId />
 		<table width="100%">
 			<tr>
