@@ -1,11 +1,7 @@
-
 import java.util.StringTokenizer;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-
 import net.intelliant.imports.UtilImport;
-
-import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityComparisonOperator;
 import org.ofbiz.entity.condition.EntityConditionList;
 import org.ofbiz.entity.condition.EntityExpr;
@@ -18,9 +14,7 @@ import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.entity.model.ModelEntity;
 import org.ofbiz.entity.model.ModelReader;
-
-import org.opentaps.common.util.UtilCommon;
-import org.opentaps.common.util.UtilDate;
+import org.ofbiz.entity.util.EntityUtil;
 
 timeZone = UtilHttp.getTimeZone(request);
 locale = UtilHttp.getLocale(request);
@@ -62,6 +56,7 @@ for(String key : parametersMapKeys) {
 		}
 	}
 }
+searchConditionList.add(EntityUtil.getFilterByDateExpr("validFromDate", "validThruDate"));
 entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperator.AND);
 
 contactListMembers = delegator.findByCondition("MailerRecipientAndContactListView", entityCondition, null, null);
