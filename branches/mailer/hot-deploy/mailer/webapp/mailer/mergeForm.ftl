@@ -13,61 +13,7 @@
  <form method="post" action="deleteMergeForm" name="deleteMergeForm">
   <@inputHidden name="mergeFormId" value=mergeFormId />
  </form>
- <script type="text/javascript">
-  <!-- 
-  
-  function assignCategory() {
-    var categorySelect = document.getElementById('mergeFormCategoryName');
-    var mergeFormCategorySelected = categorySelect.selectedIndex;
-    if ( mergeFormCategorySelected < 0 ) return;
-    var mergeFormCategoryId = categorySelect ? categorySelect.options[mergeFormCategorySelected].value : null;
-    if (! mergeFormCategoryId) return false;
-    
-    var context = {"mergeFormId" : "${mergeFormId}", "mergeFormCategoryId" : mergeFormCategoryId };
-
-    opentaps.hide(document.getElementById('categoryControl'));
-    opentaps.sendRequest('<@ofbizUrl>assignCategoryToMergeFormJSON</@ofbizUrl>', context, replaceCategoryControl, {target: 'assignSpinner'});
-  }
-
-  function removeCategory(mergeFormCategoryId) {
-    var context = {"mergeFormId" : "${mergeFormId}", "mergeFormCategoryId" : mergeFormCategoryId };
-    opentaps.hide(document.getElementById('categoryControl'));
-    opentaps.sendRequest('<@ofbizUrl>removeCategoryFromMergeFormJSON</@ofbizUrl>', context, replaceCategoryControl, {target: 'assignSpinner'});
-  }
-  
-  function replaceCategoryControl(/* Array */ data) {
-    var catControl = document.getElementById('categoryControl');
-    if (! data ) {
-      opentaps.show(catControl);
-      return;
-    }
-
-    // These are the already assigned categories
-    opentaps.removeChildNodes(catControl);
-    for (idx=0; idx<data.mergeFormCategories.size(); idx++) {
-      var id = data.mergeFormCategories[idx].mergeFormCategoryId;
-      catControl.appendChild(opentaps.createSpan(null, data.mergeFormCategories[idx].mergeFormCategoryName), 'tabletext');
-      var removeLink = opentaps.createAnchor(null, null, "-", "buttontext", {'onclick' : opentaps.makeFunction('removeCategory', [id])});
-      catControl.appendChild(removeLink);
-    }
-
-    if (data.categories.size() > 0) {
-        // These are the category that can be assigned        
-        var options = new Array();
-        for (idx=0; idx<data.categories.size(); idx++) {
-            options.push( data.categories[idx].mergeFormCategoryId );
-            options.push( data.categories[idx].mergeFormCategoryName );
-        }
-        catControl.appendChild( opentaps.createSelect("mergeFormCategoryName", "mergeFormCategoryName", "inputBox", options, data.categories[0].mergeFormCategoryId, null) );
-        catControl.appendChild( opentaps.createAnchor(null, null, "+", "buttontext", {'onclick' : function(){assignCategory()}}) );
-    }
-
-    opentaps.show(catControl);
-  } 
-  
-  -->
- </script>
-<#else >
+ <#else >
  <#assign formName="createMergeForm" />
  <#assign formSubmit=uiLabelMap.CommonCreate />
 </#if >
@@ -94,7 +40,7 @@
     <div class="formRow" id="emailAddressContainer" <#if MailerMergeForm.mergeFormTypeId?exists && (MailerMergeForm.mergeFormTypeId?if_exists != "EMAIL") >style="display:none"</#if> >
       <span class="formLabelRequired">${uiLabelMap.LabelFromEmailAddress}</span>
       <span class="formInputSpan">
-        <input type="text" class="inputBox required" name="fromEmailAddress" value="${(MailerMergeForm.fromEmailAddress)?if_exists}" size="50" maxlength="100"/>
+        <input type="text" class="inputBox required email" name="fromEmailAddress" value="${(MailerMergeForm.fromEmailAddress)?if_exists}" size="50" maxlength="100"/>
       </span>
     </div>
     <div id="headerFooterImageContainer" <#if !MailerMergeForm.mergeFormTypeId?exists || MailerMergeForm.mergeFormTypeId?if_exists != "PRINT" > style="display:none"</#if> >
