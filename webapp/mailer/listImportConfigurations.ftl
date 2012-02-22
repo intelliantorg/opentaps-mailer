@@ -25,5 +25,5 @@
     </#list>
   </table>
 <#else>
-  <div class="tabletext">&nbsp;No Configured Mappings.</div>
+  <div class="tabletext">&nbsp;${uiLabelMap.LabelNoConfiguredMappings}</div>
 </#if>
