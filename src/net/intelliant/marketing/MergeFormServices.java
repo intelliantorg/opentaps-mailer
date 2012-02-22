@@ -1,8 +1,6 @@
 package net.intelliant.marketing;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Locale;
@@ -11,7 +9,6 @@ import java.util.Map;
 import net.intelliant.util.UtilCommon;
 
 import org.ofbiz.base.location.FlexibleLocation;
-import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
@@ -21,7 +18,6 @@ import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.util.ByteWrapper;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.GenericServiceException;
-import org.ofbiz.service.LocalDispatcher;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
 
@@ -34,7 +30,6 @@ public class MergeFormServices {
 	public static Map<String, Object> createMergeForm(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> results = ServiceUtil.returnSuccess();
 		GenericDelegator delegator = dctx.getDelegator();
-		LocalDispatcher dispatcher = dctx.getDispatcher();
 		Locale locale = (Locale) context.get("locale");
 		GenericValue mergeForm = null;
 
@@ -61,44 +56,26 @@ public class MergeFormServices {
 		mergeForm.remove("headerImageLocation");
 		mergeForm.remove("footerImageLocation");
 
-		ByteWrapper binData = null;
-		String fileName = null;
-
-		String dataResourceId = null;
-		String uploadedFilePath = null;
-		String urlBasePath = null;
-		Map<String, Object> inputs = null;
-
+		String fileName = "";
+		String dataResourceId = "";
+		String previewBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
 		try {
 			if (UtilValidate.areEqual(mergeFormTypeId, "PRINT")) {
 				String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
-
-				binData = (ByteWrapper) context.get("headerImageLocation");
+				ByteWrapper binData = (ByteWrapper) context.get("headerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
 					fileName = (String) context.get("_headerImageLocation_fileName");
-
-					dataResourceId = delegator.getNextSeqId("DataResource");
-					uploadedFilePath = writeToFile(filePath, dataResourceId, fileName, binData);
-					urlBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
-
-					mergeForm.put("headerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
-
-					inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
-					dispatcher.runSync("createAnonFile", inputs);
+					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
+					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+					mergeForm.put("headerImageLocation", previewURL);
 				}
 
 				binData = (ByteWrapper) context.get("footerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
 					fileName = (String) context.get("_footerImageLocation_fileName");
-
-					dataResourceId = delegator.getNextSeqId("DataResource");
-					uploadedFilePath = writeToFile(filePath, dataResourceId, fileName, binData);
-					urlBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
-
-					mergeForm.put("footerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
-
-					inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
-					dispatcher.runSync("createAnonFile", inputs);
+					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
+					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+					mergeForm.put("footerImageLocation", previewURL);
 				}
 			} else if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
 				mergeForm.put("fromEmailAddress", mergeFormEmailAddress);
@@ -106,7 +83,6 @@ public class MergeFormServices {
 		} catch (Exception e) {
 			return UtilMessage.createAndLogServiceError(e, module);
 		}
-
 		try {
 			delegator.create(mergeForm);
 		} catch (GenericEntityException e) {
@@ -115,18 +91,18 @@ public class MergeFormServices {
 		results.put("mergeFormId", mergeFormId);
 		return results;
 	}
-
-	private static String writeToFile(String path, String subFolder, String fileName, ByteWrapper binaryDataOfFile) throws IOException {
-		File tmpFile = new File(path + File.separator + subFolder);
-		if (!tmpFile.isDirectory()) {
+	
+	@SuppressWarnings("unchecked")
+	private static String uploadFile(DispatchContext dctx, String parentPath, String uploadedFileName, ByteWrapper binaryDataOfFile) throws GenericServiceException {
+		String dataResourceId = dctx.getDelegator().getNextSeqId("DataResource");
+		File tmpFile = new File(parentPath + File.separator + dataResourceId);
+		if (!tmpFile.exists()) {
 			tmpFile.mkdir();
 		}
-
-		tmpFile = new File(tmpFile.getAbsolutePath() + File.separator + fileName);
-		FileOutputStream fos = new FileOutputStream(tmpFile);
-		fos.write(binaryDataOfFile.getBytes());
-
-		return tmpFile.getAbsolutePath();
+		String uploadedFilePath = tmpFile.getAbsolutePath() + File.separator + uploadedFileName;
+		Map<String, Object> inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binaryDataOfFile, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
+		dctx.getDispatcher().runSync("createAnonFile", inputs);
+		return dataResourceId;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,7 +110,6 @@ public class MergeFormServices {
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		Map<String, Object> results = ServiceUtil.returnSuccess();
 		GenericDelegator delegator = dctx.getDelegator();
-		LocalDispatcher dispatcher = dctx.getDispatcher();
 		Locale locale = (Locale) context.get("locale");
 		String mergeFormTypeId = String.valueOf(context.get("mergeFormTypeId"));
 		String scheduleAt = (String) context.get("scheduleAt");
@@ -143,13 +118,9 @@ public class MergeFormServices {
 		String footerImageLocationRemove = String.valueOf(context.get("footerImageLocationRemove"));
 		results.put("mergeFormId", mergeFormId);
 
-		ByteWrapper binData = null;
-		String fileName = null;
-
-		String dataResourceId = null;
-		String uploadedFilePath = null;
-		String urlBasePath = null;
-
+		String fileName = "";
+		String dataResourceId = "";
+		String previewBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
 		Map<String, Object> inputs = null;
 		try {
 			GenericValue mergeForm = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
@@ -164,19 +135,12 @@ public class MergeFormServices {
 			} else {
 				mergeForm.put("fromEmailAddress", "");
 			}
-
-			binData = (ByteWrapper) context.get("headerImageLocation");
+			ByteWrapper binData = (ByteWrapper) context.get("headerImageLocation");
 			if (binData != null && binData.getLength() > 0) {
 				fileName = (String) context.get("_headerImageLocation_fileName");
-
-				dataResourceId = delegator.getNextSeqId("DataResource");
-				uploadedFilePath = writeToFile(filePath, dataResourceId, fileName, binData);
-				urlBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
-
-				mergeForm.set("headerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
-
-				inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
-				dispatcher.runSync("createAnonFile", inputs);
+				dataResourceId = uploadFile(dctx, filePath, fileName, binData);
+				String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+				mergeForm.put("headerImageLocation", previewURL);
 			} else if (UtilValidate.areEqual(headerImageLocationRemove, "Y")) {
 				mergeForm.put("headerImageLocation", "");
 			}
@@ -184,15 +148,9 @@ public class MergeFormServices {
 			binData = (ByteWrapper) context.get("footerImageLocation");
 			if (binData != null && binData.getLength() > 0) {
 				fileName = (String) context.get("_footerImageLocation_fileName");
-
-				dataResourceId = delegator.getNextSeqId("DataResource");
-				uploadedFilePath = writeToFile(filePath, dataResourceId, fileName, binData);
-				urlBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
-
-				mergeForm.set("footerImageLocation", urlBasePath + File.separator + dataResourceId + File.separator + fileName);
-
-				inputs = UtilMisc.toMap("dataResourceId", dataResourceId, "binData", binData, "dataResourceTypeId", "LOCAL_FILE", "objectInfo", uploadedFilePath);
-				dispatcher.runSync("createAnonFile", inputs);
+				dataResourceId = uploadFile(dctx, filePath, fileName, binData);
+				String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+				mergeForm.put("footerImageLocation", previewURL);
 			} else if (UtilValidate.areEqual(footerImageLocationRemove, "Y")) {
 				mergeForm.put("footerImageLocation", "");
 			}
@@ -216,16 +174,10 @@ public class MergeFormServices {
 				}
 			}
 		} catch (GenericEntityException e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 		} catch (GenericServiceException e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 		} catch (MalformedURLException e) {
-			Debug.log(e);
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
-		} catch (IOException e) {
-			Debug.log(e);
 			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 		}
 		return results;
