@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import net.intelliant.util.UtilCommon;
+
 import org.ofbiz.base.location.FlexibleLocation;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
@@ -44,11 +46,11 @@ public class MergeFormServices {
 		String subject = String.valueOf(context.get("subject"));
 
 		if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
-			if (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilValidate.isEmail(mergeFormEmailAddress)) {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "ErrorMergeFormValidEmail", locale), module);
+			if (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilCommon.isValidEmailAddress(mergeFormEmailAddress)) {
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "ErrorMergeFormValidEmail", locale), module);
 			}
 			if (UtilValidate.isEmpty(subject)) {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "ErrorMergeFormSubjectNotNullForEmailTypeTemplate", locale), module);
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "ErrorMergeFormSubjectNotNullForEmailTypeTemplate", locale), module);
 			}
 		}
 
