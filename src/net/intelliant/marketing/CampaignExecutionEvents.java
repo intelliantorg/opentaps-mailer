@@ -1,9 +1,13 @@
 package net.intelliant.marketing;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +29,9 @@ import net.intelliant.util.XslFoConversion;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
+import org.ofbiz.base.component.ComponentConfig;
 import org.ofbiz.base.util.Debug;
+import org.ofbiz.base.util.StringUtil;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
@@ -110,12 +116,18 @@ public class CampaignExecutionEvents {
 							String pdfHeaderImage = templateGV.getString("headerImageLocation");
 							String pdfFooterImage = templateGV.getString("footerImageLocation");
 							XslFoConversion conversion = new XslFoConversion();
-							if (UtilValidate.isNotEmpty(pdfHeaderImage)) {
+							if (UtilValidate.isNotEmpty(pdfHeaderImage) && !UtilValidate.isUrl(pdfHeaderImage)) {
+								pdfHeaderImage = getURLForLocation(pdfHeaderImage).toString();
 								conversion.setParameter("headerImage", pdfHeaderImage);
 							}
-							if (UtilValidate.isNotEmpty(pdfFooterImage)) {
+							if (UtilValidate.isNotEmpty(pdfFooterImage) && !UtilValidate.isUrl(pdfHeaderImage)) {
+								pdfFooterImage = getURLForLocation(pdfFooterImage).toString();
 								conversion.setParameter("footerImage", pdfFooterImage);
 							}
+							if (Debug.infoOn()) {
+				            	Debug.logInfo("[executePDFCampaign] pdfHeaderImage >> " + pdfHeaderImage, module);
+				            	Debug.logInfo("[executePDFCampaign] pdfFooterImage >> " + pdfFooterImage, module);
+				            }
 							String stylesheetLocation = UtilProperties.getPropertyValue("mailer", "mailer.formMerge.stylesheetLocation");
 				            EntityCondition conditions = new EntityConditionList( 
 			            		UtilMisc.toList(
@@ -149,12 +161,10 @@ public class CampaignExecutionEvents {
 					        	ByteArrayOutputStream out = new ByteArrayOutputStream();
 					        	FopFactory fopFac = ApacheFopFactory.instance();
 			                    if (Debug.infoOn()) {
-			                    	Debug.logInfo("PDF renderer render() using base URL >> " + request.getAttribute("_SERVER_ROOT_URL_"), module);
 			                    	Debug.logInfo("[executePDFCampaign] using stylesheet >> " + stylesheetLocation, module);
 							        Debug.logInfo("[executePDFCampaign] xhtmls >> " + xhtmls, module);
 							        Debug.logInfo("[executePDFCampaign] xslfoAsString >> " + xslfoAsString, module);
 			                    }
-			                    fopFac.setBaseURL((String)request.getAttribute("_SERVER_ROOT_URL_"));
 			                    Fop fop = fopFac.newFop(reportType, out);
 			                    Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			                    Source source = new StreamSource(new StringReader(xslfoAsString));
@@ -210,5 +220,42 @@ public class CampaignExecutionEvents {
 			}
         }
 		return "success";
+	}
+
+	/** This takes in input location such as opentaps_js/userfiles/image/header.jpg, and returns the corresponding absolute location. */
+	private static String getAbsoluteLocation(String relativeLocation) {
+		if (UtilValidate.isEmpty(relativeLocation)) {
+			return relativeLocation;
+		}
+		int startIndex = 1;
+		List<?> webapps = ComponentConfig.getAllWebappResourceInfos();
+		relativeLocation = StringUtil.cleanUpPathPrefix(relativeLocation);
+		String[] locationComponents = relativeLocation.split("/");
+		String webappName = locationComponents[startIndex];
+		Iterator<?> iter = webapps.iterator();
+		while (iter.hasNext()) {
+			ComponentConfig.WebappInfo webapp = (ComponentConfig.WebappInfo) iter.next();
+			if (webapp.getName().equals(webappName)) {
+				StringBuilder absoluteLocation = new StringBuilder(webapp.getLocation());
+				/** ignore the webapp. */
+				for (int i = (startIndex + 1); i < locationComponents.length; i++) {
+					absoluteLocation = absoluteLocation.append(File.separator).append(locationComponents[i]);
+				} 
+				return absoluteLocation.toString();
+			} 
+		}
+		return relativeLocation;
+	}
+	
+	/** This takes in input location such as opentaps_js/userfiles/image/header.jpg, and returns the corresponding URL. */
+	private static URL getURLForLocation(String relativeLocation) throws MalformedURLException {
+		String absolute = getAbsoluteLocation(relativeLocation);
+		File file = new File(absolute);
+		if (file.exists()) {
+			return file.toURI().toURL();
+		} else {
+			Debug.logWarning("[getURLForLocation] no file exists at " + absolute, module);
+		}
+		return null;
 	}
 }
