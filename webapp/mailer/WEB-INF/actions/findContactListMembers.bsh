@@ -50,7 +50,6 @@ for(String key : parametersMapKeys) {
 	}
 }
 entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperator.AND);
-System.out.println("Entity Condition : "+entityCondition);
 
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
