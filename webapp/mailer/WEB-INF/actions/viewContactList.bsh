@@ -1,5 +1,6 @@
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.util.EntityUtil;
+import net.intelliant.util.UtilCommon;
 
 contactListId = request.getParameter("contactListId");
 contactList = delegator.findByPrimaryKey("ContactList", UtilMisc.toMap("contactListId", contactListId));
@@ -8,9 +9,9 @@ if (contactList == null) {
     return;
 }
 
-contactListExp = EntityUtil.getFirst(delegator.findByAnd("MailerRecipientContactListCount", UtilMisc.toMap("contactListId", contactListId)));
+contactListExp = EntityUtil.getFirst(delegator.findByAnd("ContactList", UtilMisc.toMap("contactListId", contactListId)));
 
-numberOfMembers = contactListExp.get("recipientId");
+numberOfMembers = UtilCommon.countContactListRecipients(delegator, contactListId);
 
 contactListCombined = contactList.getAllFields();
 contactListCombined.put("numberOfMembers", numberOfMembers);

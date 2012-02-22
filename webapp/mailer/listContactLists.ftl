@@ -13,10 +13,11 @@
 	</tr>
 	<#if contactLists?exists>
 		<#list contactLists as contactList>
+			<#assign countRecipients = Static["net.intelliant.util.UtilCommon"].countContactListRecipients(delegator, contactList.contactListId)>
 			<tr class="${tableRowClass(contactList_index)}">
 				<td><a href="<@ofbizUrl>viewContactList</@ofbizUrl>?contactListId=${contactList.contactListId}">${contactList.contactListName} (${contactList.contactListId})</a></td>
 				<td>${contactList.description}</td>
-				<td>${contactList.recipientId}</td>
+				<td>${countRecipients?default("0")}</td>
 			</tr>
 		</#list>
 	<#else>

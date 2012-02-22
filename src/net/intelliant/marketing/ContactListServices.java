@@ -204,7 +204,9 @@ public class ContactListServices {
 	}
 
 	private static void createCLRecipientRelation(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
-		delegator.create("MailerRecipientContactList", UtilMisc.toMap("contactListId", contactListId, "recipientId", recipientId));
+		String recipientListId = delegator.getNextSeqId("MailerRecipientContactList");
+		Map<String, Object> values = UtilMisc.toMap("recipientListId", recipientListId, "contactListId", contactListId, "recipientId", recipientId, "validFromDate", UtilDateTime.nowTimestamp());
+		delegator.create("MailerRecipientContactList", values);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -264,12 +266,19 @@ public class ContactListServices {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Map<String, Object> createCampaignLineForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		List<GenericValue> rowsToInsert = FastList.newInstance();
 		try {
-			List<GenericValue> members = dctx.getDelegator().findByAnd("MailerRecipientContactList", UtilMisc.toMap("contactListId", contactListId));
+			EntityCondition conditions = new EntityConditionList( 
+        		UtilMisc.toList(
+    				new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId),
+                    EntityUtil.getFilterByDateExpr("validFromDate", "validThruDate")
+        		), EntityOperator.AND
+        	);
+			List<GenericValue> members = dctx.getDelegator().findByCondition("MailerRecipientContactList", conditions, UtilMisc.toList("recipientId"), null);
 			if (UtilValidate.isNotEmpty(members)) {
 				for (GenericValue member : members) {
 					GenericValue mailerRecipeint = member.getRelatedOne("MailerRecipient");

@@ -40,6 +40,7 @@ import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityConditionList;
 import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityOperator;
+import org.ofbiz.entity.util.EntityUtil;
 
 public final class UtilCommon {
 	private static final String module = UtilCommon.class.getName();
@@ -259,6 +260,14 @@ public final class UtilCommon {
 
 		EntityCondition whereConditions = new EntityConditionList(conditions, EntityOperator.AND);
 		return delegator.findCountByCondition("MailerCampaignStatus", whereConditions, null);
+	}
+	
+	public static long countContactListRecipients(GenericDelegator delegator, String contactListId) throws GenericEntityException {
+		List<EntityCondition> conditions = UtilMisc.toList(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
+		conditions.add(EntityUtil.getFilterByDateExpr("validFromDate", "validThruDate"));
+
+		EntityCondition whereConditions = new EntityConditionList(conditions, EntityOperator.AND);
+		return delegator.findCountByCondition("MailerRecipientContactList", whereConditions, null);
 	}
 	
 	private static String getTemplateType(GenericValue templateGV) {

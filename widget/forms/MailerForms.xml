@@ -125,7 +125,7 @@
             <display-entity entity-name="ContactMechType"/>
         </field>
         <field name="" title="${uiLabelMap.CrmNumberOfMembers}" use-when="contactListId!=null">
-            <display description="${recipientId}" />
+            <display description="${bsh:net.intelliant.util.UtilCommon.countContactListRecipients(delegator, contactListId)}" />
         </field>
 		<field name="NextRun" title="${uiLabelMap.LabelNextRun}">
             <display description="${bsh:net.intelliant.util.UtilCommon.countAllCampaignLinesPendingTillDate(delegator, marketingCampaignId, contactListId)}"/>
