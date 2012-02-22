@@ -196,12 +196,13 @@
                         <container style="subSectionBlock">
                             <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.FindListMembersHeader}</label></container>
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/findContactListMembers.ftl"/></html></platform-specific>                            
-                            <!-- <container style="form">                            
-                                <include-form name="FindContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            </container> -->
+                            <!-- 
+                            	<container style="form">                            
+                                	<include-form name="FindContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            	</container> 
+                            -->
                         </container>
                         <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/submenus/contactListPartiesMenu.ftl"/></html></platform-specific>
                             <platform-specific><html><html-template location="component://mailer/webapp/mailer/listContactListMembers.ftl"/></html></platform-specific>
                         </container>
                     </decorator-section>
