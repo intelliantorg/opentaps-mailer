@@ -281,7 +281,7 @@
         <member-entity entity-alias="MFT" entity-name="MailerMergeFormType"/>
         <alias-all entity-alias="MF"/>
         <alias-all entity-alias="MFT"/>
-        <alias entity-alias="MFT" name="MailerMergeFormType" field="description"/>
+        <alias entity-alias="MFT" name="mergeFormTypeDescription" field="description"/>
         <view-link entity-alias="MF" rel-entity-alias="MFT" rel-optional="true">
             <key-map field-name="mergeFormTypeId"/>
         </view-link>
