@@ -25,8 +25,10 @@ import org.opentaps.common.util.UtilMessage;
 
 public class MergeFormServices {
 	private final static String module = MergeFormServices.class.getName();
-	public static final String errorResource = "OpentapsErrorLabels";
+	public static final String opentapsErrorResource = "OpentapsErrorLabels";
+	public static final String errorResource = "ErrorLabels";
 
+	@SuppressWarnings("unchecked")
 	public static Map<String, Object> createMergeForm(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> results = ServiceUtil.returnSuccess();
 		GenericDelegator delegator = dctx.getDelegator();
@@ -43,10 +45,10 @@ public class MergeFormServices {
 
 		if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
 			if (UtilValidate.areEqual(null, mergeFormEmailAddress) || !UtilValidate.isEmail(mergeFormEmailAddress)) {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "ErrorMergeFormValidEmail", locale), module);
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "ErrorMergeFormValidEmail", locale), module);
 			}
 			if (UtilValidate.isEmpty(subject)) {
-				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "ErrorMergeFormSubjectNotNullForEmailTypeTemplate", locale), module);
+				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "ErrorMergeFormSubjectNotNullForEmailTypeTemplate", locale), module);
 			}
 		}
 
@@ -106,7 +108,7 @@ public class MergeFormServices {
 		try {
 			delegator.create(mergeForm);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_CreateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_CreateMergeFormFail", locale), module);
 		}
 		results.put("mergeFormId", mergeFormId);
 		return results;
@@ -125,6 +127,7 @@ public class MergeFormServices {
 		return tmpFile.getAbsolutePath();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Map<String, Object> updateMergeForm(DispatchContext dctx, Map<String, Object> context) {
 		GenericValue userLogin = (GenericValue) context.get("userLogin");
 		Map<String, Object> results = ServiceUtil.returnSuccess();
@@ -205,27 +208,28 @@ public class MergeFormServices {
 						inputs.put("marketingCampaignId", relatedCampaign.getString("marketingCampaignId"));
 						results = dctx.getDispatcher().runSync("mailer.reScheduleMailers", inputs);
 						if (ServiceUtil.isError(results)) {
-							return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+							return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 						}
 					}
 				}
 			}
 		} catch (GenericEntityException e) {
 			Debug.log(e);
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 		} catch (GenericServiceException e) {
 			Debug.log(e);
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 		} catch (MalformedURLException e) {
 			Debug.log(e);
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 		} catch (IOException e) {
 			Debug.log(e);
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
 		}
 		return results;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Map<String, Object> deleteMergeForm(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> results = ServiceUtil.returnSuccess();
 		GenericDelegator delegator = dctx.getDelegator();
@@ -234,7 +238,7 @@ public class MergeFormServices {
 		try {
 			delegator.removeByAnd("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "OpentapsError_DeleteMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_DeleteMergeFormFail", locale), module);
 		}
 		return results;
 	}
