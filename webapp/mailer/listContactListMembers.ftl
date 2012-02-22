@@ -12,9 +12,9 @@
 	<#list contactListMembers as contactListMember>
 		<tr class="${tableRowClass(contactListMember_index)}">
 			<#list contactListFields as contactListField>
-				<td>${contactListMember.get(contactListField)}</td>
+				<td>${contactListMember.get(contactListField)?if_exists}</td>
 			</#list>
-			<td>${contactListMember.importedByUserLogin}</td>
+			<td>${contactListMember.importedByUserLogin?if_exists}</td>
 			<td>${contactListMember.importedOnDateTime?if_exists?string("dd/MM/yyyy")}</td>
 			<td><input type="checkbox" name="select" value="${contactListMember.recipientId}"/></td>
 		</tr>
