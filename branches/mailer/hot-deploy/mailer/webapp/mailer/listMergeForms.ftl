@@ -20,7 +20,7 @@
     <#list templates as template>
       <tr class="${tableRowClass(template_index)}">
         <@displayLinkCell href="editMergeForms?mergeFormId=${template.mergeFormId}" text=template.mergeFormName/>
-        <td>${template.mergeFormType?if_exists}</td>
+        <td>${template.mergeFormTypeDescription?if_exists}</td>
         <td>${template.description?default("")}</td>
         <td style="text-align:right"><@displayLink href="editMergeForms?mergeFormId=${template.mergeFormId}" text=uiLabelMap.CommonEdit/></td>
       </tr>
