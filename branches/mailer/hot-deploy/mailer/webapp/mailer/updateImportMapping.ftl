@@ -52,7 +52,6 @@
 								
 							</div>
 						</div>
-						<!-- <div style="clear:both; height:30px;"></div> -->
 						<#if lhsColumns?has_content>
 							<#list lhsColumns as lhsColumn>
 								<div class="rowContainer">
@@ -71,13 +70,14 @@
 								</div>
 							</#list>
 						</#if>
-						
-						<div class="rowContainer">
-							<div class="label">&nbsp;</div>
-							<div class="fieldContainer">
-								<@inputSubmit title=uiLabelMap.ButtonUpdateMapping onClick="" class=smallSubmit />
+						<#if (security.hasEntityPermission("MAILER_MAP", "_UPDATE", session))>
+							<div class="rowContainer">
+								<div class="label">&nbsp;</div>
+								<div class="fieldContainer">
+									<@inputSubmit title=uiLabelMap.ButtonUpdateMapping onClick="" class=smallSubmit />
+								</div>
 							</div>
-						</div>					
+						</#if>					
 					</td>
 				</tr>
 			</table>			

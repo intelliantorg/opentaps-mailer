@@ -2,9 +2,11 @@
 
 <div class="subSectionHeader">
 	<div class="subSectionTitle">${uiLabelMap.ConfigureMappingHeader}</div>
-	<div class="subMenuBar">
-		<a class="subMenuButton" href="<@ofbizUrl>configureImportMapping</@ofbizUrl>">${uiLabelMap.ConfigureNewMapping}</a>
-	</div>
+	<#if (security.hasEntityPermission("MAILER_MAP", "_CREATE", session))>
+		<div class="subMenuBar">
+			<a class="subMenuButton" href="<@ofbizUrl>configureImportMapping</@ofbizUrl>">${uiLabelMap.ConfigureNewMapping}</a>
+		</div>
+	</#if>
 </div>
 
 <#if listOfMappings?has_content>
@@ -20,7 +22,11 @@
         <@displayLinkCell href="updateImportMappingForm?importMapperId=${listOfMapping.importMapperId}" text=listOfMapping.importMapperName/>
         <td>${listOfMapping.description?default("")}</td>
         <td>${listOfMapping.isFirstRowHeader?default("")}</td>
-        <td style="text-align:right"><@displayLink href="updateImportMappingForm?importMapperId=${listOfMapping.importMapperId}" text=uiLabelMap.CommonEdit/></td>
+        <#if (security.hasEntityPermission("MAILER_MAP", "_UPDATE", session))>
+        	<td style="text-align:right">
+        		<@displayLink href="updateImportMappingForm?importMapperId=${listOfMapping.importMapperId}" text=uiLabelMap.CommonEdit/>
+        	</td>
+        </#if>
       </tr>
     </#list>
   </table>
