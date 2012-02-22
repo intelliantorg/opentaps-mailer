@@ -76,13 +76,19 @@ public class MailerTests extends OpentapsTestCase {
 		Map columns = UtilMisc.toMap("recipientId", recipientId);
 		columns.put(dateOfOperationColumnName, UtilDateTime.nowDate());
 		delegator.create("MailerRecipient", columns);
-		delegator.create("MailerRecipientContactList", UtilMisc.toMap("recipientId", recipientId, "contactListId", contactListId));
+		String recipientContactListId = delegator.getNextSeqId("MailerRecipientContactList");
+		columns = UtilMisc.toMap("recipientListId", recipientContactListId, "recipientId", recipientId, "contactListId", contactListId);
+		columns.put("validFromDate", UtilDateTime.nowTimestamp());
+		delegator.create("MailerRecipientContactList", columns);
 		
 		recipientId = delegator.getNextSeqId("MailerRecipient");
 		columns = UtilMisc.toMap("recipientId", recipientId);
 		columns.put(dateOfOperationColumnName, UtilDateTime.addDaysToTimestamp(new Timestamp(UtilDateTime.nowDate().getTime()), 1));
 		delegator.create("MailerRecipient", columns);
-		delegator.create("MailerRecipientContactList", UtilMisc.toMap("recipientId", recipientId, "contactListId", contactListId));
+		recipientContactListId = delegator.getNextSeqId("MailerRecipientContactList");
+		columns = UtilMisc.toMap("recipientListId", recipientContactListId, "recipientId", recipientId, "contactListId", contactListId);
+		columns.put("validFromDate", UtilDateTime.nowTimestamp());
+		delegator.create("MailerRecipientContactList", columns);
 		
 		return contactListId;
 	}
