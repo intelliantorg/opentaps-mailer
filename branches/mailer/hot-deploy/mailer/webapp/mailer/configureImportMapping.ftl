@@ -21,8 +21,8 @@
 								</div>
 								<div class="fieldContainer">
 									<@inputFile name="uploadedFile" class="inputBox required" />
-									<a href="/mailer/sample/sample_import_mapper.xls" class="link">Download sample</a><br>
-									<span>Supported file type : .xls</span>
+									<a href="/mailer/sample/sample_import_mapper.xls" class="link">${uiLabelMap.LabelDownloadSample}</a><br>
+									<span>${uiLabelMap.LabelSupportedFileType}</span>
 								</div>
 							</div>
 							<div class="rowContainer">
