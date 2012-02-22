@@ -35,4 +35,11 @@
 	<RecurrenceRule recurrenceRuleId="MAILER_COMP_INPROG" xName="Daily" frequency="DAILY" intervalNumber="1" countNumber="-1"/>
 	<RecurrenceInfo recurrenceInfoId="MAILER_COMP_INPROG" startDateTime="2007-01-01 00:00:00.000" recurrenceRuleId="MAILER_COMP_INPROG" recurrenceCount="0"/>
 	<JobSandbox jobId="MAILER_COMP_INPROG" jobName="Mark Campaign In Progress" runTime="2007-01-01 15:45:00.000" serviceName="mailer.checkIfCompletedCampaignsCanBeMarkedInProgress" poolId="pool" runAsUser="system" recurrenceInfoId="MAILER_COMP_INPROG"/>
+	
+	<SecurityGroupPermission groupId="SALES_MANAGER" permissionId="MAILER_MAP_CREATE"/>
+	<SecurityGroupPermission groupId="SALES_MANAGER" permissionId="MAILER_MAP_UPDATE"/>
+	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_CREATE"/>
+	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_UPDATE"/>
+	<SecurityPermission description="Create mapping in mailer application." permissionId="MAILER_MAP_CREATE"/>
+	<SecurityPermission description="Update mapping in mailer application." permissionId="MAILER_MAP_UPDATE"/>
 </entity-engine-xml>

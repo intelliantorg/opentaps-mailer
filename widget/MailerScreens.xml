@@ -367,7 +367,8 @@
 	</screen>
 
 	<screen name="configureImportMappingsScreen">
-	    <section> 
+	    <section>
+	    	<condition><if-has-permission permission="MAILER_MAP" action="_CREATE"/></condition> 
 	        <actions>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
 	            <set field="pageTitleLabel" value="ConfigureMappingHeader"/>
@@ -380,11 +381,19 @@
 	                </decorator-section>
 	            </decorator-screen>
 	        </widgets>
+	        <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">${uiLabelMap.CrmErrorPermissionDenied}</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
 	    </section>
 	</screen>
 
 	<screen name="updateImportMappingScreen">
         <section>
+        	<condition><if-has-permission permission="MAILER_MAP" action="_UPDATE"/></condition>
             <actions>
                 <set field="pageTitleLabel" value="UpdateMappingHeader"/>
                 <set field="sectionHeaderUiLabel" value="UpdateMappingHeader"/>
@@ -399,6 +408,13 @@
 	                </decorator-section>
 	            </decorator-screen>
             </widgets>
+            <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">${uiLabelMap.CrmErrorPermissionDenied}</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
         </section>
     </screen>
     
