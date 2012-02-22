@@ -1,8 +1,7 @@
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.util.EntityUtil;
-import com.opensourcestrategies.crmsfa.marketing.MarketingHelper;
 
-contactListId = parameters.get("contactListId");
+contactListId = request.getParameter("contactListId");
 contactList = delegator.findByPrimaryKey("ContactList", UtilMisc.toMap("contactListId", contactListId));
 if (contactList == null) {
     context.put("validView", false);
@@ -11,13 +10,10 @@ if (contactList == null) {
 
 contactListExp = EntityUtil.getFirst(delegator.findByAnd("MailerRecipientContactListCount", UtilMisc.toMap("contactListId", contactListId)));
 
-//numberOfMembers = new Double(MarketingHelper.countContactListMembers(contactListId, delegator));
 numberOfMembers = contactListExp.get("recipientId");
-numberOfUSAMembers = new Double(MarketingHelper.countContactListMembersByCountry(contactListId, "USA", delegator));
 
 contactListCombined = contactList.getAllFields();
 contactListCombined.put("numberOfMembers", numberOfMembers);
-contactListCombined.put("numberOfUSAMembers", numberOfUSAMembers);
 context.put("contactList", contactListCombined);
 
 security = request.getAttribute("security");

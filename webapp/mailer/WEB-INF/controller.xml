@@ -139,7 +139,7 @@
 	</request-map>
 	<request-map uri="filterContactListMembers">
     	<security https="true" auth="true"/>
-    	<response name="success" type="request-redirect" value="viewContactList" />
+    	<response name="success" type="view" value="viewContactList" />
 	</request-map>
 	<request-map uri="updateContactListForm">
     	<security https="true" auth="true"/>
