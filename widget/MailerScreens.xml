@@ -113,7 +113,7 @@
 
 	<screen name="createContactListForm">
         <section>
-            <condition><if-has-permission permission="CRMSFA_CAMP" action="_UPDATE"/></condition>
+            <condition><if-has-permission permission="CRMSFA_CAMP" action="_CREATE"/></condition>
             <actions>
                 <set field="pageTitleLabel" value="CreateContactListHeader"/>
                 <set field="sectionHeaderUiLabel" value="CreateContactListHeader"/>
