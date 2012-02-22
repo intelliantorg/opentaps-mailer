@@ -1,6 +1,5 @@
-userLogin = request.getAttribute("userLogin");
+import org.ofbiz.base.util.UtilMisc;
 
-// Retrieve available templates
-templates = delegator.findAll("MailerMergeFormDetailsView");
+templates = delegator.findAll("MailerMergeFormDetailsView", UtilMisc.toList("mergeFormName"));
 
 context.put("templates", templates);
