@@ -110,10 +110,10 @@
     	</field>
 
     	<field name="importedOnDateTime" type="date-time">
-    	 	<description>Imported on</description>
+    	 	<description>Added at</description>
     	 </field>    	 	
     	<field name="importedByUserLogin" type="id-vlong">
-    	 	<description>Imported by</description>
+    	 	<description>Added by</description>
     	</field>
     	<prim-key field="recipientId"/>
    	</entity>

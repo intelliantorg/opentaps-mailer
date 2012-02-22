@@ -5,6 +5,9 @@
 		<table width="100%">
 			<tr>
 				<#assign noOfColumns = Static["org.ofbiz.base.util.UtilProperties"].getPropertyValue("mailer", "findCampaignListingNoOfColumns")>
+				<#if !noOfColumns?exists>
+					<#assign noOfColumns = 2/> 
+				</#if>
 				<#list entityColumns as entityColumn>
 					<#if entityColumn_index != 0 && entityColumn_index%noOfColumns?number == 0>
 						</tr><tr>
@@ -20,7 +23,7 @@
 				</#list>
 			</tr>
 			<tr>
-				<td colspan=${noOfColumns}><input class="smallSubmit" type="submit" name="submit" value="Find" /></td>
+				<td colspan="${noOfColumns?number*2}" align="center"><input class="smallSubmit" type="submit" name="submit" value="Find" /></td>
 			</tr>
 		</table>
 	</form>

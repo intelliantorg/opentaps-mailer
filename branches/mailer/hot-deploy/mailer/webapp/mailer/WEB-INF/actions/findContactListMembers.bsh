@@ -51,6 +51,9 @@ for(String key : parametersMapKeys) {
 }
 entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperator.AND);
 
+contactListMembers = delegator.findByCondition("MailerRecipientAndContactListView", entityCondition, null, null);
+context.put("contactListMembers", contactListMembers);
+
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
 tokenizer = new StringTokenizer(UtilProperties.getPropertyValue("mailer", "findcampaignListingColumns"), ", ");
@@ -62,6 +65,3 @@ while(tokenizer.hasMoreTokens()) {
 }
 context.put("contactListFields", fieldsToSelect);
 context.put("contactListHeaders", fieldsToSelectHeader);
-
-contactListMembers = delegator.findByCondition("MailerRecipientAndContactListView", entityCondition, null, null);
-context.put("contactListMembers", contactListMembers);
