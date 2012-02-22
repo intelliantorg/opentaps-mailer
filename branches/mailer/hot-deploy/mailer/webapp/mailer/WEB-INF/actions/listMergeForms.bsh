@@ -1,13 +1,4 @@
-import org.ofbiz.base.util.*;
-import org.ofbiz.entity.condition.*;
-import org.ofbiz.entity.util.EntityUtil;
-
 userLogin = request.getAttribute("userLogin");
-
-mergeFormLookupEntity = context.get("mergeFormLookupEntity");
-
-//if (UtilValidate.isEmpty(mergeFormLookupEntity)) mergeFormLookupEntity = "MailerMergeFormDetailsView";
-mergeFormLookupEntity = "MailerMergeFormDetailsView";
 
 // Retrieve available templates
 templates = delegator.findAll("MailerMergeFormDetailsView");
