@@ -8,6 +8,8 @@ import org.ofbiz.entity.condition.EntityComparisonOperator;
 import org.ofbiz.entity.condition.EntityConditionList;
 import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityJoinOperator;
+import org.ofbiz.entity.condition.EntityFieldValue;
+import org.ofbiz.entity.condition.EntityFunction;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.base.util.UtilProperties;
@@ -35,12 +37,12 @@ for(String key : parametersMapKeys) {
 		value = parametersMap.get(key);
 		modelField = modelEntity.getField(key);
 		fieldType = modelField.getType();
-		
+
 		if("name".equals(fieldType) || "email".equals(fieldType)) {
 			if(!UtilValidate.isEmpty(value)) {
-				searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.LIKE, value+"%"));
+				searchConditionList.add(new EntityExpr(new EntityFunction.UPPER(new EntityFieldValue(key)), EntityComparisonOperator.LIKE, new EntityFunction.UPPER("%"+value+"%")));
 			}
-		}else {
+		} else {
 			if(!UtilValidate.isEmpty(value)) {
 				searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.EQUALS, value));
 			}
@@ -48,6 +50,7 @@ for(String key : parametersMapKeys) {
 	}
 }
 entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperator.AND);
+System.out.println("Entity Condition : "+entityCondition);
 
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
