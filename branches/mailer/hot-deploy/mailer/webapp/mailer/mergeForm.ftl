@@ -50,8 +50,12 @@
 	      	<input type="hidden" id="headerImageLocationRemove" name="headerImageLocationRemove" value="N" />
 	      	<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "" >
 	      		<#assign headerLink = MailerMergeForm.headerImageLocation >
-	      		<div id="headerImageControl"><a href="#" onclick="preview('${headerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')" >Remove</a></div>
-		      	<div id="headerImageLocationCont" style="display:none"><@inputFile name="headerImageLocation" class="inputBox" /></div>
+	      		<div id="headerImageControl">
+	      			<a href="#" onclick="preview('${headerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
+	      		</div>
+		      	<div id="headerImageLocationCont" style="display:none">
+		      		<@inputFile name="headerImageLocation" class="inputBox" />
+		      	</div>
 	      	<#else>
 	      		<@inputFile name="headerImageLocation" class="inputBox" />
 	      	</#if>
@@ -63,7 +67,9 @@
 	      	<input type="hidden" id="footerImageLocationRemove" name="footerImageLocationRemove" value="N" />
 	      	<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "" >
 	      		<#assign footerLink = MailerMergeForm.footerImageLocation >	      		
-	      		<div id="footerImageControl"><a href="#" onclick="preview('${footerLink}')" >Preview</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')" >Remove</a></div>
+	      		<div id="footerImageControl">
+	      			<a href="#" onclick="preview('${footerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
+	      		</div>
 	      		<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox" /></div>
 	      	<#else>
 	      		<@inputFile name="footerImageLocation" class="inputBox" />
@@ -97,7 +103,7 @@
       <span class="formLabelRequired">${uiLabelMap.LabelScheduledAt}</span>
       <span class="formInputSpan">
         <input type="text" class="inputBox smallTextfield required digits" name="scheduleAt" size="50" value="${(MailerMergeForm.scheduleAt)?if_exists}" maxlength="255"/>
-        <span>[No of days]</span>
+        <span>${uiLabelMap.LabelNoOfDays}</span>
       </span>
     </div>
 
