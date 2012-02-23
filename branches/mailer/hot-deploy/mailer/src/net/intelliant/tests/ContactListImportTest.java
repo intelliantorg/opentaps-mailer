@@ -4,13 +4,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
-import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.util.ByteWrapper;
+
+import sun.net.www.content.text.Generic;
 
 public class ContactListImportTest extends MailerTests {
 	@Override
@@ -23,24 +25,24 @@ public class ContactListImportTest extends MailerTests {
 		super.tearDown();
 	}
 
-	private ByteWrapper getFile(String filePath) throws IOException{
+	private ByteWrapper getFile(String filePath) throws IOException {
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte []data = new byte[256];
-		while(fis.read(data) != -1){
+		byte[] data = new byte[256];
+		while (fis.read(data) != -1) {
 			baos.write(data);
 		}
 		return new ByteWrapper(baos.toByteArray());
 	}
 
-	private String insertIntoImportMapper(GenericValue admin) throws GenericEntityException{
+	private String insertIntoImportMapper(GenericValue admin) throws GenericEntityException {
 		ImportTests it = new ImportTests();
 		Map<String, Object> inputs = it.getCreateImportMapperData(delegator, admin);
 
 		Map<String, Object> inputsEntityColNames = UtilMisc.toMap("0", "firstName");
 		inputsEntityColNames.put("1", "middleName");
-		inputsEntityColNames.put("2", "lastName");		
+		inputsEntityColNames.put("2", "lastName");
 		inputsEntityColNames.put("3", "emailAddress");
 		inputsEntityColNames.put("4", "phoneNo");
 		inputsEntityColNames.put("5", "mobileNo");
@@ -50,7 +52,7 @@ public class ContactListImportTest extends MailerTests {
 		inputsEntityColNames.put("9", "postalCode");
 		inputsEntityColNames.put("10", "stateName");
 		inputsEntityColNames.put("11", "countyName");
-		inputsEntityColNames.put("12", "date");
+		inputsEntityColNames.put("12", "salesOrServiceDate");
 
 		inputs.put("entityColName", inputsEntityColNames);
 
@@ -74,8 +76,8 @@ public class ContactListImportTest extends MailerTests {
 
 		return importMapperId;
 	}
-	
-	public void testImportList(){
+
+	public void testImportList() throws GenericEntityException, IOException {
 		String ofbizHome = System.getProperty("ofbiz.home");
 		if (!ofbizHome.endsWith(File.separator)) {
 			ofbizHome += File.separator;
@@ -83,21 +85,21 @@ public class ContactListImportTest extends MailerTests {
 		String tokenizedPath = "hot-deploy/mailer/src/net/intelliant/tests/xls/import_sample4.xls";
 		String excelFilePath = ofbizHome + tokenizedPath.replaceAll("/", File.separator);
 
-		try{
-			Map<String, Object> inputData = UtilMisc.toMap("_uploadedFile_fileName", "import_sample4.xls");
-			inputData.put("userLogin", admin);
-			inputData.put("importMapperId", insertIntoImportMapper(admin));
-			inputData.put("contactListId", "10732");
-			inputData.put("uploadedFile", getFile(excelFilePath));
-			inputData.put("_uploadedFile_contentType", "EXCEL");
-			//inputData.put("excelFilePath", excelFilePath);
+		Map<String, Object> inputData = UtilMisc.toMap("_uploadedFile_fileName", "import_sample4.xls");
+		inputData.put("userLogin", admin);
+		inputData.put("importMapperId", insertIntoImportMapper(admin));
+		inputData.put("contactListId", getRandomContactListId());
+		inputData.put("uploadedFile", getFile(excelFilePath));
+		inputData.put("_uploadedFile_contentType", "EXCEL");
+		// inputData.put("excelFilePath", excelFilePath);
 
-			Map<String, Object> result = runAndAssertServiceSuccess("mailer.importContactList", inputData);
-
-			System.out.println("Result : "+result);
-		}catch (Exception e) {
-			Debug.log(e);
-			fail(e.getMessage());
-		}
+		Map<String, Object> result = runAndAssertServiceSuccess("mailer.importContactList", inputData);
+		System.out.println("Result : "+result);
+	}
+	
+	private String getRandomContactListId() throws GenericEntityException{
+		List<GenericValue> list = delegator.findAll("ContactList");
+		int index = (int)(list.size()*Math.random());
+		return (String) list.get(index).get("contactListId");
 	}
 }
