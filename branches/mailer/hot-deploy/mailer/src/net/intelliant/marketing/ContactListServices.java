@@ -41,6 +41,7 @@ import org.ofbiz.entity.transaction.TransactionUtil;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.GenericServiceException;
+import org.ofbiz.service.ModelService;
 import org.ofbiz.service.ServiceUtil;
 import org.opentaps.common.util.UtilMessage;
 
@@ -301,5 +302,33 @@ public class ContactListServices {
 			return UtilMessage.createAndLogServiceError("Encountered errors while scheduling campaigns. - " + e.getMessage(), MODULE);
 		}
 		return ServiceUtil.returnSuccess();
+	}
+	
+	/**
+	 * Will be used to remove recipient from contact list and cancel non-executed mailers.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> removeRecipientFromContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
+		if (Debug.infoOn()) {
+			Debug.logInfo("[mailer.removeRecipientFromContactList] The inputs >> " + context, MODULE);
+		}
+		String recipientListId = (String) context.get("recipientListId");
+		try {
+			GenericValue mailerRecipientContactListGV = dctx.getDelegator().findByPrimaryKey("MailerRecipientContactList", UtilMisc.toMap("recipientListId", recipientListId));
+			mailerRecipientContactListGV.set("validThruDate", UtilDateTime.nowTimestamp());
+			mailerRecipientContactListGV.store();
+			if (Debug.infoOn()) {
+				Debug.logInfo("[mailer.removeRecipientFromContactList] done with removal, going ahead with cancellations.", MODULE);
+			}			
+			ModelService service = dctx.getModelService("mailer.cancelCreatedMailers");
+			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM); 
+			inputs.putAll(service.makeValid(mailerRecipientContactListGV, ModelService.IN_PARAM));
+			dctx.getDispatcher().runSync(service.name, inputs);
+		} catch (GenericEntityException e) {
+			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);		
+		} catch (GenericServiceException e) {
+			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);
+		}
+		return ServiceUtil.returnSuccess();		
 	}
 }

@@ -181,4 +181,11 @@
     	<description>Will be used to mark mailer as executed.</description>
         <attribute name="campaignStatusIds" type="List" mode="IN" optional="false"/>
     </service>
+        
+	<service name="mailer.removeRecipientFromContactList" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="removeRecipientFromContactList" auth="true">
+    	<description>Will be used remove recipients from contact list, and cancel associated mailers.</description>
+        <attribute name="recipientListId" type="String" mode="IN" optional="false"/>
+        <attribute name="contactListId" type="String" mode="IN" optional="true"/>
+        <attribute name="recipientId" type="String" mode="IN" optional="true"/>
+    </service>
 </services>

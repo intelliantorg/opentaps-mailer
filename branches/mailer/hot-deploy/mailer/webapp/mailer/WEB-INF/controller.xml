@@ -139,7 +139,15 @@
 	</request-map>
 	<request-map uri="filterContactListMembers">
     	<security https="true" auth="true"/>
+    	<!-- Avoid a redirect as search filters will get lost. -->
     	<response name="success" type="view" value="viewContactList" />
+		<response name="error" type="view" value="viewContactList" />    	
+	</request-map>
+	<request-map uri="removeMembersFromList">
+	    <security https="true" auth="true"/>
+    	<event type="service-multi" invoke="mailer.removeRecipientFromContactList"/>
+		<response name="success" type="request-redirect-filterparam" value="viewContactList" allowed-params="contactListId" allowed-attributes="contactListId" />
+    	<response name="error" type="request-redirect-filterparam" value="viewContactList" allowed-params="contactListId" allowed-attributes="contactListId" />
 	</request-map>
 	<request-map uri="updateContactListForm">
     	<security https="true" auth="true"/>
