@@ -52,6 +52,9 @@
 					</td>
 				</tr>
 			</#list>
+			<#if campaignsListIt?exists>
+				${campaignsListIt.close()}
+			</#if>
 		</table>
 	</form>
 </div>
