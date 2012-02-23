@@ -11,6 +11,10 @@
     
     <test-case case-name="marketing-campaign-tests">
     	<junit-test-suite class-name="net.intelliant.tests.MarketingCampaignTests"/>
+    </test-case>
+    
+	<test-case case-name="contact-list-tests">
+    	<junit-test-suite class-name="net.intelliant.tests.ContactListTests"/>
     </test-case>    
     
     <test-case case-name="marketing-merge-form-tests">
