@@ -51,7 +51,7 @@
 	      	<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "">
 	      		<#assign headerLink = MailerMergeForm.headerImageLocation>
 	      		<div id="headerImageControl">
-	      			<a href="#" onclick="preview('${headerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
+	      			<a href="javascript:void()" onclick="preview('${headerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
 	      		</div>
 		      	<div id="headerImageLocationCont" style="display:none">
 		      		<@inputFile name="headerImageLocation" class="inputBox" />
@@ -68,7 +68,7 @@
 	      	<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "">
 	      		<#assign footerLink = MailerMergeForm.footerImageLocation>	      		
 	      		<div id="footerImageControl">
-	      			<a href="#" onclick="preview('${footerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
+	      			<a href="javascript:void()" onclick="preview('${footerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
 	      		</div>
 	      		<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox" /></div>
 	      	<#else>
