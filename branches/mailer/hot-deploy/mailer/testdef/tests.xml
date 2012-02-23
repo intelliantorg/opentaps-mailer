@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-suite suite-name="Mailer Unit Tests" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/test-suite.xsd">
-    <test-case case-name="import-tests">
+    <test-case case-name="common-tests">
     	<junit-test-suite class-name="net.intelliant.tests.CommonTests"/>
     </test-case>
     
@@ -17,7 +17,7 @@
     	<junit-test-suite class-name="net.intelliant.tests.MergeFormsTests"/>
     </test-case>
     
-    <test-case case-name="ui-tests">
+    <test-case case-name="contact-list-import-tests">
     	<junit-test-suite class-name="net.intelliant.tests.ContactListImportTest"/>
     </test-case>
     
