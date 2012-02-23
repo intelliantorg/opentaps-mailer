@@ -323,12 +323,56 @@ public class ContactListServices {
 			ModelService service = dctx.getModelService("mailer.cancelCreatedMailers");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM); 
 			inputs.putAll(service.makeValid(mailerRecipientContactListGV, ModelService.IN_PARAM));
-			dctx.getDispatcher().runSync(service.name, inputs);
+			Map<String, Object> results = dctx.getDispatcher().runSync(service.name, inputs);
+			if (ServiceUtil.isError(results)) {
+				return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - ", MODULE);
+			}
 		} catch (GenericEntityException e) {
 			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);		
 		} catch (GenericServiceException e) {
 			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);
 		}
 		return ServiceUtil.returnSuccess();		
+	}
+	
+	/**
+	 * Will be used create contact list and setup optional association with mailer marketing campaign.
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> createContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
+		Map<String, Object> results;
+		String marketingCampaignId = (String) context.get("marketingCampaignId"); 
+		if (context.containsKey("marketingCampaignId")) {
+			/** this to prevent opentaps mechanism of storing this in ContactList entity. */ 
+			context.remove("marketingCampaignId");
+		}
+		try {
+			ModelService service = dctx.getModelService("createContactList");
+			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM); 
+			inputs.putAll(service.makeValid(context, ModelService.IN_PARAM));
+			results = dctx.getDispatcher().runSync(service.name, inputs);
+			if (ServiceUtil.isError(results)) {
+				return UtilMessage.createAndLogServiceError("Encountered errors while creating contact list.", MODULE);
+			}
+			String contactListId = (String) results.get("contactListId");
+			if (UtilValidate.isNotEmpty(marketingCampaignId)) {
+				if (Debug.infoOn()) {
+					Debug.logInfo("[mailer.createContactList] creating association with mailer marketing campaign.", MODULE);
+				}
+				service = dctx.getModelService("mailer.addContactListToCampaign");
+				inputs = service.makeValid(context, ModelService.IN_PARAM); 
+				inputs.put("marketingCampaignId", marketingCampaignId);
+				inputs.put("contactListId", contactListId);
+				results = dctx.getDispatcher().runSync(service.name, inputs);
+				if (ServiceUtil.isError(results)) {
+					return UtilMessage.createAndLogServiceError("Encountered errors while creating contact list.", MODULE);
+				}
+			}
+			results = ServiceUtil.returnSuccess();
+			results.put("contactListId", contactListId);
+		} catch (GenericServiceException e) {
+			return UtilMessage.createAndLogServiceError("Encountered errors while creating contact list. - " + e.getMessage(), MODULE);
+		}
+		return results;
 	}
 }
