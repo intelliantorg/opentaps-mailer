@@ -20,6 +20,7 @@
 				<td>${countRecipients?default("0")}</td>
 			</tr>
 		</#list>
+		${contactLists.close()}
 	<#else>
 		<tr><td colspan="4">No record found</td></tr>
 	</#if>
