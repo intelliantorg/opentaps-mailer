@@ -2,11 +2,25 @@
 	clear:both;
 }
 .basic-form div.label{
+	font-family:Verdana, Arial;
+	font-weight:bold;
+	font-size:10px;
 	float:left;
 	width:14%;
 	text-align:right;
 	padding:3px;
 	border: 0px none;
+}
+.basic-form div.labelRequired{
+	font-family:Verdana, Arial;
+	font-weight:bold;
+	font-size:10px;
+	float:left;
+	width:13%;
+	text-align:right;
+	padding:3px;
+	border: 0px none;
+	color: #AA0000;
 }
 .basic-form div.fieldContainer{
 	padding:1px;	
@@ -45,4 +59,39 @@ input.subMenuButton, .smallSubmit{
 
 div.reportPanel{
 	font-size: 11px;	
+}
+
+/* Navigation control panel */
+.button-bar {
+font-size: 10px;
+background-color: #ffffff;
+height: 1%; /* IE fix */
+margin-bottom: 1.0em;
+padding-top: 0.4em;
+}
+
+.button-bar ul,
+.tabContainer ul {
+display: inline; /* IE Fix */
+list-style: none;
+}
+
+.button-bar ul li,
+.tabContainer ul li {
+float: left;
+font-weight: bold;
+padding: 0.1em 0.4em 0.1em 0.4em;
+}
+
+.button-bar ul a,
+.tabContainer ul a {
+display: block;
+}
+
+.button-bar ul a,
+.tabContainer ul a,
+.button-bar a {
+padding: 0.1em 0.5em 0.1em 0.5em;
+white-space: nowrap;
+color: #000099;
 }
