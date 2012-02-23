@@ -25,7 +25,6 @@ modelEntity = modelReader.getModelEntity("MailerRecipientAndContactListView");
 searchConditionList = new ArrayList();
 
 parametersMap = UtilHttp.getParameterMap(request);
-parametersMap.remove("contactListId");
 parametersMapKeys = parametersMap.keySet();
 
 columsToIgnore = UtilMisc.toList("lastUpdatedStamp","lastUpdatedTxStamp","createdStamp","createdTxStamp");
@@ -58,7 +57,7 @@ for(String key : parametersMapKeys) {
 }
 searchConditionList.add(EntityUtil.getFilterByDateExpr("validFromDate", "validThruDate"));
 entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperator.AND);
-
+System.out.println("entityCondition >> " + entityCondition);
 contactListMembers = delegator.findByCondition("MailerRecipientAndContactListView", entityCondition, null, null);
 context.put("contactListMembers", contactListMembers);
 
