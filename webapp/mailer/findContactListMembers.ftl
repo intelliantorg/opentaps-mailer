@@ -23,7 +23,9 @@
 				</#list>
 			</tr>
 			<tr>
-				<td colspan="${noOfColumns?number*2}" align="center"><input class="smallSubmit" type="submit" name="submit" value="Find" /></td>
+				<td colspan="${noOfColumns?number*2}" align="center">
+					<input class="subMenuButton" type="submit" name="submit" value="Find" />
+				</td>
 			</tr>
 		</table>
 	</form>
