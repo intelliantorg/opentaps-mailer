@@ -51,12 +51,9 @@
         <attribute name="importFileColIdx" type="Map" string-map-prefix="importFileColIdx_" mode="IN" optional="false"/>
     </service>
     
-    <service name="mailer.createContactList" default-entity-name="ContactList" engine="simple" location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="createContactList" auth="true">
+    <service name="mailer.createContactList" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="createContactList" auth="true">
         <description>Create a ContactList record</description>
-        <auto-attributes include="pk" mode="INOUT" optional="true"/>
-        <auto-attributes include="nonpk" mode="IN" optional="true"/>
-        <override name="contactListTypeId" optional="false"/>
-        <override name="contactListName" optional="false"/>
+        <implements service="createContactList"></implements>
     </service>    
     <service name="mailer.updateContactList" default-entity-name="ContactList" engine="simple" location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="updateContactList" auth="true">
         <description>Update a ContactList record</description>
