@@ -623,4 +623,8 @@ public class MarketingCampaignTests extends MailerTests {
 		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId2));
 		assertEquals(String.format("Campaign [%1$s] must be in appproved state", marketingCampaignId2), "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
+	
+	public void testCancelMailersWithIncorrectParameters() throws GeneralException {
+		runAndAssertServiceError("mailer.cancelCreatedMailers", UtilMisc.toMap("userLogin", admin));		
+	}
 }

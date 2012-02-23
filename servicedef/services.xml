@@ -143,9 +143,13 @@
     </service>
     
     <service name="mailer.cancelCreatedMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="cancelCreatedMailers" auth="true">
-    	<description>Will be used to cancel non-executed mailers.</description>
-        <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
+    	<description>
+    		Will be used to cancel non-executed mailers, one of the three parameters marketingCampaignId, contactListId, recipientId
+    		must be passed to it.
+    	</description>
+        <attribute name="marketingCampaignId" type="String" mode="IN" optional="true"/>
         <attribute name="contactListId" type="String" mode="IN" optional="true"/>
+        <attribute name="recipientId" type="String" mode="IN" optional="true"/>
     </service>
     
 	<service name="mailer.reScheduleMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="reScheduleMailers" auth="true">

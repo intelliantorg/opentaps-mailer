@@ -236,7 +236,7 @@ public class MarketingCampaignServices {
 			ModelService service = dctx.getModelService("mailer.cancelCreatedMailers");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
 			inputs.put("marketingCampaignId", marketingCampaignCL.getString("marketingCampaignId"));
-			dctx.getDispatcher().runSync("mailer.cancelCreatedMailers", inputs);
+			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException gee) {
 			return UtilMessage.createAndLogServiceError(gee, MODULE);
 		} catch (GenericServiceException gse) {
@@ -393,11 +393,26 @@ public class MarketingCampaignServices {
 		GenericDelegator delegator = dctx.getDelegator();
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		String contactListId = (String) context.get("contactListId");
+		String recipientId = (String) context.get("recipientId");
+		List<String> validStatuses = UtilMisc.toList("MAILER_EXECUTED", "MAILER_CANCELLED");
 		EntityListIterator iterator = null;
+		boolean atleastOnePresent = false;
 		try {
-			List<EntityCondition> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_EQUAL, "MAILER_EXECUTED"), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			List<EntityCondition> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_IN, validStatuses));
+			if (UtilValidate.isNotEmpty(marketingCampaignId)) {
+				conditionsList.add(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+				atleastOnePresent = true;
+			}
 			if (UtilValidate.isNotEmpty(contactListId)) {
 				conditionsList.add(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId));
+				atleastOnePresent = true;
+			}
+			if (UtilValidate.isNotEmpty(recipientId)) {
+				conditionsList.add(new EntityExpr("recipientId", EntityOperator.EQUALS, recipientId));
+				atleastOnePresent = true;
+			}
+			if (!atleastOnePresent) {
+				return ServiceUtil.returnError("Atleast one parameter out of marketingCampaignId, contactListId, recipientId must be specified.");
 			}
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
