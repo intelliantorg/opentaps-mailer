@@ -8,6 +8,8 @@ import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityJoinOperator;
 import org.ofbiz.entity.condition.EntityFieldValue;
 import org.ofbiz.entity.condition.EntityFunction;
+import org.ofbiz.entity.util.EntityListIterator;
+import org.ofbiz.entity.util.EntityFindOptions;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.base.util.UtilProperties;
@@ -25,51 +27,98 @@ modelEntity = modelReader.getModelEntity("MailerRecipientAndContactListView");
 searchConditionList = new ArrayList();
 
 parametersMap = UtilHttp.getParameterMap(request);
+System.out.println("Parameter map : "+parametersMap);
+viewSize = parametersMap.get("VIEW_SIZE");
+viewIndex = parametersMap.get("VIEW_INDEX");
+parametersMap.remove("VIEW_SIZE");
+parametersMap.remove("VIEW_INDEX");
 parametersMapKeys = parametersMap.keySet();
 
-columsToIgnore = UtilMisc.toList("lastUpdatedStamp","lastUpdatedTxStamp","createdStamp","createdTxStamp");
+columsToIgnore = UtilMisc.toList("lastUpdatedStamp", "lastUpdatedTxStamp", "createdStamp", "createdTxStamp");
 entityColumns = UtilImport.getEntityColumns("MailerRecipient", columsToIgnore);
 context.put("entityColumns", entityColumns);
 
-for(String key : parametersMapKeys) {
-	if(modelEntity.isField(key)) {
+findQueryString = "";
+for(String key : parametersMapKeys) { 
+	if(modelEntity.isField(key)) { 
 		value = parametersMap.get(key);
 		modelField = modelEntity.getField(key);
 		fieldType = modelField.getType();
 		
-		if(!UtilValidate.isEmpty(value)) {
-			if("name".equals(fieldType) || "email".equals(fieldType)) {
+		if(!UtilValidate.isEmpty(value)) { 
+			findQueryString += key+"="+value+"&amp;";
+			if("name".equals(fieldType) || "email".equals(fieldType)) { 
 				searchConditionList.add(new EntityExpr(new EntityFunction.UPPER(new EntityFieldValue(key)), EntityComparisonOperator.LIKE, new EntityFunction.UPPER("%"+value+"%")));
-			} else {
-				if("date".equals(fieldType) || "date-time".equals(fieldType)) {
+			} else { 
+				if("date".equals(fieldType) || "date-time".equals(fieldType)) { 
 					date = new SimpleDateFormat("dd/MM/yy").parse(value);
 					calender = GregorianCalendar.getInstance();
 					calender.setTime(date);
 					searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.GREATER_THAN_EQUAL_TO, calender.getTime()));
 					calender.add(Calendar.DAY_OF_YEAR, 1);
 					searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.LESS_THAN_EQUAL_TO, calender.getTime()));					
-				} else {
+				} else { 
 					searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.EQUALS, value));				
-				}
-			}
-		}
-	}
-}
+				} 
+			} 
+		} 
+	} 
+} 
+
 searchConditionList.add(EntityUtil.getFilterByDateExpr("validFromDate", "validThruDate"));
 entityCondition = new EntityConditionList(searchConditionList, EntityJoinOperator.AND);
-System.out.println("entityCondition >> " + entityCondition);
-contactListMembers = delegator.findByCondition("MailerRecipientAndContactListView", entityCondition, null, null);
+totalRecordCount = (int) delegator.findCountByCondition("MailerRecipientAndContactListView", entityCondition, null);
+
+EntityFindOptions efo = new EntityFindOptions();
+efo.setResultSetType(EntityFindOptions.TYPE_SCROLL_INSENSITIVE);
+EntityListIterator contactListMembersItr = null;
+contactListMembersItr = delegator.findListIteratorByCondition("MailerRecipientAndContactListView", entityCondition, null, null, null, efo);
+
+
+/* Creating pagination logic */
+context.put("curFindString", findQueryString);
+int defaultViewSize = Integer.valueOf(UtilProperties.getPropertyValue("mailer", "paginationRecordsPerPage"));
+if(UtilValidate.isEmpty(viewSize) && UtilValidate.isEmpty(viewIndex)) { 
+	viewSize = defaultViewSize;
+	viewIndex = 1;
+} else { 
+	try { 
+		viewSize = Integer.valueOf(viewSize);
+	} catch(Exception e) { 
+		viewSize = defaultViewSize;
+	} 
+	try { 
+		viewIndex = Integer.valueOf(viewIndex);
+	} catch(Exception e) { 
+		viewIndex = 1;
+	} 
+} 
+highIndex = (((viewIndex+viewSize)-1)>totalRecordCount)?totalRecordCount:((viewIndex+viewSize)-1);
+context.put("highIndex", highIndex);
+context.put("viewIndex", viewIndex);
+context.put("viewSize", viewSize);
+if(viewIndex > 1) { 
+	viewIndexPrevious = (viewIndex-viewSize)<1?1:viewIndex-viewSize;
+	context.put("viewIndexPrevious", viewIndexPrevious);
+} 
+if(totalRecordCount > (viewIndex+viewSize-1)) { 
+	viewIndexNext = viewIndex+viewSize;
+	context.put("viewIndexNext", viewIndexNext);
+} 
+
+contactListMembers = contactListMembersItr.getPartialList(viewIndex, (highIndex-viewIndex+1));
+
 context.put("contactListMembers", contactListMembers);
+context.put("totalRecordsCount", totalRecordCount);
 
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
 tokenizer = new StringTokenizer(UtilProperties.getPropertyValue("mailer", "findcampaignListingColumns"), ", ");
 modelEntity = modelReader.getModelEntity("MailerRecipient");
-while(tokenizer.hasMoreTokens()) {
+while(tokenizer.hasMoreTokens()) { 
 	modelField = modelEntity.getField(tokenizer.nextToken());
 	fieldsToSelect.add(modelField.getName());
 	fieldsToSelectHeader.add(modelField.getDescription());
-}
+} 
 context.put("contactListFields", fieldsToSelect);
 context.put("contactListHeaders", fieldsToSelectHeader);
-System.out.println("#### - Condition : "+entityCondition);
