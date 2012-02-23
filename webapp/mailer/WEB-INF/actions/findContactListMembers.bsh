@@ -107,6 +107,7 @@ if(totalRecordCount > (viewIndex+viewSize-1)) {
 } 
 
 contactListMembers = contactListMembersItr.getPartialList(viewIndex, (highIndex-viewIndex+1));
+contactListMembersItr.close();
 
 context.put("contactListMembers", contactListMembers);
 context.put("totalRecordsCount", totalRecordCount);
