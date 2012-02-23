@@ -63,6 +63,8 @@
         <auto-attributes include="pk" mode="IN" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="true"/>
     </service>
+    
+    <!-- deprecated, can be removed later -->
     <service name="mailer.createContactListParty" default-entity-name="ContactListParty" engine="simple"
             location="component://marketing/script/org/ofbiz/marketing/contact/ContactListServices.xml" invoke="createContactListParty" auth="true">
         <description>Add Party to ContactList</description>
@@ -141,7 +143,7 @@
     </service>
     
     <service name="mailer.cancelCreatedMailers" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="cancelCreatedMailers" auth="true">
-    	<description>Will be used to cancel scheduled mailers.</description>
+    	<description>Will be used to cancel non-executed mailers.</description>
         <attribute name="marketingCampaignId" type="String" mode="IN" optional="false"/>
         <attribute name="contactListId" type="String" mode="IN" optional="true"/>
     </service>
