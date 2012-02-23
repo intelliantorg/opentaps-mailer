@@ -1,4 +1,3 @@
-<@import location="component://opentaps-common/webapp/common/includes/lib/opentapsFormMacros.ftl"/>
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <div class="subSectionHeader">
@@ -34,7 +33,7 @@
 		<div class="labelRequired">${uiLabelMap.LabelTemplateType}</div>
 		<div class="fieldContainer">
 			<span class="formInputSpan">
-				<@inputSelect name="mergeFormTypeId" required=false default=MailerMergeForm.mergeFormTypeId?if_exists list=mergeFormTypesCombobox displayField="description" key="mergeFormTypeId" onChange="campaignTypeOnChange(this.value)" />  
+				<@inputSelect  class="inputBox required" name="mergeFormTypeId" required=false default=MailerMergeForm.mergeFormTypeId?if_exists list=mergeFormTypesCombobox displayField="description" key="mergeFormTypeId" onChange="campaignTypeOnChange(this.value)" />  
 			</span>	
 		</div>
     </div>
