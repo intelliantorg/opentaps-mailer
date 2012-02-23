@@ -1,4 +1,7 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
+
+<#assign dateFormat=Static["org.ofbiz.base.util.UtilProperties"].getMessage("mailer", "mailer.importDataDateFormat", locale)/>
+
 <#if hasUpdatePermission?exists>
 	<#assign removeLink>
 		<input type="submit" value="${uiLabelMap.ButtonRemoveSelected}" name="submitButton" class="subMenuButton">
@@ -37,10 +40,16 @@
 			<@inputHidden name="recipientListId_o_${contactListMember_index}" value=contactListMember.recipientListId?if_exists />
 			<tr class="${tableRowClass(contactListMember_index)}">
 				<#list contactListFields as contactListField>
-					<td>${contactListMember.get(contactListField)?if_exists}</td>
+					<td>
+						<#if contactListFieldType.get(contactListField_index)?if_exists == "date" || contactListFieldType.get(contactListField_index)?if_exists == "date-time">
+							${contactListMember.get(contactListField)?if_exists?string(dateFormat)}
+						<#else>
+							${contactListMember.get(contactListField)?if_exists}
+						</#if>
+					</td>
 				</#list>
 				<td>${contactListMember.importedByUserLogin?if_exists}</td>
-				<td>${contactListMember.importedOnDateTime?if_exists?string("dd/MM/yyyy")}</td>
+				<td>${contactListMember.importedOnDateTime?if_exists?string(dateFormat)}</td>
 				<td align="right"><input type="checkbox" name="_rowSubmit_o_${contactListMember_index}" value="Y"/></td>
 			</tr>
 		</#list>
