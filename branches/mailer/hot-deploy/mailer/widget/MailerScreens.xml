@@ -117,7 +117,7 @@
             <actions>
                 <set field="pageTitleLabel" value="CreateContactListHeader"/>
                 <set field="sectionHeaderUiLabel" value="CreateContactListHeader"/>
-                <entity-condition entity-name="MarketingCampaign" list="marketingCampaignList" list-name="marketingCampaignList">
+                <entity-condition entity-name="MailerMarketingCampaignDetailsView" list="marketingCampaignList" list-name="marketingCampaignList">
                 	<condition-list combine="and">
                 		<condition-expr field-name="statusId" operator="not-equals" value="MKTG_CAMP_COMPLETED"/>
                 		<condition-expr field-name="statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
