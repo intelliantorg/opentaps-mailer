@@ -16,6 +16,28 @@
 			<a class="subMenuButton" href="importContactListForm?contactListId=${contactList.contactListId}">${uiLabelMap.ButtonImportContacts}</a>${removeLink?if_exists}
 		</div>
 	</div>
+
+	<#macro tableNav>
+	    <div class="button-bar">
+	        <ul>
+	            <#if (viewIndex > 1)> 
+	                <li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=${viewIndexPrevious}</@ofbizUrl>' class="nav-previous">${uiLabelMap.CommonPrevious}</a></li>
+	                <li>|</li>
+	            </#if>
+	            <#if (totalRecordsCount > 0)>
+	                <li>${viewIndex} - ${highIndex} ${uiLabelMap.CommonOf} ${totalRecordsCount}</li>
+	            </#if>
+	            <#if (totalRecordsCount > highIndex)>
+	                <li>|</li>
+	                <li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=${viewIndexNext}</@ofbizUrl>' class="nav-next">${uiLabelMap.CommonNext}</a></li>
+	            </#if>
+	        </ul>
+	        <br class="clear"/>
+	    </div>
+	</#macro>
+	<#if (totalRecordsCount > 0)>
+	    <@tableNav/>
+	</#if>
 	<table class="listTable">
 		<tr class="listTableHeader" style="border:none">
 			<#list contactListHeaders as contactListHeader>
@@ -41,4 +63,7 @@
 			</tr>
 		</#list>
 	</table>
+	<#if (totalRecordsCount > 0)>
+		<@tableNav/>
+	</#if>
 </form>
