@@ -45,7 +45,7 @@
 			</#list>
 			<th align="left">${uiLabelMap.ImportByHeader}</th>
 			<th align="left">${uiLabelMap.ImportOnHeader}</th>
-			<th align="left">
+			<th align="right">
 				<input name="selectAll" value="Y" onclick="javascript:toggleAll(this, 'removeMembersFromList');" type="checkbox">
 			</th>
 		</tr>
@@ -59,7 +59,7 @@
 				</#list>
 				<td>${contactListMember.importedByUserLogin?if_exists}</td>
 				<td>${contactListMember.importedOnDateTime?if_exists?string("dd/MM/yyyy")}</td>
-				<td><input type="checkbox" name="_rowSubmit_o_${contactListMember_index}" value="Y"/></td>
+				<td align="right"><input type="checkbox" name="_rowSubmit_o_${contactListMember_index}" value="Y"/></td>
 			</tr>
 		</#list>
 	</table>
