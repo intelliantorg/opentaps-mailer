@@ -47,7 +47,7 @@
   <#if errorField?has_content><@displayError name=errorField index=index /></#if>
 </#macro>
 
-<#-- Parameter 'form' is decreated and leaves here for compatibility w/ existent code. Don't use it any more. -->
+<#-- Parameter 'form' is deprecated and leaves here for compatibility w/ existent code. Don't use it any more. -->
 <#macro inputDateTime name form="" default="" popup=true weekNumbers=false onUpdate="" onDateStatusFunc="" linkedName="" delta=0 ignoreParameters=false errorField="" class="inputBox">
   <#assign defaultValue = getDefaultValue(name, default, -1, ignoreParameters)>
   <#assign defaultTime = Static["org.opentaps.common.util.UtilDate"].timestampToAmPm(getLocalizedDate(defaultValue, "DATE_TIME"), Static["org.ofbiz.base.util.UtilHttp"].getTimeZone(request), Static["org.ofbiz.base.util.UtilHttp"].getLocale(request)) />
@@ -133,4 +133,23 @@
       );
       /*]]>*/
       </script>
+</#macro>
+
+<#macro tableNav>
+    <div class="button-bar">
+        <ul>
+            <#if (viewIndex > 1)> 
+                <li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=${viewIndexPrevious}</@ofbizUrl>' class="nav-previous">${uiLabelMap.CommonPrevious}</a></li>
+                <li>|</li>
+            </#if>
+            <#if (totalRecordsCount > 0)>
+                <li>${viewIndex} - ${highIndex} ${uiLabelMap.CommonOf} ${totalRecordsCount}</li>
+            </#if>
+            <#if (totalRecordsCount > highIndex)>
+                <li>|</li>
+                <li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=${viewIndexNext}</@ofbizUrl>' class="nav-next">${uiLabelMap.CommonNext}</a></li>
+            </#if>
+        </ul>
+        <br class="clear"/>
+    </div>
 </#macro>
