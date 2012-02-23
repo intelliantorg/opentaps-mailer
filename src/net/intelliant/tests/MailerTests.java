@@ -45,13 +45,15 @@ public class MailerTests extends OpentapsTestCase {
 		return (String) results.get("marketingCampaignId");
 	}	
 
-	protected String createContactList() throws GenericEntityException {
+	protected String createContactList(Map overrideDefaults) throws GenericEntityException {
 		GenericValue contactListTypeGV = EntityUtil.getFirst(delegator.findAll("ContactListType"));
-		Map<String, Object> inputs = UtilMisc.toMap("contactListTypeId", contactListTypeGV.getString("contactListTypeId"));
-		inputs.put("userLogin", admin);
-		inputs.put("contactListName", "CL " + System.currentTimeMillis());
-	
-		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createContactList", inputs);
+		Map<String, Object> defaultInputs = UtilMisc.toMap("contactListTypeId", contactListTypeGV.getString("contactListTypeId"));
+		defaultInputs.put("userLogin", admin);
+		defaultInputs.put("contactListName", "CL " + System.currentTimeMillis());
+		if (UtilValidate.isNotEmpty(overrideDefaults)) {
+			defaultInputs.putAll(overrideDefaults);
+		}	
+		Map<?, ?> results = runAndAssertServiceSuccess("mailer.createContactList", defaultInputs);
 		return (String) results.get("contactListId");
 	}
 
@@ -70,7 +72,7 @@ public class MailerTests extends OpentapsTestCase {
 	}
 
 	protected String createContactListWithTwoRecipients() throws GenericEntityException {
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		/** Manually recipients and the associate them with contact list. */
 		String recipientId = delegator.getNextSeqId("MailerRecipient");
 		Map columns = UtilMisc.toMap("recipientId", recipientId);

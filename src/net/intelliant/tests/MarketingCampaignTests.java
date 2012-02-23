@@ -29,7 +29,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testCreateMarketingCampaign() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
@@ -80,7 +80,7 @@ public class MarketingCampaignTests extends MailerTests {
 	public void testCreateMarketingCampaignWithIncorrectTemplateId() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String templateId = "XYZ";
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = new Double("12000.00");
 		Double estimatedCost = new Double("11500.50");
 		String currencyUomId = "INR";
@@ -101,7 +101,7 @@ public class MarketingCampaignTests extends MailerTests {
 		String campaignName = "Campaign_" + currTime;
 		String scheduleAt = "1";
 		String templateId = createMergeTemplate(UtilMisc.toMap("scheduleAt", scheduleAt));
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -125,7 +125,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -189,7 +189,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -217,7 +217,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -263,7 +263,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -290,7 +290,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -331,7 +331,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -373,7 +373,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -465,7 +465,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
@@ -536,7 +536,7 @@ public class MarketingCampaignTests extends MailerTests {
 		Long currTime = System.currentTimeMillis();
 		String campaignName = "Campaign_" + currTime;
 		String templateId = createMergeTemplate(null);
-		String contactListId = createContactList();
+		String contactListId = createContactList(null);
 		Double budgetedCost = Math.random() * 100000;
 		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
 		String currencyUomId = "INR";
