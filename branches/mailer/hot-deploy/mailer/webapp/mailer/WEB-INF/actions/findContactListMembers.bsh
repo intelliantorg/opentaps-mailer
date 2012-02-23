@@ -27,7 +27,6 @@ modelEntity = modelReader.getModelEntity("MailerRecipientAndContactListView");
 searchConditionList = new ArrayList();
 
 parametersMap = UtilHttp.getParameterMap(request);
-System.out.println("Parameter map : "+parametersMap);
 viewSize = parametersMap.get("VIEW_SIZE");
 viewIndex = parametersMap.get("VIEW_INDEX");
 parametersMap.remove("VIEW_SIZE");
@@ -112,14 +111,18 @@ contactListMembersItr.close();
 context.put("contactListMembers", contactListMembers);
 context.put("totalRecordsCount", totalRecordCount);
 
+fieldType = new ArrayList();
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
 tokenizer = new StringTokenizer(UtilProperties.getPropertyValue("mailer", "mailer.listRecipients.columns"), ", ");
 modelEntity = modelReader.getModelEntity("MailerRecipient");
 while(tokenizer.hasMoreTokens()) { 
 	modelField = modelEntity.getField(tokenizer.nextToken());
+	
+	fieldType.add(modelField.getType());
 	fieldsToSelect.add(modelField.getName());
 	fieldsToSelectHeader.add(modelField.getDescription());
 } 
 context.put("contactListFields", fieldsToSelect);
+context.put("contactListFieldType", fieldType);
 context.put("contactListHeaders", fieldsToSelectHeader);
