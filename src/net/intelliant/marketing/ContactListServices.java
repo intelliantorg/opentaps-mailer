@@ -89,6 +89,7 @@ public class ContactListServices {
 
 	@SuppressWarnings("unchecked")
 	private static Map<String, Object> createRecords(GenericDelegator delegator, Locale locale, GenericValue mailerImportMapper, String userLoginId, String contactListId, String excelFilePath) throws GenericEntityException, FileNotFoundException, IOException {
+		boolean transaction = false;
 		int rowIndex = 0, totalCount = 0, failureCount = 0;
 		String ofbizEntityName = mailerImportMapper.getString("ofbizEntityName");
 		String importMapperId = mailerImportMapper.getString("importMapperId");
@@ -108,7 +109,7 @@ public class ContactListServices {
 		}
 		while (excelRowIterator.hasNext()) {
 			try {
-				TransactionUtil.begin();
+				transaction = TransactionUtil.begin();
 				rowIndex++;
 				totalCount++;
 
@@ -118,16 +119,22 @@ public class ContactListServices {
 				createCampaignLines(delegator, contactListId, recipientId, customEntityObj.getDate(dateOfOperationColumnName));
 			} catch (GenericEntityException gee) {
 				Debug.logError(gee, MODULE);
-				TransactionUtil.rollback();
+				if (transaction) {
+					TransactionUtil.rollback();
+				}
 				failureReport.put(String.valueOf(rowIndex - 1), gee.getMessage());
 				failureCount++;
 			} catch (Exception e) {
 				Debug.logError(e, MODULE);
-				TransactionUtil.rollback();
+				if (transaction) {
+					TransactionUtil.rollback();
+				}
 				failureReport.put(String.valueOf(rowIndex - 1), e.getMessage());
 				failureCount++;
 			} finally {
-				TransactionUtil.commit();
+				if (transaction) {
+					TransactionUtil.commit();
+				}
 			}
 		}
 		Map<String, Object> results = ServiceUtil.returnSuccess();
@@ -273,12 +280,7 @@ public class ContactListServices {
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		List<GenericValue> rowsToInsert = FastList.newInstance();
 		try {
-			EntityCondition conditions = new EntityConditionList( 
-        		UtilMisc.toList(
-    				new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId),
-                    EntityUtil.getFilterByDateExpr("validFromDate", "validThruDate")
-        		), EntityOperator.AND
-        	);
+			EntityCondition conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("contactListId", EntityOperator.EQUALS, contactListId), EntityUtil.getFilterByDateExpr("validFromDate", "validThruDate")), EntityOperator.AND);
 			List<GenericValue> members = dctx.getDelegator().findByCondition("MailerRecipientContactList", conditions, UtilMisc.toList("recipientId"), null);
 			if (UtilValidate.isNotEmpty(members)) {
 				for (GenericValue member : members) {
@@ -303,9 +305,10 @@ public class ContactListServices {
 		}
 		return ServiceUtil.returnSuccess();
 	}
-	
+
 	/**
-	 * Will be used to remove recipient from contact list and cancel non-executed mailers.
+	 * Will be used to remove recipient from contact list and cancel
+	 * non-executed mailers.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> removeRecipientFromContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
@@ -319,36 +322,40 @@ public class ContactListServices {
 			mailerRecipientContactListGV.store();
 			if (Debug.infoOn()) {
 				Debug.logInfo("[mailer.removeRecipientFromContactList] done with removal, going ahead with cancellations.", MODULE);
-			}			
+			}
 			ModelService service = dctx.getModelService("mailer.cancelCreatedMailers");
-			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM); 
+			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
 			inputs.putAll(service.makeValid(mailerRecipientContactListGV, ModelService.IN_PARAM));
 			Map<String, Object> results = dctx.getDispatcher().runSync(service.name, inputs);
 			if (ServiceUtil.isError(results)) {
 				return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - ", MODULE);
 			}
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);		
+			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);
 		} catch (GenericServiceException e) {
 			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);
 		}
-		return ServiceUtil.returnSuccess();		
+		return ServiceUtil.returnSuccess();
 	}
-	
+
 	/**
-	 * Will be used create contact list and setup optional association with mailer marketing campaign.
+	 * Will be used create contact list and setup optional association with
+	 * mailer marketing campaign.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> createContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
 		Map<String, Object> results;
-		String marketingCampaignId = (String) context.get("marketingCampaignId"); 
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		if (context.containsKey("marketingCampaignId")) {
-			/** this to prevent opentaps mechanism of storing this in ContactList entity. */ 
+			/**
+			 * this to prevent opentaps mechanism of storing this in ContactList
+			 * entity.
+			 */
 			context.remove("marketingCampaignId");
 		}
 		try {
 			ModelService service = dctx.getModelService("createContactList");
-			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM); 
+			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
 			inputs.putAll(service.makeValid(context, ModelService.IN_PARAM));
 			results = dctx.getDispatcher().runSync(service.name, inputs);
 			if (ServiceUtil.isError(results)) {
@@ -360,7 +367,7 @@ public class ContactListServices {
 					Debug.logInfo("[mailer.createContactList] creating association with mailer marketing campaign.", MODULE);
 				}
 				service = dctx.getModelService("mailer.addContactListToCampaign");
-				inputs = service.makeValid(context, ModelService.IN_PARAM); 
+				inputs = service.makeValid(context, ModelService.IN_PARAM);
 				inputs.put("marketingCampaignId", marketingCampaignId);
 				inputs.put("contactListId", contactListId);
 				results = dctx.getDispatcher().runSync(service.name, inputs);
