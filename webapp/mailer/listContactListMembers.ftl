@@ -6,7 +6,9 @@
 </#if>
 
 <form name="removeMembersFromList" id='removeMembersFromList' method="post" action="<@ofbizUrl>removeMembersFromList</@ofbizUrl>">
-	<input type="hidden" name="_useRowSubmit" value="Y"/>
+	<@inputHidden name="contactListId" value="${contactList.contactListId}" /> <#-- This is required for redirection etc. -->
+	<@inputHidden name="_useRowSubmit" value="Y" />
+	<@inputHidden name="_rowCount" value="${contactListMembers?if_exists?size}" />	
 	<a name="ListContactListParties"></a>
 	<div class="subSectionHeader">
 		<div class="subSectionTitle">${uiLabelMap.CrmContactListParties}</div>
@@ -26,13 +28,16 @@
 			</th>
 		</tr>
 		<#list contactListMembers as contactListMember>
+			<@inputHidden name="contactListId_o_${contactListMember_index}" value=contactListMember.contactListId?if_exists />
+			<@inputHidden name="recipientId_o_${contactListMember_index}" value=contactListMember.recipientId?if_exists />
+			<@inputHidden name="recipientListId_o_${contactListMember_index}" value=contactListMember.recipientListId?if_exists />
 			<tr class="${tableRowClass(contactListMember_index)}">
 				<#list contactListFields as contactListField>
 					<td>${contactListMember.get(contactListField)?if_exists}</td>
 				</#list>
 				<td>${contactListMember.importedByUserLogin?if_exists}</td>
 				<td>${contactListMember.importedOnDateTime?if_exists?string("dd/MM/yyyy")}</td>
-				<td><input type="checkbox" name="_rowSubmit_o_${contactListMember_index}" value=""/></td>
+				<td><input type="checkbox" name="_rowSubmit_o_${contactListMember_index}" value="Y"/></td>
 			</tr>
 		</#list>
 	</table>
