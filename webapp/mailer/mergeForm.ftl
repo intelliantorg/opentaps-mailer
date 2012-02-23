@@ -3,7 +3,7 @@
 
 <div class="subSectionHeader">
     <div class="subSectionTitle">
-      ${uiLabelMap.CrmFormLetterTemplate} <#if mergeFormId?has_content >[${mergeFormId}]</#if >
+      ${uiLabelMap.CrmFormLetterTemplate} <#if mergeFormId?has_content>[${mergeFormId}]</#if>
     </div>
 </div>
 
@@ -13,14 +13,14 @@
  <form method="post" action="deleteMergeForm" name="deleteMergeForm">
   <@inputHidden name="mergeFormId" value=mergeFormId />
  </form>
- <#else >
+ <#else>
  <#assign formName="createMergeForm" />
  <#assign formSubmit=uiLabelMap.CommonCreate />
-</#if >
+</#if>
 
 <div class="form">
   <form id="mergedForm" method="post" action="<@ofbizUrl>${formName}</@ofbizUrl>" name="${formName}" style="margin: 0;" enctype="multipart/form-data">
-    <#if mergeFormId?exists><@inputHidden name="mergeFormId" value=mergeFormId /></#if >
+    <#if mergeFormId?exists><@inputHidden name="mergeFormId" value=mergeFormId /></#if>
     <@inputHidden name="partyId" value=userLogin.partyId />
   
     <div class="formRow">
@@ -37,19 +37,19 @@
       </span>
     </div>
     
-    <div class="formRow" id="emailAddressContainer" <#if MailerMergeForm.mergeFormTypeId?exists && (MailerMergeForm.mergeFormTypeId?if_exists != "EMAIL") >style="display:none"</#if> >
+    <div class="formRow" id="emailAddressContainer" <#if MailerMergeForm.mergeFormTypeId?exists && (MailerMergeForm.mergeFormTypeId?if_exists != "EMAIL")>style="display:none"</#if>>
       <span class="formLabelRequired">${uiLabelMap.LabelFromEmailAddress}</span>
       <span class="formInputSpan">
         <input type="text" class="inputBox required email" name="fromEmailAddress" value="${(MailerMergeForm.fromEmailAddress)?if_exists}" size="50" maxlength="100"/>
       </span>
     </div>
-    <div id="headerFooterImageContainer" <#if !MailerMergeForm.mergeFormTypeId?exists || MailerMergeForm.mergeFormTypeId?if_exists != "PRINT" > style="display:none"</#if> >
+    <div id="headerFooterImageContainer" <#if !MailerMergeForm.mergeFormTypeId?exists || MailerMergeForm.mergeFormTypeId?if_exists != "PRINT"> style="display:none"</#if>>
 	    <div class="formRow">
 	      <span class="formLabel">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
 	      <span class="formInputSpan">
 	      	<input type="hidden" id="headerImageLocationRemove" name="headerImageLocationRemove" value="N" />
-	      	<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "" >
-	      		<#assign headerLink = MailerMergeForm.headerImageLocation >
+	      	<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "">
+	      		<#assign headerLink = MailerMergeForm.headerImageLocation>
 	      		<div id="headerImageControl">
 	      			<a href="#" onclick="preview('${headerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
 	      		</div>
@@ -65,8 +65,8 @@
 	      <span class="formLabel">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
 	      <span class="formInputSpan">
 	      	<input type="hidden" id="footerImageLocationRemove" name="footerImageLocationRemove" value="N" />
-	      	<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "" >
-	      		<#assign footerLink = MailerMergeForm.footerImageLocation >	      		
+	      	<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "">
+	      		<#assign footerLink = MailerMergeForm.footerImageLocation>	      		
 	      		<div id="footerImageControl">
 	      			<a href="#" onclick="preview('${footerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
 	      		</div>
@@ -86,7 +86,7 @@
     </div>
 
     <div class="formRow">
-      <#if (MailerMergeForm.mergeFormTypeId?if_exists) == "EMAIL" >
+      <#if (MailerMergeForm.mergeFormTypeId?if_exists) == "EMAIL">
       	<#assign labelClass="formLabelRequired">
       	<#assign fieldClass="inputBox required">
       <#else>
