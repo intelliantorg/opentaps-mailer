@@ -113,8 +113,6 @@ public class MarketingCampaignServices {
 
 			ModelService service = dctx.getModelService("updateMarketingCampaign");
 			Map<String, Object> inputs = service.makeValid(context, ModelService.IN_PARAM);
-			Debug.logInfo("The inputs >> " + inputs, "");
-			Debug.logInfo("The context >> " + context, "");
 			serviceResults = dispatcher.runSync(service.name, inputs);
 			if (ServiceUtil.isError(serviceResults)) {
 				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, MODULE);
@@ -266,9 +264,9 @@ public class MarketingCampaignServices {
 				String emailFromAddress = templateGV.getString("fromEmailAddress");
 				emailBodyTemplate = UtilCommon.parseHtmlAndGenerateCompressedImages(emailBodyTemplate);
 				if (Debug.infoOn()) {
-					Debug.logInfo("This the email subject - " + emailSubject, MODULE);
-					Debug.logInfo("This the email template body - " + emailBodyTemplate, MODULE);
-					Debug.logInfo("This the email from address - " + emailFromAddress, MODULE);					
+					Debug.logInfo("[mailer.executeEmailMailers] This the email subject - " + emailSubject, MODULE);
+					Debug.logInfo("[mailer.executeEmailMailers] This the email template body - " + emailBodyTemplate, MODULE);
+					Debug.logInfo("[mailer.executeEmailMailers] This the email from address - " + emailFromAddress, MODULE);					
 				}
 	            EntityCondition conditions = new EntityConditionList( 
             		UtilMisc.toList(
