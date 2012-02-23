@@ -30,7 +30,7 @@ function campaignTypeOnChange(value){
 		
 		subjectLabelObj.className="formLabel";
 		subjectObj.className="inputBox";
-	}else{
+	}else if(value == "EMAIL"){
 		emailAddressContainer.style.display = "block";
 		headerFooterImageContainer.style.display = "none";
 		//fromEmailAddress.value = "";
@@ -40,6 +40,11 @@ function campaignTypeOnChange(value){
 		
 		subjectLabelObj.className="formLabelRequired";
 		subjectObj.className="inputBox required";
+	}else{
+		emailAddressContainer.style.display = "none";
+		headerFooterImageContainer.style.display = "none";	
+		subjectLabelObj.className="formLabel";
+		subjectObj.className="inputBox";	
 	}
 }
 
