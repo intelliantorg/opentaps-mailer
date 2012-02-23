@@ -77,7 +77,7 @@ contactListMembersItr = delegator.findListIteratorByCondition("MailerRecipientAn
 
 /* Creating pagination logic */
 context.put("curFindString", findQueryString);
-int defaultViewSize = Integer.valueOf(UtilProperties.getPropertyValue("mailer", "paginationRecordsPerPage"));
+int defaultViewSize = Integer.valueOf(UtilProperties.getPropertyValue("mailer", "mailer.pagination.size.default"));
 if(UtilValidate.isEmpty(viewSize) && UtilValidate.isEmpty(viewIndex)) { 
 	viewSize = defaultViewSize;
 	viewIndex = 1;
@@ -113,7 +113,7 @@ context.put("totalRecordsCount", totalRecordCount);
 
 fieldsToSelect = new ArrayList();
 fieldsToSelectHeader = new ArrayList();
-tokenizer = new StringTokenizer(UtilProperties.getPropertyValue("mailer", "findcampaignListingColumns"), ", ");
+tokenizer = new StringTokenizer(UtilProperties.getPropertyValue("mailer", "mailer.listRecipients.columns"), ", ");
 modelEntity = modelReader.getModelEntity("MailerRecipient");
 while(tokenizer.hasMoreTokens()) { 
 	modelField = modelEntity.getField(tokenizer.nextToken());

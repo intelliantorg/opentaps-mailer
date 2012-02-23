@@ -4,7 +4,7 @@
 		<@inputHidden name="contactListId" value=contactList.contactListId />
 		<table width="100%">
 			<tr>
-				<#assign noOfColumns = Static["org.ofbiz.base.util.UtilProperties"].getPropertyValue("mailer", "findCampaignListingNoOfColumns")>
+				<#assign noOfColumns = Static["org.ofbiz.base.util.UtilProperties"].getPropertyValue("mailer", "mailer.filterRecipients.noOfColumns")>
 				<#if !noOfColumns?exists>
 					<#assign noOfColumns = 2/> 
 				</#if>
