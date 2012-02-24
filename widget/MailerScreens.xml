@@ -184,24 +184,34 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
-                        <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/viewContactListMenu.ftl"/></html></platform-specific>
-                            <container style="form">
-                                <include-form name="viewContactList" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            </container>
-                        </container>
-                        <container style="subSectionBlock">
-                            <container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.FindListMembersHeader}</label></container>
-                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/findContactListMembers.ftl"/></html></platform-specific>                            
-                            <!-- 
-                            	<container style="form">                            
-                                	<include-form name="FindContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            	</container> 
-                            -->
-                        </container>
-                        <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/listContactListMembers.ftl"/></html></platform-specific>
-                        </container>
+                    	<section>
+                    		<condition>
+                    			<not><if-empty field-name="contactList"/></not>
+                    		</condition>
+                    		<widgets>
+                    			<container style="subSectionBlock">
+	                            	<platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/viewContactListMenu.ftl"/></html></platform-specific>
+    	                        	<container style="form">
+                                		<include-form name="viewContactList" location="component://mailer/widget/forms/MailerForms.xml"/>
+                            		</container>
+                        		</container>
+                        		<container style="subSectionBlock">
+                            		<container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.FindListMembersHeader}</label></container>
+	                          		<platform-specific><html><html-template location="component://mailer/webapp/mailer/findContactListMembers.ftl"/></html></platform-specific>                            
+		                            <!-- 
+		                            	<container style="form">                            
+		                                	<include-form name="FindContactListParties" location="component://mailer/widget/forms/MailerForms.xml"/>
+		                            	</container> 
+		                            -->
+		                        </container>
+	        	                <container style="subSectionBlock">
+    	        	                <platform-specific><html><html-template location="component://mailer/webapp/mailer/listContactListMembers.ftl"/></html></platform-specific>
+        	        	        </container>
+                    		</widgets>
+                    		<fail-widgets>
+                    			<label style="head2">Unknown Contact List with ID [${parameters.contactListId}]</label>
+                    		</fail-widgets>
+                    	</section>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -277,24 +287,34 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
-                        <container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/viewMarketingCampaign.ftl"/></html></platform-specific>                            
-                            <container style="form">
-                                <include-form name="viewMarketingCampaign" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            </container>
-                        </container>
-						<container style="subSectionBlock">
-                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/contactListsMenu.ftl"/></html></platform-specific>
-                            <include-form name="ListMarketingCampaignContactLists" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            <section>
-                            	<condition>
-                            		<if-compare field-name="marketingCampaign.statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
-                            	</condition>
-                            	<widgets>
-									<include-form name="addContactListToMailerMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
-                            	</widgets>
-                            </section>
-                        </container>
+                    	<section>
+                    		<condition>
+                    			<not><if-empty field-name="marketingCampaign"/></not>	
+                    		</condition>
+                    		<widgets>
+		                        <container style="subSectionBlock">
+		                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/viewMarketingCampaign.ftl"/></html></platform-specific>                            
+		                            <container style="form">
+		                                <include-form name="viewMarketingCampaign" location="component://mailer/widget/forms/MailerForms.xml"/>
+		                            </container>
+		                        </container>
+								<container style="subSectionBlock">
+		                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/contactListsMenu.ftl"/></html></platform-specific>
+		                            <include-form name="ListMarketingCampaignContactLists" location="component://mailer/widget/forms/MailerForms.xml"/>
+		                            <section>
+		                            	<condition>
+		                            		<if-compare field-name="marketingCampaign.statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
+		                            	</condition>
+		                            	<widgets>
+											<include-form name="addContactListToMailerMarketingCampaignForm" location="component://mailer/widget/forms/MailerForms.xml"/>
+		                            	</widgets>
+		                            </section>
+		                        </container>
+	                        </widgets>
+							<fail-widgets>
+                    			<label style="head2">Unknown Campaign with ID [${parameters.marketingCampaignId}]</label>
+                    		</fail-widgets>
+                        </section>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -395,13 +415,22 @@
                 <set field="pageTitleLabel" value="UpdateMappingHeader"/>
                 <set field="sectionHeaderUiLabel" value="UpdateMappingHeader"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportMapping.bsh"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewImportColumnMappingListing.bsh"/>                
             </actions>
             <widgets>
             	<decorator-screen name="main-section-decorator">
-	                <decorator-section name="section-body">                     
-	                    <platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>	                    
+	                <decorator-section name="section-body">
+	                	<section>
+	                		<condition>
+	                			<not><if-empty field-name="importMapping"/></not>
+	                		</condition>
+	                		<widgets>
+								<platform-specific><html><html-template location="component://mailer/webapp/mailer/updateImportMapping.ftl"/></html></platform-specific>
+	                		</widgets>
+	                		<fail-widgets>
+                    			<label style="head2">Unknown Import Mappaer with ID [${parameters.importMapperId}]</label>
+                    		</fail-widgets>
+	                	</section>                     
 	                </decorator-section>
 	            </decorator-screen>
             </widgets>

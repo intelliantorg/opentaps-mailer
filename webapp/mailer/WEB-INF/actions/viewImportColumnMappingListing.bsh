@@ -11,6 +11,11 @@ importMapperId = parameters.get("importMapperId");
 nameOfEntity = context.get("nameOfEntity");
 
 importMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
+if (importMapperGV == null) {
+    context.put("validView", false);
+    return;
+}
+context.put("importMapping", importMapperGV);
 isFirstRowHeader = importMapperGV.get("isFirstRowHeader"); 
 mailerImportColumnMapperList = importMapperGV.getRelated("MailerImportColumnMapper");
 
