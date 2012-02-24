@@ -46,7 +46,7 @@ If "twoColumn" is used for sectionStyle, then the following options are also ava
 </#if>
 
 <div class="allSubSectionBlocks">
-  ${screens.render("component://opentaps-common/widget/screens/common/CommonScreens.xml#main-section-body")}
+  ${screens.render("component://mailer/widget/CommonScreens.xml#main-section-body")}
 </div>
 
 <#-- footer goes here because of layout issues -->
