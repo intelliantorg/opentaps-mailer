@@ -6,7 +6,7 @@
         <section>
             <actions>
                 <property-map resource="opentaps" map-name="configProperties" global="true"/>
-                <script location="component://opentaps-common/webapp/common/WEB-INF/actions/includes/main-decorator.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/main-decorator.bsh"/>
             </actions>
             <widgets>
                 <!-- Instead of using the screen widget to do layout, we'll use an FTL file. -->
