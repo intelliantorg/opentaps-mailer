@@ -251,4 +251,5 @@
 	<view-map name="updateImportMappingScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#updateImportMappingScreen"/>
 	
 	<view-map name="importContactListScreen" type="screen" page="component://mailer/widget/MailerScreens.xml#importContactListScreen"/>	
+	<view-map name="myMessages" type="screen" page="component://mailer/widget/MailerScreens.xml#myMessages"/>
 </site-conf>

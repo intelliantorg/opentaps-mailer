@@ -434,4 +434,24 @@
             </widgets>
         </section>
     </screen>
+    
+	<screen name="myMessages">
+        <section>
+            <actions>
+                <!-- parameters for re-usable widgets -->
+                <set field="donePage" value="myMessages"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <container id="column-container">
+                            <container style="subSectionBlock">
+                              <include-screen name="Messages" location="component://opentaps-common/widget/screens/myprofile/MyProfileScreens.xml"/>
+                            </container>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
 </screens>     
