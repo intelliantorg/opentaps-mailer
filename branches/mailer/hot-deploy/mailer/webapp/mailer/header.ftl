@@ -9,9 +9,10 @@
     <title><#if pageTitleLabel?exists>${uiLabelMap.get(pageTitleLabel)} |</#if> ${configProperties.get(opentapsApplicationName+".title")}</title>
 
     <#assign appName = Static["org.ofbiz.base.util.UtilHttp"].getApplicationName(request)/>
-
+  	<#assign nowAsString = Static["org.ofbiz.base.util.UtilDateTime"].nowAsString() />
+  	<#assign versionSuffix = "?v=" + nowAsString />
     <#list Static["org.opentaps.common.util.UtilConfig"].getStylesheetFiles(opentapsApplicationName) as stylesheet>
-      <link rel="stylesheet" href="<@ofbizContentUrl>${stylesheet}</@ofbizContentUrl>" type="text/css"/>
+      <link rel="stylesheet" href="<@ofbizContentUrl>${stylesheet + versionSuffix}</@ofbizContentUrl>" type="text/css"/>
     </#list>
 
     <#-- here is where the dynamic CSS goes, for changing theme color, etc. To activate this, define sectionName = 'section' -->
@@ -39,7 +40,7 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
           <script src="${javascript}" type="text/javascript" djConfig="isDebug: false, parseOnLoad: true <#if Static["org.ofbiz.base.util.UtilHttp"].getLocale(request)?exists>, locale: '${Static["org.ofbiz.base.util.UtilHttp"].getLocale(request).getLanguage()}'</#if>"></script>
           -->
         <#else>
-          <script src="<@ofbizContentUrl>${javascript}</@ofbizContentUrl>" type="text/javascript"></script>
+          <script src="<@ofbizContentUrl>${javascript + versionSuffix}</@ofbizContentUrl>" type="text/javascript"></script>
         </#if>
       </#list>
     </#if>
@@ -82,7 +83,7 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
   </#if>
 
   <div style="float: left;">
-    <img alt="${configProperties.get(opentapsApplicationName+".title")}" src="<@ofbizContentUrl>${configProperties.get("mailer.logo")}</@ofbizContentUrl>"/>
+    <img alt="${configProperties.get(opentapsApplicationName+".title")}" src="<@ofbizContentUrl>${configProperties.get("mailer.logo") + versionSuffix}</@ofbizContentUrl>"/>
   </div>
   <div align="right" style="margin-left: 300px; margin-right: 10px; margin-top: 10px;">
     <div class="insideHeaderText">
