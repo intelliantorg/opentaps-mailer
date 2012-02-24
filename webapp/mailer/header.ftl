@@ -99,16 +99,6 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
         </div>
       </#if>
     </div>
-    <#if applicationSetupFacility?has_content>
-      <div class="insideHeaderSubtext">
-        <b>${uiLabelMap.OpentapsWarehouse}</b>:&nbsp;${applicationSetupFacility.facilityName}&nbsp; (<@displayLink text="${uiLabelMap.CommonChange}" href="selectFacilityForm"/>)
-      </div>
-    </#if>
-    <#if applicationSetupOrganization?has_content>
-      <div class="insideHeaderSubtext">
-        <b>${uiLabelMap.ProductOrganization}</b>:&nbsp;${applicationSetupOrganization.groupName}&nbsp; (<@displayLink text="${uiLabelMap.CommonChange}" href="selectOrganizationForm"/>)
-      </div>
-    </#if>
     <div class="gwtAsteriskNotification" id="gwtAsteriskNotification"></div>
   </div>
   <div class="spacer"></div>
