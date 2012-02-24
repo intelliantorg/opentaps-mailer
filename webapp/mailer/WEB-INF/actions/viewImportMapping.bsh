@@ -1,6 +1,0 @@
-import org.ofbiz.base.util.UtilMisc;
-import org.opentaps.common.util.UtilCommon;
-
-importMapperId = UtilCommon.getParameter(request, "importMapperId");
-importMapping = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-context.put("importMapping", importMapping);
