@@ -11,7 +11,7 @@
                 <set field="leftBarScreen" value="component://mailer/widget/CommonScreens.xml#leftBarScreen"/>
             </actions>
             <widgets>
-                <include-screen name="main-section-template" location="component://opentaps-common/widget/screens/common/CommonScreens.xml"/>
+                <include-screen name="main-section-template" location="component://mailer/widget/CommonScreens.xml"/>
             </widgets>
         </section>
     </screen>
