@@ -356,9 +356,19 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">                
                     <decorator-section name="section-body">
-						<platform-specific>
-                        	<html><html-template location="component://mailer/webapp/mailer/mergeForm.ftl"/></html>
-                        </platform-specific> 
+                    	<section>
+                    		<condition>
+                    			<if-compare operator="equals" value="true" field-name="validView"/>
+                    		</condition>
+                    		<widgets>
+                    			<platform-specific>
+                        			<html><html-template location="component://mailer/webapp/mailer/mergeForm.ftl"/></html>
+                        		</platform-specific> 
+                    		</widgets>
+                    		<fail-widgets>
+                    			<label style="head2">Unknown Campaign Template with ID [${parameters.mergeFormId}]</label>
+                    		</fail-widgets>
+                    	</section>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
