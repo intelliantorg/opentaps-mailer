@@ -344,8 +344,6 @@
             <actions>
                 <set field="tabButtonItem" value="${uiLabelMap.CrmFormLetterTemplates}"/>
                 <set field="pageTitleLabel" value="FormLetterTemplateHeader"/>
-				<!-- this is uiLabelMap property for the title of the HTML page -->
-                <!-- this script will do the lookup and pass results to the widgets below -->   
                 <set field="mergeFormId" from-field="parameters.mergeFormId"/>   
                 <set field="partyId" value="${userLogin.partyId}"/>
                 
@@ -362,7 +360,7 @@
                     		</condition>
                     		<widgets>
                     			<platform-specific>
-                        			<html><html-template location="component://mailer/webapp/mailer/mergeForm.ftl"/></html>
+                        			<html><html-template location="component://mailer/webapp/mailer/createOrUpdateCampaignTemplate.ftl"/></html>
                         		</platform-specific> 
                     		</widgets>
                     		<fail-widgets>
