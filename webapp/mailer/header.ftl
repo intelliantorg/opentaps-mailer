@@ -97,7 +97,7 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
       <#else>
       </#if>
       <#if requestAttributes.userLogin?has_content>
-      	<div>
+      	<div class="insideHeaderSubtext">
 			<a class="buttontext" href="<@ofbizUrl>myMessages</@ofbizUrl>">Inbox</a><span id="numMessages"></span>
         	<a href="<@ofbizUrl>logout</@ofbizUrl>" class="buttontext">${uiLabelMap.CommonLogout}</a>
         </div>
