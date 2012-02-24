@@ -95,3 +95,7 @@ padding: 0.1em 0.5em 0.1em 0.5em;
 white-space: nowrap;
 color: #000099;
 }
+
+.subSectionBlock, .sectionHeader {
+margin-bottom: 5px;
+}
