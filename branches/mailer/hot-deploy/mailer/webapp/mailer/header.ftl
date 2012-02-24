@@ -27,7 +27,7 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
       <script type="text/javascript">
         var bgColor = '${bgcolor?default("")?replace("#", "")}';
       </script>
-      <script src="/${appName}/control/javascriptUiLabels.js" type="text/javascript"></script>
+      <script src="/${appName}/control/javascriptUiLabels.js${versionSuffix}" type="text/javascript"></script>
 
       <#assign javascripts = Static["org.opentaps.common.util.UtilConfig"].getJavascriptFiles(opentapsApplicationName, locale)/>
 
@@ -36,9 +36,8 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
       </#if>
       <#list javascripts as javascript>
         <#if javascript?matches(".*dojo.*")>
-          <#-- Unfortunately, due to Dojo's module-loading behaviour, it must be served locally 
+          <#-- Unfortunately, due to Dojo's module-loading behaviour, it must be served locally --> 
           <script src="${javascript}" type="text/javascript" djConfig="isDebug: false, parseOnLoad: true <#if Static["org.ofbiz.base.util.UtilHttp"].getLocale(request)?exists>, locale: '${Static["org.ofbiz.base.util.UtilHttp"].getLocale(request).getLanguage()}'</#if>"></script>
-          -->
         <#else>
           <script src="<@ofbizContentUrl>${javascript + versionSuffix}</@ofbizContentUrl>" type="text/javascript"></script>
         </#if>
