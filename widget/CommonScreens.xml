@@ -23,7 +23,7 @@
             	<property-map resource="mailer" map-name="configProperties" global="true"/>
             	<set field="configProperties.mailer.title" value="Mailer" global="true"/>
                	<set field="opentapsApplicationName" value="mailer" global="true"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/main-decorator.bsh"/>
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/main-application-decorator.bsh"/>
             </actions>
             <widgets>
                 <decorator-screen name="main-decorator">
