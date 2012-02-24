@@ -38,9 +38,6 @@
 	<!-- Because all sections within an application share the same common layout, they should all include-screen this, or do their own layout. -->
     <screen name="main-section-template">
         <section>
-            <actions>
-                <!-- <script location="component://opentaps-common/webapp/common/WEB-INF/actions/asterisks/enableAsterisk.bsh"/> -->
-            </actions>   
             <widgets>     
                <decorator-screen name="main-application-decorator" location="${parameters.mainApplicationDecoratorLocation}">
                     <decorator-section name="section-layout">
@@ -49,6 +46,15 @@
                         </platform-specific>
                     </decorator-section>
                 </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+	<!-- This is called within main-section-decorator.ftl because we need to invoke the decorator-section-include directive. -->
+    <screen name="main-section-body">
+        <section>
+            <widgets>
+                <decorator-section-include name="section-body"/>
             </widgets>
         </section>
     </screen>
