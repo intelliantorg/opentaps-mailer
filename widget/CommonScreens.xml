@@ -35,6 +35,24 @@
         </section>
     </screen>
     
+	<!-- Because all sections within an application share the same common layout, they should all include-screen this, or do their own layout. -->
+    <screen name="main-section-template">
+        <section>
+            <actions>
+                <!-- <script location="component://opentaps-common/webapp/common/WEB-INF/actions/asterisks/enableAsterisk.bsh"/> -->
+            </actions>   
+            <widgets>     
+               <decorator-screen name="main-application-decorator" location="${parameters.mainApplicationDecoratorLocation}">
+                    <decorator-section name="section-layout">
+                        <platform-specific>
+                            <html><html-template location="component://mailer/webapp/mailer/main-section-decorator.ftl"/></html>
+                        </platform-specific>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
     <screen name="leftBarScreen">
         <section>
             <widgets>
