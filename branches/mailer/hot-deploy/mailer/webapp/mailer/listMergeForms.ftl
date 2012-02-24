@@ -1,4 +1,4 @@
-<@import location="component://opentaps-common/webapp/common/includes/lib/opentapsFormMacros.ftl"/>
+<@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <div class="subSectionHeader">
   <div class="subSectionTitle">${uiLabelMap.CrmFormLetterTemplates}</div>
