@@ -356,6 +356,11 @@ public class MarketingCampaignServices {
 		String campaignStatusId = (String) context.get("campaignStatusId");
 		GenericValue commEventGV;
 		try {
+			GenericValue scheduledEmailOnly = EntityUtil.getFirst(dctx.getDelegator().findByAnd("MailerCampaignStatus", UtilMisc.toMap("campaignStatusId", campaignStatusId, "statusId", "MAILER_SCHEDULED")));
+			if (UtilValidate.isEmpty(scheduledEmailOnly)) {
+				Debug.logWarning("[mailer.sendEmailMailer] This mailer may have already been executed, not executing again.", MODULE);
+				return ServiceUtil.returnSuccess();
+			}
 			commEventGV = dctx.getDelegator().findByPrimaryKey("CommunicationEvent", UtilMisc.toMap("communicationEventId", communicationEventId));
 			ModelService service = dctx.getModelService("sendMail");
 			Map<String, Object> serviceInputs = service.makeValid(context, ModelService.IN_PARAM);
@@ -373,7 +378,7 @@ public class MarketingCampaignServices {
 	        if (!ServiceUtil.isError(serviceResults)) {
 	        	dctx.getDispatcher().runSync("mailer.markMailersAsExecuted", UtilMisc.toMap("campaignStatusIds", UtilMisc.toList(campaignStatusId)));
 	        } else {
-//	        	TODO do something for error.
+	        	Debug.logError("[mailer.sendEmailMailer] Encountered errors while sending email - " + serviceResults, MODULE);
 	        }
 		} catch (GenericEntityException e) {
 			serviceResults = UtilMessage.createAndLogServiceError(e, MODULE);
