@@ -50,7 +50,6 @@
             <fileset dir="${ofbiz.dir}/applications/product/build/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/applications/order/build/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/hot-deploy/opentaps-common/lib" includes="*.jar"/>
-            <fileset dir="${ofbiz.dir}/hot-deploy/opentaps-common/lib/hibernate" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/hot-deploy/opentaps-common/build/lib" includes="*.jar"/>
             <fileset dir="${ofbiz.dir}/hot-deploy/opentaps-tests/build/lib" includes="*.jar"/>
         </path>
