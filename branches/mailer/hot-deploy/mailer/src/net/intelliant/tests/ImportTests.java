@@ -36,7 +36,6 @@ public class ImportTests extends MailerTests {
 		}
 		String tokenizedPath = "hot-deploy/mailer/src/net/intelliant/tests/xls/import_sample.xls";
 		String excelFilePath = ofbizHome + tokenizedPath.replaceAll("/", File.separator);
-		System.out.println("#### - Excel file path : "+excelFilePath);
 		try {
 			List<String> expectedIndices = new ArrayList<String>();
 			expectedIndices.add("0");
