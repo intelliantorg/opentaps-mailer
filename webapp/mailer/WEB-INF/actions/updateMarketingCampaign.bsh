@@ -7,7 +7,9 @@ import org.opentaps.common.util.UtilCommon;
 marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
 
 marketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaignDetailsView", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-
+if (marketingCampaign == null) {
+	return;
+}
 mergeFormList = delegator.findAllCache("MailerMergeForm");
 context.put("mergeFormList", mergeFormList);
 

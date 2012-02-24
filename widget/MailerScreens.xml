@@ -94,9 +94,19 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
-                        <container style="subSectionBlock">
-                        	<platform-specific><html><html-template location="component://mailer/webapp/mailer/createAndUpdateCampaign.ftl"/></html></platform-specific>                            
-                        </container>
+                    	<section>
+                    		<condition>
+                    			<not><if-empty field-name="marketingCampaign"/></not>	
+                    		</condition>
+                    		<widgets>
+		                        <container style="subSectionBlock">
+                        			<platform-specific><html><html-template location="component://mailer/webapp/mailer/createAndUpdateCampaign.ftl"/></html></platform-specific>                            
+                        		</container>
+                    		</widgets>
+                    		<fail-widgets>
+                    			<label style="head2">Unknown Campaign with ID [${parameters.marketingCampaignId}]</label>
+                    		</fail-widgets>
+                    	</section>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -260,9 +270,19 @@
             <widgets>
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
-                        <container style="form">
-                            <include-form name="updateContactListForm" location="component://mailer/widget/forms/MailerForms.xml"/>
-                        </container>
+                    	<section>
+                    		<condition>
+                    			<not><if-empty field-name="contactList"/></not>
+                    		</condition>
+                    		<widgets>
+                    			<container style="form">
+                            		<include-form name="updateContactListForm" location="component://mailer/widget/forms/MailerForms.xml"/>
+                        		</container>
+                    		</widgets>
+                    		<fail-widgets>
+                    			<label style="head2">Unknown Contact List with ID [${parameters.contactListId}]</label>
+                    		</fail-widgets>
+                    	</section>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
