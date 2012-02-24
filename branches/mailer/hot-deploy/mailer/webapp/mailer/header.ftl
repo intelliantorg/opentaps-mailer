@@ -33,23 +33,20 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
       <#if layoutSettings?exists && layoutSettings.javaScripts?has_content>
         <#assign javascripts = javascripts + layoutSettings.javaScripts/>
       </#if>
-
       <#list javascripts as javascript>
         <#if javascript?matches(".*dojo.*")>
-          <#-- Unfortunately, due to Dojo's module-loading behaviour, it must be served locally -->
+          <#-- Unfortunately, due to Dojo's module-loading behaviour, it must be served locally 
           <script src="${javascript}" type="text/javascript" djConfig="isDebug: false, parseOnLoad: true <#if Static["org.ofbiz.base.util.UtilHttp"].getLocale(request)?exists>, locale: '${Static["org.ofbiz.base.util.UtilHttp"].getLocale(request).getLanguage()}'</#if>"></script>
+          -->
         <#else>
           <script src="<@ofbizContentUrl>${javascript}</@ofbizContentUrl>" type="text/javascript"></script>
         </#if>
       </#list>
     </#if>
-
     <#if gwtScripts?exists>
       <meta name="gwt:property" content="locale=${locale}"/>
     </#if>
 </head>
-
-
 <body>
   <#assign callInEventIcon = Static["org.ofbiz.base.util.UtilProperties"].getPropertyValue("asterisk.properties", "asterisk.icon.callInEvent")>
   <#if gwtScripts?exists>
@@ -88,7 +85,6 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
     <img alt="${configProperties.get(opentapsApplicationName+".title")}" src="<@ofbizContentUrl>${configProperties.get("mailer.logo")}</@ofbizContentUrl>"/>
   </div>
   <div align="right" style="margin-left: 300px; margin-right: 10px; margin-top: 10px;">
-
     <div class="insideHeaderText">
       <#if person?has_content>
         ${uiLabelMap.CommonWelcome}&nbsp;${person.firstName?if_exists}&nbsp;${person.lastName?if_exists}
@@ -113,11 +109,6 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
         <b>${uiLabelMap.ProductOrganization}</b>:&nbsp;${applicationSetupOrganization.groupName}&nbsp; (<@displayLink text="${uiLabelMap.CommonChange}" href="selectOrganizationForm"/>)
       </div>
     </#if>
-    <div class="gwtAsteriskNotification" id="gwtAsteriskNotification">
-    </div>
-    <#--<#assign helpUrl = Static["org.opentaps.common.util.UtilCommon"].getUrlContextHelpResource(delegator, appName, parameters._CURRENT_VIEW_, screenState?default(""))!/>
-    <#if helpUrl?exists && helpUrl?has_content>
-      <div class="liveHelp"><a class="liveHelp" href="${helpUrl}" target="_blank" title="${uiLabelMap.OpentapsHelp}"><img src="/opentaps_images/buttons/help_ofbiz_svn.gif" width="20" height="20"/></a></div>
-    </#if>-->
+    <div class="gwtAsteriskNotification" id="gwtAsteriskNotification"></div>
   </div>
   <div class="spacer"></div>
