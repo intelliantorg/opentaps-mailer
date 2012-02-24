@@ -1,16 +1,19 @@
-import org.ofbiz.base.util.*;
-import org.ofbiz.entity.condition.*;
+import org.ofbiz.base.util.UtilValidate;
+import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.entity.GenericValue;
 
 userLogin = request.getAttribute("userLogin");
 mergeFormId = context.get("mergeFormId");
-mergeFormCategories = null;
 
+context.put("validView", true);
 if (UtilValidate.isNotEmpty(mergeFormId)) {
-	mergeForm = delegator.findByPrimaryKeyCache("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId) );
+	mergeForm = delegator.findByPrimaryKeyCache("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
+	if (mergeForm == null) {
+		context.put("validView", false);
+	}
 	context.put("MailerMergeForm", mergeForm);
-}else{
+} else {
 	context.put("MailerMergeForm", "");
 }
 
