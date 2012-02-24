@@ -17,9 +17,11 @@ import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.entity.model.ModelEntity;
 import org.ofbiz.entity.model.ModelReader;
 import org.ofbiz.entity.util.EntityUtil;
+import org.ofbiz.base.util.UtilDateTime;
 
 timeZone = UtilHttp.getTimeZone(request);
 locale = UtilHttp.getLocale(request);
+dateFormat = UtilDateTime.getDateFormat(locale);
 
 modelReader = ModelReader.getModelReader("default");
 modelEntity = modelReader.getModelEntity("MailerRecipientAndContactListView");
@@ -49,13 +51,9 @@ for(String key : parametersMapKeys) {
 			if("name".equals(fieldType) || "email".equals(fieldType)) { 
 				searchConditionList.add(new EntityExpr(new EntityFunction.UPPER(new EntityFieldValue(key)), EntityComparisonOperator.LIKE, new EntityFunction.UPPER("%"+value+"%")));
 			} else { 
-				if("date".equals(fieldType) || "date-time".equals(fieldType)) { 
-					date = new SimpleDateFormat("dd/MM/yy").parse(value);
-					calender = GregorianCalendar.getInstance();
-					calender.setTime(date);
-					searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.GREATER_THAN_EQUAL_TO, calender.getTime()));
-					calender.add(Calendar.DAY_OF_YEAR, 1);
-					searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.LESS_THAN_EQUAL_TO, calender.getTime()));					
+				if("date".equals(fieldType) || "date-time".equals(fieldType)) {
+					date = UtilDateTime.getDayStart(UtilDateTime.stringToTimeStamp(value, dateFormat, timeZone, locale), timeZone, locale);
+					searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.GREATER_THAN_EQUAL_TO, date));
 				} else { 
 					searchConditionList.add(new EntityExpr(key, EntityComparisonOperator.EQUALS, value));				
 				} 
