@@ -49,7 +49,6 @@ public class MergeFormServices {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "ErrorMergeFormSubjectNotNullForEmailTypeTemplate", locale), module);
 			}
 		}
-
 		String mergeFormId = delegator.getNextSeqId("MailerMergeForm");
 		Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
 		mergeForm = delegator.makeValue("MailerMergeForm", newMergeFormMap);
@@ -81,15 +80,15 @@ public class MergeFormServices {
 			} else if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
 				mergeForm.put("fromEmailAddress", mergeFormEmailAddress);
 			}
-		} catch (Exception e) {
-			return UtilMessage.createAndLogServiceError(e, module);
-		}
-		try {
 			delegator.create(mergeForm);
+			results.put("mergeFormId", mergeFormId);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_CreateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_CreateMergeFormFail", locale), locale, module);
+		} catch (GenericServiceException e) {
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_CreateMergeFormFail", locale), locale, module);
+		} catch (MalformedURLException e) {
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_CreateMergeFormFail", locale), locale, module);
 		}
-		results.put("mergeFormId", mergeFormId);
 		return results;
 	}
 	
