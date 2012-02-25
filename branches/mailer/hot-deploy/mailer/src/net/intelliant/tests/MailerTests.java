@@ -26,19 +26,6 @@ public class MailerTests extends OpentapsTestCase {
 	public void tearDown() throws Exception {
 		super.tearDown();
 	}
-
-	protected String createMarketingCampaign(String campaignName, String templateId, String contactListId, Double budgetedCost, Double estimatedCost, String currencyUomId) {
-		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
-		inputs.put("userLogin", admin);
-		inputs.put("templateId", templateId);
-		inputs.put("contactListId", contactListId);
-		inputs.put("budgetedCost", budgetedCost);
-		inputs.put("currencyUomId", currencyUomId);
-		inputs.put("estimatedCost", estimatedCost);
-		inputs.put("statusId", "MKTG_CAMP_PLANNED");
-		
-		return createMarketingCampaign(inputs);
-	}
 	
 	protected String createMarketingCampaign(Map<String, Object> inputs) {
 		Map<String, Object> results = runAndAssertServiceSuccess("mailer.createMarketingCampaign", inputs);
@@ -71,11 +58,12 @@ public class MailerTests extends OpentapsTestCase {
 		return (String) results.get("mergeFormId");
 	}
 
+	@SuppressWarnings("unchecked")
 	protected String createContactListWithTwoRecipients() throws GenericEntityException {
 		String contactListId = createContactList(null);
 		/** Manually recipients and the associate them with contact list. */
 		String recipientId = delegator.getNextSeqId("MailerRecipient");
-		Map columns = UtilMisc.toMap("recipientId", recipientId);
+		Map<String, Object> columns = UtilMisc.toMap("recipientId", recipientId);
 		columns.put(dateOfOperationColumnName, UtilDateTime.nowDate());
 		delegator.create("MailerRecipient", columns);
 		String recipientContactListId = delegator.getNextSeqId("MailerRecipientContactList");

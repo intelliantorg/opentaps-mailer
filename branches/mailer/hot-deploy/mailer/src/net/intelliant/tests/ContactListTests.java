@@ -1,11 +1,13 @@
 package net.intelliant.tests;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 import net.intelliant.util.UtilCommon;
 
 import org.ofbiz.base.util.GeneralException;
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityCondition;
@@ -28,6 +30,8 @@ public class ContactListTests extends MailerTests {
 
 	@SuppressWarnings("unchecked")
 	public void testCreateContactListWithMailerCampaignInInput() throws GeneralException {
+		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
+		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String templateId = createMergeTemplate(null);
 		String contactListId = createContactList(null);
@@ -45,6 +49,8 @@ public class ContactListTests extends MailerTests {
 		inputs.put("estimatedCost", estimatedCost);
 		inputs.put("description", description);
 		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
 		String marketingCampaignId = createMarketingCampaign(inputs);
 		
 		inputs.clear();
@@ -74,8 +80,9 @@ public class ContactListTests extends MailerTests {
 	
 	@SuppressWarnings("unchecked")
 	public void testRemoveRecipientFromContactListWithMailerCampaign() throws GeneralException {
-		String contactListId = createContactListWithTwoRecipients();
-		
+		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
+		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
+		String contactListId = createContactListWithTwoRecipients();		
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String templateId = createMergeTemplate(null);
 		Double budgetedCost = new Double("12000.00");
@@ -92,6 +99,8 @@ public class ContactListTests extends MailerTests {
 		inputs.put("estimatedCost", estimatedCost);
 		inputs.put("description", description);
 		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
 		String marketingCampaignId = createMarketingCampaign(inputs);
 		
 		/** execute all campaigns */
