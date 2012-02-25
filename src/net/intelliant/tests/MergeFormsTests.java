@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
+import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
@@ -63,6 +64,7 @@ public class MergeFormsTests extends MailerTests {
 		assertEquals(fromEmailAddress, results.get("fromEmailAddress"));
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testUpdateCampaignTemplateWithScheduleAtChanged() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -90,9 +92,9 @@ public class MergeFormsTests extends MailerTests {
 		
 		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1, "statusId", "MAILER_HOLD"));
 		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
-		Map expected = FastMap.newInstance();
+		Map<String, java.sql.Date> expected = FastMap.newInstance();
 		for (GenericValue scheduledCampaign : campaigns) {
-			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
+			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getDate("scheduledForDate"));
 		}
 
 		inputs.put("contactListId", contactListId2);
@@ -100,28 +102,32 @@ public class MergeFormsTests extends MailerTests {
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId2, "statusId", "MAILER_HOLD"));
 		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
 		for (GenericValue scheduledCampaign : campaigns) {
-			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
+			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getDate("scheduledForDate"));
 		}
 
-		inputs = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", templateId));
+		GenericValue templateGV = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", templateId));
+		int prevScheduleAt = Integer.valueOf(templateGV.getString("scheduleAt"));
 		ModelService service = dispatcher.getDispatchContext().getModelService("mailer.updateMergeForm");
-		inputs = service.makeValid(inputs, ModelService.IN_PARAM);
-		inputs.put("scheduleAt", "2");
+		inputs = service.makeValid(templateGV, ModelService.IN_PARAM);
+		int newScheduleAt = 2000;
+		inputs.put("scheduleAt", Integer.toString(newScheduleAt));
 		inputs.put("userLogin", admin);
-		Map<String, Object> results = runAndAssertServiceSuccess("mailer.updateMergeForm", inputs);
+		runAndAssertServiceSuccess("mailer.updateMergeForm", inputs);
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1, "statusId", "MAILER_HOLD"));
-		Map actual = FastMap.newInstance();
+		Map<String, java.sql.Date> actual = FastMap.newInstance();
 		for (GenericValue scheduledCampaign : campaigns) {
-			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
+			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getDate("scheduledForDate"));
 		}
 
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId2, "statusId", "MAILER_HOLD"));
 		for (GenericValue scheduledCampaign : campaigns) {
-			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
+			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getDate("scheduledForDate"));
 		}
 
 		assertEquals(expected.size(), actual.size());
 		for (Object key : actual.keySet()) {
+			double interval = UtilDateTime.getInterval((java.sql.Date)expected.get(key), (java.sql.Date)actual.get(key));
+			assertEquals((newScheduleAt - prevScheduleAt), (int)(interval/(24*60*60*1000)));
 			assertNotEquals("Dates must NOT be equal", expected.get(key), actual.get(key));
 		}
 	}

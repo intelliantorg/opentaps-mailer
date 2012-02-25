@@ -258,7 +258,7 @@ public class ContactListServices {
 			String scheduleAt = configuredTemplate.getString("scheduleAt");
 			Timestamp scheduledForDate = null;
 			if (UtilValidate.isNotEmpty(scheduleAt)) {
-				scheduledForDate = UtilDateTime.addDaysToTimestamp(new Timestamp(salesAndServiceDate.getTime()), Integer.parseInt(scheduleAt));
+				scheduledForDate = UtilCommon.addDaysToTimestamp(new Timestamp(salesAndServiceDate.getTime()), Double.parseDouble(scheduleAt));
 			} else {
 				throw new GeneralException("scheduleAt must be set at Form Letter Template");
 			}

@@ -504,7 +504,7 @@ public class MarketingCampaignServices {
 	        	} else if (relatedRecipientGV.containsKey(dateOfOperationColumn) == false) {
 	        		return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorDateOfOperationColumnIncorrect", locale), MODULE);
 	        	}
-	        	Timestamp newDate = UtilDateTime.addDaysToTimestamp(new Timestamp(relatedRecipientGV.getDate(dateOfOperationColumn).getTime()), Integer.valueOf(scheduleAt));
+	        	Timestamp newDate = UtilCommon.addDaysToTimestamp(UtilDateTime.getTimestamp(relatedRecipientGV.getDate(dateOfOperationColumn).getTime()), Double.parseDouble(scheduleAt));
 	        	mailerCampaignStatusGV.set("scheduledForDate", newDate);	        	
 	        	mailersToBeReScheduled.add(mailerCampaignStatusGV);
             }

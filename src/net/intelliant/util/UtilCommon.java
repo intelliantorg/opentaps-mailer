@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -326,4 +327,12 @@ public final class UtilCommon {
 		}
 		return EmailValidator.getInstance().isValid(emailAddress);
 	}
+	
+	/**
+	 * UtilDateTime.addDaysToTimestamp(Timestamp start, Double days) type-casts input into integer resulting in loss.
+	 * @return a <code>Timestamp</code> value
+	 */
+	public static Timestamp addDaysToTimestamp(Timestamp start, Double days) {
+	    return new Timestamp(start.getTime() + ((long) (24*60*60*1000*days.longValue())));
+	}	
 }
