@@ -51,18 +51,18 @@ public class MarketingCampaignTests extends MailerTests {
 		inputs.put("thruDate", thruDate);
 		String marketingCampaignId = createMarketingCampaign(inputs);
 
-		Map<?, ?> results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		Map<?, ?> results = delegator.findByPrimaryKey("MailerMarketingCampaignDetailsAndStatusItemView", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
 		assertEquals(results.get("campaignName"), campaignName);
 		assertEquals(results.get("budgetedCost"), budgetedCost);
 		assertEquals(results.get("estimatedCost"), estimatedCost);
 		assertEquals(results.get("currencyUomId"), currencyUomId);
 		assertEquals(results.get("statusId"), "MKTG_CAMP_PLANNED");
+		assertEquals(results.get("templateId"), templateId);
 		/** Should be planned by default. */
 
 		results = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertNotNull(results);
-		assertEquals(results.get("templateId"), templateId);
 		assertEquals(results.get("description"), description);
 
 		List<?> contactListsForMMC = delegator.findByAnd("MailerMarketingCampaignAndContactList", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
