@@ -12,7 +12,7 @@ import org.ofbiz.entity.util.ByteWrapper;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilValidate;
-import net.intelliant.imports.UtilImport;
+import net.intelliant.util.UtilImport;
 
 module = "uploadImportSampleForMapping.bsh";
 dispatcher = request.getAttribute("dispatcher");

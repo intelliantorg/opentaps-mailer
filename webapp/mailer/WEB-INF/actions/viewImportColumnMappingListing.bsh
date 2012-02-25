@@ -1,4 +1,4 @@
-import net.intelliant.imports.UtilImport;
+import net.intelliant.util.UtilImport;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
