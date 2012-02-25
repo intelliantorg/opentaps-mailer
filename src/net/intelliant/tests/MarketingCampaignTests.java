@@ -26,6 +26,7 @@ public class MarketingCampaignTests extends MailerTests {
 		super.tearDown();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testCreateMarketingCampaign() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -73,13 +74,14 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must be ZERO scheduled campaigns", 0, campaigns.size());
+		long count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId);
+		assertEquals("There must be ZERO scheduled campaigns", 0, count);
 		
-		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
+		count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, count);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testCreateMarketingCampaignFailWithFromDateGreaterThanThruDate() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, -10);
@@ -106,7 +108,7 @@ public class MarketingCampaignTests extends MailerTests {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testCreateMarketingCampaignWithIncorrectTemplateId() throws GeneralException {
+	public void testCreateMarketingCampaignFailWithIncorrectTemplateId() throws GeneralException {
 		String campaignName = "Campaign_" + System.currentTimeMillis();
 		String templateId = "XYZ";
 		String contactListId = createContactList(null);
@@ -125,6 +127,7 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceError("mailer.createMarketingCampaign", inputs);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testAddContactListToMarketingCampaign() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -162,6 +165,7 @@ public class MarketingCampaignTests extends MailerTests {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testUpdateMarketingCampaign() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -230,6 +234,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals(campaignGV.get("description"), "");
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testCancelMarketingCampaignWithNoContactList() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -256,8 +261,8 @@ public class MarketingCampaignTests extends MailerTests {
 		contactListId = createContactListWithTwoRecipients();
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		
-		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
+		long count = UtilCommon.countOnHoldCampaignLines(delegator, contactListId, marketingCampaignId);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, count);
 
 		inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 		inputs.put("statusId", "MKTG_CAMP_CANCELLED");
@@ -270,6 +275,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals("Status must be cancelled.", "MKTG_CAMP_CANCELLED", marketingCampaignGV.getString("statusId"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testCancelMarketingCampaign() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -315,8 +321,8 @@ public class MarketingCampaignTests extends MailerTests {
 		GenericValue marketingCampaignGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
 		assertEquals("Status must be cancelled.", "MKTG_CAMP_CANCELLED", marketingCampaignGV.getString("statusId"));
 		
-		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must be ZERO scheduled campaigns", 0, campaigns.size());
+		long count = UtilCommon.countScheduledCampaignLines(delegator, null, marketingCampaignId);
+		assertEquals("There must be ZERO scheduled campaigns", 0, count);
 		
 		assertEquals("There must be ONLY 1 executed campaign line", 1, UtilCommon.countExecutedCampaignLines(delegator, null, marketingCampaignId));
 		
@@ -328,6 +334,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals("There must be ONLY 2 campaign lines", 2, UtilCommon.countAllCampaignLines(delegator, null, marketingCampaignId));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testRemoveContactListFromCampaign() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -352,21 +359,22 @@ public class MarketingCampaignTests extends MailerTests {
 		String marketingCampaignId = createMarketingCampaign(inputs);
 		
 		contactListId = createContactListWithTwoRecipients();
-		Map results = runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
+		Map<String, Object> results = runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId, "contactListId", contactListId));
 		String campaignListId = (String) results.get("campaignListId"); 
 		
-		List<?> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
+		long count = UtilCommon.countOnHoldCampaignLines(delegator, null, marketingCampaignId);
+		assertEquals("There must be 2 'On Hold' campaigns", 2, count);
 
 		results = runAndAssertServiceSuccess("mailer.removeContactListFromMarketingCampaign", UtilMisc.toMap("userLogin", admin, "campaignListId", campaignListId));
 		
-		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_SCHEDULED"));
-		assertEquals("There must be 2 scheduled campaigns", 0, campaigns.size());
+		count = UtilCommon.countScheduledCampaignLines(delegator, null, marketingCampaignId);
+		assertEquals("There must be 2 scheduled campaigns", 0, count);
 		
 		List<?> cancelledCampaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_CANCELLED"));
 		assertEquals("There must be 2 scheduled campaigns", 2, cancelledCampaigns.size());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testUpdateMarketingCampaignByChangingTemplate() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -395,7 +403,7 @@ public class MarketingCampaignTests extends MailerTests {
 		
 		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
 		assertEquals("There must 2 'On Hold' campaigns", 2, campaigns.size());
-		Map expected = FastMap.newInstance();
+		Map<String, Object> expected = FastMap.newInstance();
 		for (GenericValue scheduledCampaign : campaigns) {
 			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
@@ -408,9 +416,8 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		Map actual = FastMap.newInstance();
+		Map<String, Object> actual = FastMap.newInstance();
 		for (GenericValue scheduledCampaign : campaigns) {
-			GenericValue mailerRecipient = scheduledCampaign.getRelatedOne("MailerRecipient");
 			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
 		
@@ -420,6 +427,7 @@ public class MarketingCampaignTests extends MailerTests {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testUpdateMarketingCampaignNoChangeInTemplate() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -448,7 +456,7 @@ public class MarketingCampaignTests extends MailerTests {
 		
 		List<GenericValue> campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
 		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
-		Map expected = FastMap.newInstance();
+		Map<String, Object> expected = FastMap.newInstance();
 		for (GenericValue scheduledCampaign : campaigns) {
 			expected.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
@@ -460,9 +468,8 @@ public class MarketingCampaignTests extends MailerTests {
 		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
 		
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
-		Map actual = FastMap.newInstance();
+		Map<String, Object> actual = FastMap.newInstance();
 		for (GenericValue scheduledCampaign : campaigns) {
-			GenericValue mailerRecipient = scheduledCampaign.getRelatedOne("MailerRecipient");
 			actual.put(scheduledCampaign.getString("campaignStatusId"), scheduledCampaign.getString("scheduledForDate"));
 		}
 		
@@ -472,6 +479,7 @@ public class MarketingCampaignTests extends MailerTests {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testAutoTransitionToInProgressFromApproved() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.nowTimestamp();
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -564,6 +572,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals("Must NOT be in 'In Progress'", "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testAutoTransitionToCompleteFromInProgress() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.nowTimestamp();
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -635,6 +644,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals(String.format("Campaign [%1$s] must be in appproved state", marketingCampaignId2), "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testAutoTransitionToInProgressFromComplete() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.nowTimestamp();
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
@@ -729,7 +739,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals(String.format("Campaign [%1$s] must be in appproved state", marketingCampaignId2), "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
 	
-	public void testCancelMailersWithIncorrectParameters() throws GeneralException {
+	public void testCancelMailersFailWithIncorrectParameters() throws GeneralException {
 		runAndAssertServiceError("mailer.cancelCreatedMailers", UtilMisc.toMap("userLogin", admin));		
 	}
 	
