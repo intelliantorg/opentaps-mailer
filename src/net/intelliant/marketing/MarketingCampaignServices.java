@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javolution.util.FastList;
 
@@ -41,6 +42,22 @@ public class MarketingCampaignServices {
 	private static final String errorResource = "ErrorLabels";
 	private static final String successResource = "UILabels";
 
+	@SuppressWarnings("unchecked")
+	private static Map<String, Object> checkDates(Map<String, Object> context) {
+		Locale locale = (Locale) context.get("locale");
+		TimeZone timeZone = (TimeZone) context.get("timeZone");
+				
+		Timestamp fromDate = (Timestamp) context.get("fromDate");
+		Timestamp thruDate = (Timestamp) context.get("thruDate");
+
+		if (thruDate.before(fromDate)) {
+			Map<String, Object> messageMap = UtilMisc.toMap("thruDate", UtilDateTime.timeStampToString(thruDate, timeZone, locale));
+			messageMap.put("fromDate", UtilDateTime.timeStampToString(fromDate, timeZone, locale));
+			return UtilMessage.createServiceError(UtilProperties.getMessage(errorResource, "errorCreatingOrUpdatingCampaignThruDateMustBeGreaterThanFromDate", messageMap, locale), locale);
+		}
+		return null;
+	}
+
 	/**
 	 * Is a wrapper over the original marketing campaign, custom values will be
 	 * persisted once the campaign is created.
@@ -50,7 +67,11 @@ public class MarketingCampaignServices {
 		GenericDelegator delegator = dctx.getDelegator();
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		Locale locale = (Locale) context.get("locale");
-		try {			
+		try {
+			serviceResults = checkDates(context);
+			if (ServiceUtil.isError(serviceResults)) {
+				return serviceResults;
+			}
 			GenericValue mergeFormGV = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", context.get("templateId")));
 			if (UtilValidate.isEmpty(mergeFormGV)) {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "invalidTemplateId", locale), MODULE);
@@ -94,6 +115,10 @@ public class MarketingCampaignServices {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
 		GenericValue mergeFormGV = null;
 		try {
+			serviceResults = checkDates(context);
+			if (ServiceUtil.isError(serviceResults)) {
+				return serviceResults;
+			}
 			GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", context.get("marketingCampaignId")));
 			String oldTemplateId = mailerMarketingCampaign.getString("templateId");
 			if (UtilValidate.isNotEmpty(templateId)) {
