@@ -367,7 +367,7 @@ public class MarketingCampaignTests extends MailerTests {
 		}
 	}
 	
-	public void testAutoInProgressFromApproved() throws GeneralException {
+	public void testAutoTransitionToInProgressFromApproved() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.nowTimestamp();
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
 		Long currTime = System.currentTimeMillis();
@@ -459,7 +459,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals("Must NOT be in 'In Progress'", "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
 	
-	public void testAutoCompleteFromInProgress() throws GeneralException {
+	public void testAutoTransitionToCompleteFromInProgress() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.nowTimestamp();
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
 		Long currTime = System.currentTimeMillis();
@@ -530,7 +530,7 @@ public class MarketingCampaignTests extends MailerTests {
 		assertEquals(String.format("Campaign [%1$s] must be in appproved state", marketingCampaignId2), "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
 	}
 	
-	public void testAutoInProgressFromComplete() throws GeneralException {
+	public void testAutoTransitionToInProgressFromComplete() throws GeneralException {
 		Timestamp fromDate = UtilDateTime.nowTimestamp();
 		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
 		Long currTime = System.currentTimeMillis();
