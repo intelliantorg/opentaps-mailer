@@ -1,4 +1,4 @@
-package net.intelliant.imports;
+package net.intelliant.util;
 
 import java.io.File;
 import java.io.FileInputStream;
