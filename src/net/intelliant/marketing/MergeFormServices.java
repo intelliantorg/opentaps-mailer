@@ -9,6 +9,7 @@ import java.util.Map;
 import net.intelliant.util.UtilCommon;
 
 import org.ofbiz.base.location.FlexibleLocation;
+import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
@@ -124,6 +125,7 @@ public class MergeFormServices {
 		Map<String, Object> inputs = null;
 		try {
 			GenericValue mergeForm = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
+			String oldScheduleAt = mergeForm.getString("scheduleAt");
 			mergeForm.setNonPKFields(context);
 			mergeForm.remove("headerImageLocation");
 			mergeForm.remove("footerImageLocation");
@@ -157,15 +159,17 @@ public class MergeFormServices {
 
 			delegator.store(mergeForm);
 
-			String oldScheduleAt = mergeForm.getString("scheduleAt");
 			if (!UtilValidate.areEqual(oldScheduleAt, scheduleAt)) {
 				inputs = UtilMisc.toMap("scheduleAt", scheduleAt);
 				inputs.put("userLogin", userLogin);
 
-				List<GenericValue> relatedCampaigns = mergeForm.getRelated("MarketingCampaign");
+				List<GenericValue> relatedCampaigns = mergeForm.getRelated("MailerMarketingCampaign");
 				if (UtilValidate.isNotEmpty(relatedCampaigns)) {
 					for (GenericValue relatedCampaign : relatedCampaigns) {
 						inputs.put("marketingCampaignId", relatedCampaign.getString("marketingCampaignId"));
+						if (Debug.infoOn()) {
+							Debug.logInfo("[mailer.updateMergeForm] calling mailer.reScheduleMailers with inputs >> " + inputs, module);	
+						}
 						results = dctx.getDispatcher().runSync("mailer.reScheduleMailers", inputs);
 						if (ServiceUtil.isError(results)) {
 							return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
@@ -174,11 +178,11 @@ public class MergeFormServices {
 				}
 			}
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), locale, module);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), locale, module);
 		} catch (MalformedURLException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), module);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), locale, module);
 		}
 		return results;
 	}
