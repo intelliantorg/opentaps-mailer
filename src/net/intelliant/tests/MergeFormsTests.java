@@ -106,7 +106,7 @@ public class MergeFormsTests extends MailerTests {
 
 		assertEquals(expected.size(), actual.size());
 		for (Object key : actual.keySet()) {
-			assertEquals("Dates must NOT be equal", expected.get(key), actual.get(key));
+			assertNotEquals("Dates must NOT be equal", expected.get(key), actual.get(key));
 		}
 	}
 }
