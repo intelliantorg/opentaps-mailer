@@ -75,6 +75,31 @@ public class MarketingCampaignTests extends MailerTests {
 		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId, "statusId", "MAILER_HOLD"));
 		assertEquals("There must be 2 'On Hold' campaigns", 2, campaigns.size());
 	}
+	
+	public void testCreateMarketingCampaignFailWithFromDateGreaterThanThruDate() throws GeneralException {
+		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
+		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, -10);
+		String campaignName = "Campaign_" + System.currentTimeMillis();
+		String templateId = createMergeTemplate(null);
+		String contactListId = createContactList(null);
+		Double budgetedCost = new Double("12000.00");
+		Double estimatedCost = new Double("11500.50");
+		String currencyUomId = "INR";
+		String description = "Some description for this campaign";
+		
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName);
+		inputs.put("userLogin", admin);
+		inputs.put("templateId", templateId);
+		inputs.put("contactListId", contactListId);
+		inputs.put("budgetedCost", budgetedCost);
+		inputs.put("currencyUomId", currencyUomId);
+		inputs.put("estimatedCost", estimatedCost);
+		inputs.put("description", description);
+		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
+		runAndAssertServiceError("mailer.createMarketingCampaign", inputs);
+	}
 
 	@SuppressWarnings("unchecked")
 	public void testCreateMarketingCampaignWithIncorrectTemplateId() throws GeneralException {
@@ -626,5 +651,77 @@ public class MarketingCampaignTests extends MailerTests {
 	
 	public void testCancelMailersWithIncorrectParameters() throws GeneralException {
 		runAndAssertServiceError("mailer.cancelCreatedMailers", UtilMisc.toMap("userLogin", admin));		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testApprovedMarketingCampaignShouldBeMarkedInProgressIfDateWhenApprovedLiesBetweenCampaignDates() throws GeneralException {
+		Timestamp fromDate = UtilDateTime.nowTimestamp();
+		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
+		Long currTime = System.currentTimeMillis();
+		String campaignName = "Campaign_" + currTime;
+		String templateId = createMergeTemplate(null);
+		String contactListId = createContactList(null);
+		Double budgetedCost = Math.random() * 100000;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
+		String currencyUomId = "INR";
+		
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName, "templateId", templateId, "contactListId", contactListId);
+		inputs.put("userLogin", admin);
+		inputs.put("budgetedCost", budgetedCost);
+		inputs.put("estimatedCost", estimatedCost);
+		inputs.put("currencyUomId", currencyUomId);
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
+		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		
+		String marketingCampaignId = createMarketingCampaign(inputs);
+		Map<?, ?> results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertEquals(results.get("statusId"), "MKTG_CAMP_PLANNED");
+		
+		/** Approve Marketing Campaign. */
+		inputs.clear();
+		inputs.put("userLogin", admin);
+		inputs.put("statusId", "MKTG_CAMP_APPROVED");
+		inputs.put("marketingCampaignId", marketingCampaignId);
+		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
+		
+		results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertEquals(results.get("statusId"), "MKTG_CAMP_INPROGRESS");
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testApprovedMarketingCampaignShouldRemainApprovedIfDateWhenApprovedIsNotInBetweenCampaignDates() throws GeneralException {
+		Timestamp fromDate = UtilDateTime.addDaysToTimestamp(UtilDateTime.nowTimestamp(), 1);
+		Timestamp thruDate = UtilDateTime.addDaysToTimestamp(fromDate, 1);
+		Long currTime = System.currentTimeMillis();
+		String campaignName = "Campaign_" + currTime;
+		String templateId = createMergeTemplate(null);
+		String contactListId = createContactList(null);
+		Double budgetedCost = Math.random() * 100000;
+		Double estimatedCost = budgetedCost > 1000 ? budgetedCost - 900 : budgetedCost - 1;
+		String currencyUomId = "INR";
+		
+		Map<String, Object> inputs = UtilMisc.toMap("campaignName", campaignName, "templateId", templateId, "contactListId", contactListId);
+		inputs.put("userLogin", admin);
+		inputs.put("budgetedCost", budgetedCost);
+		inputs.put("estimatedCost", estimatedCost);
+		inputs.put("currencyUomId", currencyUomId);
+		inputs.put("fromDate", fromDate);
+		inputs.put("thruDate", thruDate);
+		inputs.put("statusId", "MKTG_CAMP_PLANNED");
+		
+		String marketingCampaignId = createMarketingCampaign(inputs);
+		Map<?, ?> results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertEquals(results.get("statusId"), "MKTG_CAMP_PLANNED");
+		
+		/** Approve Marketing Campaign. */
+		inputs.clear();
+		inputs.put("userLogin", admin);
+		inputs.put("statusId", "MKTG_CAMP_APPROVED");
+		inputs.put("marketingCampaignId", marketingCampaignId);
+		runAndAssertServiceSuccess("mailer.updateMarketingCampaign", inputs);
+		
+		results = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
+		assertEquals(results.get("statusId"), "MKTG_CAMP_APPROVED");
 	}
 }
