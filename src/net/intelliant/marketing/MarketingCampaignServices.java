@@ -49,7 +49,9 @@ public class MarketingCampaignServices {
 				
 		Timestamp fromDate = (Timestamp) context.get("fromDate");
 		Timestamp thruDate = (Timestamp) context.get("thruDate");
-
+		if (thruDate == null || fromDate == null) {
+			return null;
+		}
 		if (thruDate.before(fromDate)) {
 			Map<String, Object> messageMap = UtilMisc.toMap("thruDate", UtilDateTime.timeStampToString(thruDate, timeZone, locale));
 			messageMap.put("fromDate", UtilDateTime.timeStampToString(fromDate, timeZone, locale));
