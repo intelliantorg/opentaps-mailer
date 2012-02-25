@@ -144,6 +144,7 @@ public class ContactListServices {
 		return results;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static GenericValue insertIntoConfiguredCustomEntity(GenericDelegator delegator, Locale locale, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException, ParseException {
 		ModelEntity modelEntity = delegator.getModelEntity(entityName);
 		String entityPrimaryKeyField = modelEntity.getFirstPkFieldName();
@@ -211,6 +212,7 @@ public class ContactListServices {
 		return rowToInsertGV;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void createCLRecipientRelation(GenericDelegator delegator, String contactListId, String recipientId) throws GenericEntityException {
 		String recipientListId = delegator.getNextSeqId("MailerRecipientContactList");
 		Map<String, Object> values = UtilMisc.toMap("recipientListId", recipientListId, "contactListId", contactListId, "recipientId", recipientId, "validFromDate", UtilDateTime.nowTimestamp());
@@ -276,6 +278,7 @@ public class ContactListServices {
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> createCampaignLineForListMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
+		Locale locale = (Locale) context.get("locale");
 		String contactListId = (String) context.get("contactListId");
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		List<GenericValue> rowsToInsert = FastList.newInstance();
@@ -299,9 +302,9 @@ public class ContactListServices {
 				}
 			}
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError("Encountered errors while scheduling campaigns.", MODULE);
+			return UtilMessage.createAndLogServiceError(e, "Encountered errors while scheduling campaigns.", locale, MODULE);
 		} catch (GeneralException e) {
-			return UtilMessage.createAndLogServiceError("Encountered errors while scheduling campaigns. - " + e.getMessage(), MODULE);
+			return UtilMessage.createAndLogServiceError(e, "Encountered errors while scheduling campaigns. - " + e.getMessage(), locale, MODULE);
 		}
 		return ServiceUtil.returnSuccess();
 	}
@@ -312,6 +315,7 @@ public class ContactListServices {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> removeRecipientFromContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
+		Locale locale = (Locale) context.get("locale");
 		if (Debug.infoOn()) {
 			Debug.logInfo("[mailer.removeRecipientFromContactList] The inputs >> " + context, MODULE);
 		}
@@ -331,9 +335,9 @@ public class ContactListServices {
 				return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - ", MODULE);
 			}
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);
+			return UtilMessage.createAndLogServiceError(e, "Encountered errors while removing recipient from list. - " + e.getMessage(), locale, MODULE);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError("Encountered errors while removing recipient from list. - " + e.getMessage(), MODULE);
+			return UtilMessage.createAndLogServiceError(e, "Encountered errors while removing recipient from list. - " + e.getMessage(), locale, MODULE);
 		}
 		return ServiceUtil.returnSuccess();
 	}
@@ -344,6 +348,7 @@ public class ContactListServices {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> createContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
+		Locale locale = (Locale) context.get("locale");
 		Map<String, Object> results;
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		if (context.containsKey("marketingCampaignId")) {
@@ -378,7 +383,7 @@ public class ContactListServices {
 			results = ServiceUtil.returnSuccess();
 			results.put("contactListId", contactListId);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError("Encountered errors while creating contact list. - " + e.getMessage(), MODULE);
+			return UtilMessage.createAndLogServiceError(e, "Encountered errors while creating contact list. - " + e.getMessage(), locale, MODULE);
 		}
 		return results;
 	}

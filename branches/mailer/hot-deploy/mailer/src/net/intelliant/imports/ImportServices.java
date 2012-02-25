@@ -49,10 +49,10 @@ public class ImportServices {
 			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
 			Debug.log(e.toString());
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), locale, MODULE);
 		} catch (GenericServiceException e) {
 			Debug.log(e.toString());
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), locale, MODULE);
 		}
 		serviceResults.put("importMapperId", importMapperId);
 		return serviceResults;
@@ -79,7 +79,7 @@ public class ImportServices {
 				try {
 					dctx.getDelegator().makeValue("MailerImportColumnMapper", inputs).create();
 				} catch (GenericEntityException e) {
-					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), MODULE);
+					return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), locale, MODULE);
 				}
 			}
 		}
@@ -105,7 +105,7 @@ public class ImportServices {
 			updateMailerImportMapping(delegator, importMapperId, importMapperName, description, isFirstRowHeader, userLoginId);
 			updateMailerImportColumnMapping(delegator, importMapperId, userLogin, entityColName, importFileColIdx);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "Error updating MailerImportMapping", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "Error updating MailerImportMapping", locale), locale, MODULE);
 		}
 		return ServiceUtil.returnSuccess();
 	}

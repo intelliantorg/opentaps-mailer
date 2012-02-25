@@ -100,9 +100,9 @@ public class MarketingCampaignServices {
 			inputs.put("marketingCampaignId", marketingCampaignId);
 			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), locale, MODULE);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorCreatingCampaign", locale), locale, MODULE);
 		}
 		return serviceResults;
 	}
@@ -195,9 +195,9 @@ public class MarketingCampaignServices {
 			}
 			return serviceResults;
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), locale, MODULE);
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), locale, MODULE);
 		}
 	}
 
@@ -233,9 +233,9 @@ public class MarketingCampaignServices {
 				return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaignExists", locale), MODULE);
 			}
 		} catch (GenericEntityException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), locale, MODULE);
 		} catch (GenericServiceException e) {
-			return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), MODULE);
+			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorAddingContactListToCampaign", locale), locale, MODULE);
 		}
 		return serviceResults;
 	}
