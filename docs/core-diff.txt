@@ -1,0 +1,16 @@
+** getter/ setter added to fetch description, this change will not be required when mailer is used with later versions.
+framework/entity/src/org/ofbiz/entity/model/ModelField.java
+r91, r178
+
+** this newer version helps display images in PDF.
+D framework/webapp/lib/fop-0.93.jar
+A framework/webapp/lib/fop-0.94.jar
+r313
+
+** Fix for FCK editor create/ browser folder issue.
+D hot-deploy/opentaps-common/webapp/js/WEB-INF/lib/fckeditor-java-core-2.4-beta-1.jar
+A hot-deploy/opentaps-common/webapp/js/WEB-INF/lib/fckeditor-java-core-2.6.jar
+A hot-deploy/opentaps-common/webapp/js/WEB-INF/lib/imageinfo-1.9.jar
+D hot-deploy/opentaps-common/webapp/js/WEB-INF/lib/slf4j-api-1.5.0.jar
+D hot-deploy/opentaps-common/webapp/js/WEB-INF/lib/slf4j-simple-1.5.0.jar
+r312
