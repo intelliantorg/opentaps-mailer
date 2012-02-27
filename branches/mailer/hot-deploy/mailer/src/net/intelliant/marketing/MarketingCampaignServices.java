@@ -537,7 +537,8 @@ public class MarketingCampaignServices {
 		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		EntityListIterator iterator = null;
 		try {
-			List<String> statusIds = UtilMisc.toList("MAILER_SCHEDULED", "MAILER_EXECUTED");
+			/** No need to change status if mailer exists in below mentioned status, hence these filters. */ 
+			List<String> statusIds = UtilMisc.toList("MAILER_SCHEDULED", "MAILER_EXECUTED", "MAILER_CANCELLED");
 			List<EntityExpr> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.NOT_IN, statusIds), new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
             EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
