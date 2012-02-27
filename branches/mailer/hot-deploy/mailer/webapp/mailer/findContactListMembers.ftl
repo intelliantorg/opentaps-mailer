@@ -1,6 +1,7 @@
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
+
 <div class="form">
-	<form name="findContactList" action="<@ofbizUrl>filterContactListMembers</@ofbizUrl>" method="post">
+	<form id="findContactList" name="findContactList" action="<@ofbizUrl>filterContactListMembers</@ofbizUrl>" method="post">
 		<@inputHidden name="contactListId" value=contactList.contactListId />
 		<table width="100%">
 			<tr>
@@ -25,6 +26,7 @@
 			<tr>
 				<td colspan="${noOfColumns?number*2}" align="center">
 					<input class="subMenuButton" type="submit" name="submit" value="Find" />
+					<input class="subMenuButton" type="button" id="resetButton" name="resetButton" value="Reset" />
 				</td>
 			</tr>
 		</table>

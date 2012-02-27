@@ -7,6 +7,14 @@ $(document).ready(function() {
 			$("#" + form.id).validate();
 		}
 	});
+	
+	/* Reset feature of find contact list member module */
+	$("#resetButton").click(function(){
+		var itemsStr = "";
+		$("#findContactList :input[type=text]").each(function(index,item){
+			item.value = "";
+		});
+	});
 });
 
 /** This method required to hide/disply operation on onChange event of campaign type combobox. */
