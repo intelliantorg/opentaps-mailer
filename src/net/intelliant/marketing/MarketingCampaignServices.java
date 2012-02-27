@@ -45,8 +45,7 @@ public class MarketingCampaignServices {
 	@SuppressWarnings("unchecked")
 	private static Map<String, Object> checkDates(Map<String, Object> context) {
 		Locale locale = (Locale) context.get("locale");
-		TimeZone timeZone = (TimeZone) context.get("timeZone");
-				
+		TimeZone timeZone = (TimeZone) context.get("timeZone");				
 		Timestamp fromDate = (Timestamp) context.get("fromDate");
 		Timestamp thruDate = (Timestamp) context.get("thruDate");
 		if (thruDate == null || fromDate == null) {
@@ -87,7 +86,6 @@ public class MarketingCampaignServices {
 				return UtilMessage.createAndLogServiceError(serviceResults, service.name, locale, MODULE);
 			}
 			String marketingCampaignId = (String) serviceResults.get("marketingCampaignId");
-			serviceResults.put("marketingCampaignId", marketingCampaignId);
 
 			inputs = UtilMisc.toMap("marketingCampaignId", marketingCampaignId);
 			inputs.put("templateId", context.get("templateId"));
@@ -285,7 +283,7 @@ public class MarketingCampaignServices {
 //			find out the template
 			GenericValue templateGV = campaignGV.getRelatedOne("MailerMergeForm");
 			if (UtilValidate.isNotEmpty(templateGV)) {
-//				TODO do some changes on the template
+//				do some changes on the template
 				String emailSubject = templateGV.getString("subject");
 				String emailBodyTemplate = templateGV.getString("mergeFormText");
 				String emailFromAddress = templateGV.getString("fromEmailAddress");
