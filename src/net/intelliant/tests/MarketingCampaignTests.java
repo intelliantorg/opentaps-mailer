@@ -726,6 +726,8 @@ public class MarketingCampaignTests extends MailerTests {
 		
 		/** Executing this is to simulate the execution of scheduled service */
 		runAndAssertServiceSuccess("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
+		runAndAssertServiceSuccess("mailer.checkIfInProgressCampaignsCanBeMarkedComplete", UtilMisc.toMap("userLogin", system));
+		runAndAssertServiceSuccess("mailer.checkIfCompletedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
 
 		GenericValue marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1));
 		assertEquals("Must be in 'In Progress'", "MKTG_CAMP_INPROGRESS", marketingCampaingnGV.getString("statusId"));
@@ -740,6 +742,7 @@ public class MarketingCampaignTests extends MailerTests {
 		}
 		
 		/** Executing this is to simulate the execution of scheduled service */
+		runAndAssertServiceSuccess("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
 		runAndAssertServiceSuccess("mailer.checkIfInProgressCampaignsCanBeMarkedComplete", UtilMisc.toMap("userLogin", system));
 		runAndAssertServiceSuccess("mailer.checkIfCompletedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
 		
@@ -756,17 +759,33 @@ public class MarketingCampaignTests extends MailerTests {
 		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId1);
 		assertEquals(String.format("There must be 2 'Scheduled' campaigns for campaign [%1$s]", marketingCampaignId1), 2, campaign1Count);
 		
+		/** Cancel any one mailer belonging to MC and CL and come out of the loop. */
+		campaigns = delegator.findByAnd("MailerCampaignStatus", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1, "contactListId", contactListId));
+		for (GenericValue scheduledCampaign : campaigns) {
+			scheduledCampaign.put("statusId", "MAILER_CANCELLED");
+			scheduledCampaign.store();
+			break;
+		}
+		
 		runAndAssertServiceSuccess("mailer.addContactListToCampaign", UtilMisc.toMap("userLogin", admin, "marketingCampaignId", marketingCampaignId2, "contactListId", contactListId));
 		
 		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId2);
 		assertEquals(String.format("There must be 2 'Scheduled' campaigns for campaign [%1$s]", marketingCampaignId2), 2, campaign1Count);
 		
 		/** Executing this is to simulate the execution of scheduled service */
+		runAndAssertServiceSuccess("mailer.checkIfApprovedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
 		runAndAssertServiceSuccess("mailer.checkIfCompletedCampaignsCanBeMarkedInProgress", UtilMisc.toMap("userLogin", system));
 		runAndAssertServiceSuccess("mailer.checkIfInProgressCampaignsCanBeMarkedComplete", UtilMisc.toMap("userLogin", system));
 		
 		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId1));
 		assertEquals(String.format("Campaign [%1$s] must be in 'in progress' state", marketingCampaignId1), "MKTG_CAMP_INPROGRESS", marketingCampaingnGV.getString("statusId"));
+		
+		campaign1Count = UtilCommon.countScheduledCampaignLines(delegator, contactListId, marketingCampaignId1);
+		assertEquals(String.format("There must be 1 'Scheduled' campaigns for campaign [%1$s]", marketingCampaignId1), 1, campaign1Count);
+		
+		/** This is to assert changes made at r480 */
+		campaign1Count = UtilCommon.countCancelledCampaignLines(delegator, contactListId, marketingCampaignId1);
+		assertEquals(String.format("There must be 1 'Cancelled' campaigns for campaign [%1$s]", marketingCampaignId1), 1, campaign1Count);
 		
 		marketingCampaingnGV = delegator.findByPrimaryKey("MarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId2));
 		assertEquals(String.format("Campaign [%1$s] must be in appproved state", marketingCampaignId2), "MKTG_CAMP_APPROVED", marketingCampaingnGV.getString("statusId"));
