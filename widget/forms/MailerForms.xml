@@ -79,7 +79,7 @@
         <field name="contactListId"><hidden/></field>
         <field name="contactListName" title="${uiLabelMap.LabelName}" title-style="requiredField" position="1"><text/></field>
         <field name="marketingCampaignId" title="${uiLabelMap.LabelMarketingCampaign}" position="2">
-            <drop-down allow-empty="false" current="selected">
+            <drop-down allow-empty="true" current="selected">
                 <entity-options description="${campaignName}" entity-name="MarketingCampaign">
                     <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
                     <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_COMPLETED"/>
