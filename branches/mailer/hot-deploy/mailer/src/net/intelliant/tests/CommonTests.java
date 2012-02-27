@@ -1,5 +1,7 @@
 package net.intelliant.tests;
 
+import java.sql.Timestamp;
+
 import net.intelliant.util.UtilCommon;
 
 import org.ofbiz.base.util.UtilDateTime;
@@ -7,6 +9,7 @@ import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.util.EntityUtil;
+import org.opentaps.common.util.UtilDate;
 
 public class CommonTests extends MailerTests {
 	
@@ -35,5 +38,18 @@ public class CommonTests extends MailerTests {
 		anyRecipient.store();
 		
 		assertEquals(1, UtilCommon.countContactListRecipients(delegator, contactListId));
+	}
+	
+	public void testAddDaysToTimestamp() throws GenericEntityException {
+		int daysToAdd = 2;
+		Timestamp startTS = UtilDateTime.nowTimestamp();
+		Timestamp newTS = UtilCommon.addDaysToTimestamp(startTS, Double.valueOf(daysToAdd));
+		int daysAfterDiff = UtilDate.dateDifference(newTS, startTS);
+		assertEquals(daysToAdd, daysAfterDiff);
+		
+		daysToAdd = 2000;
+		newTS = UtilCommon.addDaysToTimestamp(startTS, Double.valueOf(daysToAdd));
+		daysAfterDiff = UtilDate.dateDifference(newTS, startTS);
+		assertEquals(daysToAdd, daysAfterDiff);
 	}
 }
