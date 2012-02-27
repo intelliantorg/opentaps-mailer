@@ -25,8 +25,8 @@
 			</tr>
 			<tr>
 				<td colspan="${noOfColumns?number*2}" align="center">
-					<input class="subMenuButton" type="submit" name="submit" value="Find" />
-					<input class="subMenuButton" type="button" id="resetButton" name="resetButton" value="Reset" />
+					<input class="subMenuButton" type="submit" name="submit" value="${uiLabelMap.ButtonFind}" />
+					<input class="subMenuButton" type="button" id="resetButton" name="resetButton" value="${uiLabelMap.ButtonReset}" />
 				</td>
 			</tr>
 		</table>
