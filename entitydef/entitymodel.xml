@@ -99,7 +99,7 @@
     	<field name="address2" type="name">
     	 	<description>Address line 2</description>
     	</field>	
-    	<field name="postalCode" type="numeric">
+    	<field name="postalCode" type="very-short">
     	 	<description>Postal code</description>
     	</field>	
     	<field name="stateName" type="name">
