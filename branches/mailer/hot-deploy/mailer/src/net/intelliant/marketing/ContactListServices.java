@@ -4,9 +4,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +51,7 @@ public class ContactListServices {
 	private static final String resource = "ErrorLabels";
 	private static final String MODULE = ContactListServices.class.getName();
 	private static final String dateOfOperationColumnName = UtilProperties.getPropertyValue("mailer", "mailer.dateOfOperationColumn");
+	private static final DecimalFormat pattern = new DecimalFormat("#,#,#,#,#,#,#,#,#,#");
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> importContactList(DispatchContext dctx, Map<String, ? extends Object> context) {
@@ -156,21 +158,27 @@ public class ContactListServices {
 		rowToInsertGV.put("importedByUserLogin", userLoginId);
 
 		Set<Entry<String, Object>> entries = columnMapper.entrySet();
-
 		for (Map.Entry<String, Object> entry : entries) {
+			String columnName = entry.getKey();
+			ModelField modelField = modelEntity.getField(columnName);
 			HSSFCell excelCell = null;
 			Object cellValue = null;
+			short columnIndex = -1;
 			try {
-				short columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
+				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
 				excelCell = excelRowData.getCell(columnIndex);
 				cellValue = (excelCell != null) ? excelCell.toString() : "";
 			} catch (NumberFormatException nfe) {
 				cellValue = "";
 			}
-			String columnName = entry.getKey();
-			ModelField modelField = modelEntity.getField(columnName);
 			if (Debug.infoOn()) {
-				Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking excel column type >> " + excelCell.getCellType(), MODULE);
+				Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking excel row No. >> " + excelRowData.getRowNum(), MODULE);
+				Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking excel columnIndex >> " + columnIndex, MODULE);
+				if (excelCell != null) {
+					Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking excel column type >> " + excelCell.getCellType(), MODULE);
+				} else {
+					Debug.logInfo("[insertIntoConfiguredCustomEntity] excelCell found NULL for columnIndex >> " + columnIndex, MODULE);
+				}
 				Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking model field >> " + modelField.getName(), MODULE);
 				Debug.logInfo("[insertIntoConfiguredCustomEntity] Initial cellValue >> " + cellValue, MODULE);
 			}
@@ -186,9 +194,22 @@ public class ContactListServices {
 					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidEmail", messageMap, locale));
 				}
 			} else if (modelField.getType().equals("tel-number")) {
-				if (!(UtilValidate.isNotEmpty(cellValue) && UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue)))) {
+				if (UtilValidate.isNotEmpty(cellValue)) {
 					Map<String, Object> messageMap = UtilMisc.toMap("columnName", cellValue);
-					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
+					if (excelCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+						if (Debug.infoOn()) {
+							Debug.logInfo("[insertIntoConfiguredCustomEntity] Cell type is numeric", MODULE);
+						}
+						NumberFormat testNumberFormat = NumberFormat.getNumberInstance();
+						try {
+							cellValue = (pattern.parse(testNumberFormat.format(excelCell.getNumericCellValue()))).longValue();
+						} catch(ParseException e) {
+							throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
+						}					
+					}
+					if (! UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue))) {
+						throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
+					}
 				}
 			} else if (modelField.getType().equals("date")) {
 				try {
