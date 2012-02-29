@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class ContactListServices {
 		String ofbizEntityName = mailerImportMapper.getString("ofbizEntityName");
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
-		Map<String, String> failureReport = new HashMap<String, String>();
+		Map<String, String> failureReport = new LinkedHashMap<String, String>();
 
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
@@ -157,23 +158,21 @@ public class ContactListServices {
 		Set<Entry<String, Object>> entries = columnMapper.entrySet();
 
 		for (Map.Entry<String, Object> entry : entries) {
-			short columnIndex = 0;
 			HSSFCell excelCell = null;
 			Object cellValue = null;
-
 			try {
-				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
+				short columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
 				excelCell = excelRowData.getCell(columnIndex);
 				cellValue = (excelCell != null) ? excelCell.toString() : "";
 			} catch (NumberFormatException nfe) {
-				columnIndex = -1;
 				cellValue = "";
 			}
 			String columnName = entry.getKey();
 			ModelField modelField = modelEntity.getField(columnName);
 			if (Debug.infoOn()) {
-				Debug.logInfo("[insertIntoConfiguredCustomEntity] On column name >> " + columnName, MODULE);
+				Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking excel column type >> " + excelCell.getCellType(), MODULE);
 				Debug.logInfo("[insertIntoConfiguredCustomEntity] Checking model field >> " + modelField.getName(), MODULE);
+				Debug.logInfo("[insertIntoConfiguredCustomEntity] Initial cellValue >> " + cellValue, MODULE);
 			}
 			if (modelField.getIsNotNull()) {
 				if (!UtilValidate.isNotEmpty(cellValue)) {
@@ -204,7 +203,9 @@ public class ContactListServices {
 					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", messageMap, locale));
 				}
 			}
-
+			if (Debug.infoOn()) {
+				Debug.logInfo("[insertIntoConfiguredCustomEntity] Final cellValue >> " + cellValue, MODULE);
+			}
 			rowToInsertGV.put(columnName, cellValue);
 		}
 		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
