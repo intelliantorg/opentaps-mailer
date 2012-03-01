@@ -6,13 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import junit.swingui.FailureRunView;
 
 import net.intelliant.util.UtilCommon;
 
@@ -51,6 +47,7 @@ public class ContactListImportTest extends MailerTests {
 		return new ByteWrapper(baos.toByteArray());
 	}
 
+	@SuppressWarnings("unchecked")
 	private String insertIntoImportMapper(GenericValue admin) throws GenericEntityException {
 		ImportTests it = new ImportTests();
 		Map<String, Object> inputs = it.getCreateImportMapperData(delegator, admin);
@@ -71,20 +68,20 @@ public class ContactListImportTest extends MailerTests {
 
 		inputs.put("entityColName", inputsEntityColNames);
 
-		Map<String, Object> inputsimportFileColIdx = UtilMisc.toMap("0", "0");
-		inputsimportFileColIdx.put("1", "1");
-		inputsimportFileColIdx.put("2", "2");
-		inputsimportFileColIdx.put("3", "3");
-		inputsimportFileColIdx.put("4", "4");
-		inputsimportFileColIdx.put("5", "5");
-		inputsimportFileColIdx.put("6", "6");
-		inputsimportFileColIdx.put("7", "7");
-		inputsimportFileColIdx.put("8", "8");
-		inputsimportFileColIdx.put("9", "9");
-		inputsimportFileColIdx.put("10", "10");
-		inputsimportFileColIdx.put("11", "11");
-		inputsimportFileColIdx.put("12", "12");
-		inputs.put("importFileColIdx", inputsimportFileColIdx);
+		Map<String, Object> inputsImportFileColIdx = UtilMisc.toMap("0", "0");
+		inputsImportFileColIdx.put("1", "1");
+		inputsImportFileColIdx.put("2", "2");
+		inputsImportFileColIdx.put("3", "3");
+		inputsImportFileColIdx.put("4", "4");
+		inputsImportFileColIdx.put("5", "5");
+		inputsImportFileColIdx.put("6", "6");
+		inputsImportFileColIdx.put("7", "7");
+		inputsImportFileColIdx.put("8", "8");
+		inputsImportFileColIdx.put("9", "9");
+		inputsImportFileColIdx.put("10", "10");
+		inputsImportFileColIdx.put("11", "11");
+		inputsImportFileColIdx.put("12", "12");
+		inputs.put("importFileColIdx", inputsImportFileColIdx);
 
 		Map<?, ?> results = runAndAssertServiceSuccess("mailer.configureImportMapping", inputs);
 		String importMapperId = (String) results.get("importMapperId");
@@ -98,8 +95,6 @@ public class ContactListImportTest extends MailerTests {
 			ofbizHome += File.separator;
 		}
 
-		String importMapperId = null;
-		String contactListId = null;
 		String tokenizedPath = "hot-deploy/mailer/src/net/intelliant/tests/xls/import_sample4.xls";
 		String excelFilePath = ofbizHome + tokenizedPath.replaceAll("/", File.separator);
 
@@ -111,6 +106,7 @@ public class ContactListImportTest extends MailerTests {
 		contactListImportTest(excelFilePath, 16, 12, 12, 4);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void contactListImportTest(String excelFilePath, int totalCount, int failure, int failreReportSize, int successfullInsertion) throws GenericEntityException, IOException, FileNotFoundException {
 		String importMapperId;
 		String contactListId;
@@ -128,13 +124,14 @@ public class ContactListImportTest extends MailerTests {
 
 		assertEquals(totalCount, result.get("totalCount"));
 		assertEquals(failure, result.get("failureCount"));
-		assertEquals(failreReportSize, ((Map) result.get("failureReport")).size());
+		assertEquals(failreReportSize, ((Map<?, ?>) result.get("failureReport")).size());
 		assertEquals(successfullInsertion, modifiedNoOfRecords - noOfRecords);
 
 		Debug.log("## - " + totalCount + " ^ " + failure + " ^ " + failreReportSize + " ^ " + successfullInsertion);
 		imortedDataTest(importMapperId, contactListId, excelFilePath);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void imortedDataTest(String importMapperId, String contactListId, String excelPath) throws GenericEntityException, FileNotFoundException, IOException {
 		GenericValue importMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
 
