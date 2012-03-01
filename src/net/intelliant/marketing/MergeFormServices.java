@@ -24,19 +24,15 @@ import org.opentaps.common.util.UtilMessage;
 
 public class MergeFormServices {
 	private final static String module = MergeFormServices.class.getName();
-	public static final String opentapsErrorResource = "OpentapsErrorLabels";
-	public static final String errorResource = "ErrorLabels";
+	private static final String opentapsErrorResource = "OpentapsErrorLabels";
+	private static final String errorResource = "ErrorLabels";
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> createMergeForm(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> results = ServiceUtil.returnSuccess();
 		GenericDelegator delegator = dctx.getDelegator();
 		Locale locale = (Locale) context.get("locale");
-		GenericValue mergeForm = null;
 
-		// If template type is email, then email field must be filled with valid
-		// email id.
-		// Note - UtilValidates in-build method is not up to the mark.
 		String mergeFormTypeId = String.valueOf(context.get("mergeFormTypeId"));
 		String mergeFormEmailAddress = String.valueOf(context.get("fromEmailAddress"));
 		String subject = String.valueOf(context.get("subject"));
@@ -51,7 +47,7 @@ public class MergeFormServices {
 		}
 		String mergeFormId = delegator.getNextSeqId("MailerMergeForm");
 		Map<String, Object> newMergeFormMap = UtilMisc.toMap("mergeFormId", mergeFormId);
-		mergeForm = delegator.makeValue("MailerMergeForm", newMergeFormMap);
+		GenericValue mergeForm = delegator.makeValue("MailerMergeForm", newMergeFormMap);
 		mergeForm.setNonPKFields(context);
 		mergeForm.remove("headerImageLocation");
 		mergeForm.remove("footerImageLocation");
@@ -116,12 +112,10 @@ public class MergeFormServices {
 		String mergeFormId = (String) context.get("mergeFormId");
 		String headerImageLocationRemove = String.valueOf(context.get("headerImageLocationRemove"));
 		String footerImageLocationRemove = String.valueOf(context.get("footerImageLocationRemove"));
-		results.put("mergeFormId", mergeFormId);
 
 		String fileName = "";
 		String dataResourceId = "";
 		String previewBasePath = UtilProperties.getPropertyValue("mailer", "mailer.imageUploadBaseLocation");
-		Map<String, Object> inputs = null;
 		try {
 			GenericValue mergeForm = delegator.findByPrimaryKey("MailerMergeForm", UtilMisc.toMap("mergeFormId", mergeFormId));
 			String oldScheduleAt = mergeForm.getString("scheduleAt");
@@ -159,7 +153,7 @@ public class MergeFormServices {
 			delegator.store(mergeForm);
 
 			if (!UtilValidate.areEqual(oldScheduleAt, scheduleAt)) {
-				inputs = UtilMisc.toMap("scheduleAt", scheduleAt);
+				Map<String, Object> inputs = UtilMisc.toMap("scheduleAt", scheduleAt);
 				inputs.put("userLogin", userLogin);
 
 				List<GenericValue> relatedCampaigns = mergeForm.getRelated("MailerMarketingCampaign");
@@ -183,6 +177,7 @@ public class MergeFormServices {
 		} catch (MalformedURLException e) {
 			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_UpdateMergeFormFail", locale), locale, module);
 		}
+		results.put("mergeFormId", mergeFormId);
 		return results;
 	}
 
