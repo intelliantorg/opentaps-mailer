@@ -53,7 +53,7 @@ select.error, input.error{
 input.smallTextfield{
 	width:100px;
 }
-input.subMenuButton, .smallSubmit{
+input.subMenuButton, .smallSubmit, .loginButton{
 	cursor: pointer;
 }
 
