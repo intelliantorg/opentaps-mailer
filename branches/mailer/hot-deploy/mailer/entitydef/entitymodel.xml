@@ -36,18 +36,20 @@
     </entity>
     
 	<entity entity-name="MailerMergeForm" package-name="net.intelliant.mailer" title="Mailer Merge Form Entity">
-		<field name="mergeFormId" type="id-ne"></field>
-		<field name="partyId" type="id"></field>
-		<field name="mergeFormName" type="name"></field>
-		<field name="subject" type="long-varchar"></field>
-		<field name="description" type="description"></field>
-		<field name="mergeFormText" type="very-long"></field>
-		<field name="showInSelect" type="indicator"></field>
+		<field name="mergeFormId" type="id-ne"/>
+		<field name="partyId" type="id"/>
+		<field name="mergeFormName" type="name"/>
+		<field name="subject" type="long-varchar"/>
+		<field name="description" type="description"/>
+		<field name="mergeFormText" type="very-long"/>
+		<field name="showInSelect" type="indicator"/>
 		<field name="scheduleAt" type="id"/>
 		<field name="mergeFormTypeId" type="id"/>
 		<field name="fromEmailAddress" type="email"/>
 		<field name="headerImageLocation" type="long-varchar"/>
 		<field name="footerImageLocation" type="long-varchar"/>
+		<field name="topMargin" type="currency-amount"/>
+		<field name="bottomMargin" type="currency-amount"/>
 		<prim-key field="mergeFormId"/>
 		<relation type="one" fk-name="MF_TO_MFT" rel-entity-name="MailerMergeFormType">
             <key-map field-name="mergeFormTypeId"/>

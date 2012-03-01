@@ -18,37 +18,44 @@ $(document).ready(function() {
 });
 
 /** This method required to hide/disply operation on onChange event of campaign type combobox. */
-function campaignTypeOnChange(value){
+function campaignTypeOnChange(value) {
 	var emailAddressContainer = document.getElementById('emailAddressContainer');
 	var headerFooterImageContainer = document.getElementById('headerFooterImageContainer');
-	
+	var previewTemplateContainer = document.getElementById('previewTemplateContainer');
 	var fromEmailAddress = document.getElementById('fromEmailAddress');
 	var headerImageLocation = document.getElementById('headerImageLocation');
-	var haderImageRemove = document.getElementById('headerImageLocationRemove');
+	var headerImageRemove = document.getElementById('headerImageLocationRemove');
 	var footerImageLocation = document.getElementById('footerImageLocation');
 	var footerImageRemove = document.getElementById('footerImageLocationRemove');
 	var subjectLabelObj = document.getElementById('subjectLabel');
 	var subjectObj = document.getElementById('subject');
 	
-	if(value == "PRINT"){  	
+	if (value == "PRINT") {  	
 		emailAddressContainer.style.display = "none";
 		headerFooterImageContainer.style.display = "block";
+		if (previewTemplateContainer) {
+			previewTemplateContainer.style.display = "";
+		}
 		document.getElementById('headerImageLocation').value = "";
 		document.getElementById('footerImageLocation').value = "";
 		
 		subjectLabelObj.className="formLabel";
 		subjectObj.className="inputBox";
-	}else if(value == "EMAIL"){
+	} else if (value == "EMAIL") {
 		emailAddressContainer.style.display = "block";
 		headerFooterImageContainer.style.display = "none";
-		//fromEmailAddress.value = "";
-		
-		haderImageRemove.value = "Y";
+		if (previewTemplateContainer) {
+			previewTemplateContainer.style.display = "none";
+		}
+		headerImageRemove.value = "Y";
 		footerImageRemove.value = "Y";
 		
 		subjectLabelObj.className="formLabelRequired";
 		subjectObj.className="inputBox required";
-	}else{
+	} else {
+		if (previewTemplateContainer) {
+			previewTemplateContainer.style.display = "none";
+		}
 		emailAddressContainer.style.display = "none";
 		headerFooterImageContainer.style.display = "none";	
 		subjectLabelObj.className="formLabel";
