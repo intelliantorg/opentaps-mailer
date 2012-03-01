@@ -99,19 +99,19 @@ public class MergeFormServices {
 	}
 
 	private static double computeImageHeightInInches(ByteWrapper binData) {
-		double heigthInInches = -1;
+		double heightInInches = -1;
 		try {
 			ImageInfo info = Sanselan.getImageInfo(binData.getBytes());
 			if (info != null) {
 				printImageInfo(info);
-				heigthInInches = info.getPhysicalHeightInch();
+				heightInInches = info.getPhysicalHeightInch();
 			}
 		} catch (ImageReadException e) {
 			Debug.logError(e, "Encountered errors reading image info.", module);
 		} catch (IOException e) {
 			Debug.logError(e, "Encountered errors reading image info.", module);
 		}
-		return heigthInInches;
+		return heightInInches;
 	}
 	
 	private static void printImageInfo(ImageInfo info) {
