@@ -75,17 +75,10 @@
     
     <form name="updateContactListForm" type="single" title="${uiLabelMap.UpdateContactListHeader}" default-map-name="contactList" target="updateContactList"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
-
         <field name="contactListId"><hidden/></field>
         <field name="contactListName" title="${uiLabelMap.LabelName}" title-style="requiredField" position="1"><text/></field>
-        <field name="marketingCampaignId" title="${uiLabelMap.LabelMarketingCampaign}" position="2">
-            <drop-down allow-empty="true" current="selected">
-                <entity-options description="${campaignName}" entity-name="MarketingCampaign">
-                    <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_CANCELLED"/>
-                    <entity-constraint name="statusId" operator="not-equals" value="MKTG_CAMP_COMPLETED"/>
-                    <entity-order-by field-name="campaignName"/>
-                </entity-options>
-            </drop-down>
+        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" position="2" widget-style="tabletext">
+            <display-entity entity-name="ContactMechType"/>
         </field>
         <field name="description" title="${uiLabelMap.CommonDescription}"><textarea rows="4" cols="33" /></field>
 
