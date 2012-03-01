@@ -1,6 +1,7 @@
 package net.intelliant.marketing;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Locale;
@@ -8,6 +9,9 @@ import java.util.Map;
 
 import net.intelliant.util.UtilCommon;
 
+import org.apache.sanselan.ImageInfo;
+import org.apache.sanselan.ImageReadException;
+import org.apache.sanselan.Sanselan;
 import org.ofbiz.base.location.FlexibleLocation;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
@@ -60,18 +64,22 @@ public class MergeFormServices {
 				String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
 				ByteWrapper binData = (ByteWrapper) context.get("headerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
+					double topMargin = computeImageHeightInInches(binData);
 					fileName = (String) context.get("_headerImageLocation_fileName");
 					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
 					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
 					mergeForm.put("headerImageLocation", previewURL);
+					mergeForm.put("topMargin", topMargin);
 				}
 
 				binData = (ByteWrapper) context.get("footerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
+					double bottomMargin = computeImageHeightInInches(binData);
 					fileName = (String) context.get("_footerImageLocation_fileName");
 					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
 					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
 					mergeForm.put("footerImageLocation", previewURL);
+					mergeForm.put("bottomMargin", bottomMargin);
 				}
 			} else if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
 				mergeForm.put("fromEmailAddress", mergeFormEmailAddress);
@@ -86,6 +94,33 @@ public class MergeFormServices {
 			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(opentapsErrorResource, "OpentapsError_CreateMergeFormFail", locale), locale, module);
 		}
 		return results;
+	}
+
+	private static double computeImageHeightInInches(ByteWrapper binData) {
+		double heigthInInches = -1;
+		try {
+			ImageInfo info = Sanselan.getImageInfo(binData.getBytes());
+			if (info != null) {
+				printImageInfo(info);
+				heigthInInches = info.getPhysicalHeightInch();
+			}
+		} catch (ImageReadException e) {
+			Debug.logError(e, "Encountered errors reading image info.", module);
+		} catch (IOException e) {
+			Debug.logError(e, "Encountered errors reading image info.", module);
+		}
+		return heigthInInches;
+	}
+	
+	private static void printImageInfo(ImageInfo info) {
+		if (Debug.infoOn()) {
+			Debug.logInfo("[mailer.createMergeForm] Sanselan bpp >> " + info.getBitsPerPixel(), module);
+			Debug.logInfo("[mailer.createMergeForm] Sanselan height in px >> " + info.getHeight(), module);
+			Debug.logInfo("[mailer.createMergeForm] Sanselan height in inches >> " + info.getPhysicalHeightInch(), module);
+			Debug.logInfo("[mailer.createMergeForm] Sanselan width in inches >> " + info.getPhysicalWidthInch(), module);
+			Debug.logInfo("[mailer.createMergeForm] Sanselan height dpi >> " + info.getPhysicalHeightDpi(), module);
+			Debug.logInfo("[mailer.createMergeForm] Sanselan width dpi >> " + info.getPhysicalWidthDpi(), module);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -132,20 +167,24 @@ public class MergeFormServices {
 			}
 			ByteWrapper binData = (ByteWrapper) context.get("headerImageLocation");
 			if (binData != null && binData.getLength() > 0) {
+				double topMargin = computeImageHeightInInches(binData);
 				fileName = (String) context.get("_headerImageLocation_fileName");
 				dataResourceId = uploadFile(dctx, filePath, fileName, binData);
 				String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
 				mergeForm.put("headerImageLocation", previewURL);
+				mergeForm.put("topMargin", topMargin);
 			} else if (UtilValidate.areEqual(headerImageLocationRemove, "Y")) {
 				mergeForm.put("headerImageLocation", "");
 			}
 
 			binData = (ByteWrapper) context.get("footerImageLocation");
 			if (binData != null && binData.getLength() > 0) {
+				double bottomMargin = computeImageHeightInInches(binData);
 				fileName = (String) context.get("_footerImageLocation_fileName");
 				dataResourceId = uploadFile(dctx, filePath, fileName, binData);
 				String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
 				mergeForm.put("footerImageLocation", previewURL);
+				mergeForm.put("bottomMargin", bottomMargin);
 			} else if (UtilValidate.areEqual(footerImageLocationRemove, "Y")) {
 				mergeForm.put("footerImageLocation", "");
 			}

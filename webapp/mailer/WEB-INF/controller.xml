@@ -95,6 +95,13 @@
 		<response name="pdfGenerationSuccess" type="none"/>
 		<response name="error" type="view" value="findMarketingCampaigns" />
 	</request-map>
+	<request-map uri="previewPdfTemplate">
+		<security https="true" auth="true" />
+		<event type="java" path="net.intelliant.marketing.CampaignExecutionEvents" invoke="previewPdfTemplate" />
+		<response name="success" type="none" />
+		<response name="pdfGenerationSuccess" type="none"/>
+		<response name="error" type="view" value="editMergeForms" />
+	</request-map>
 	
 	<request-map uri="createContactListForm">
 		<security https="true" auth="true" />
@@ -123,7 +130,13 @@
 	<request-map uri="updateMergeForm">
         <security https="true" auth="true"/>
         <event type="service" invoke="mailer.updateMergeForm"/>
-        <response name="success" type="view" value="manageMergeForms"/>
+        <response name="success" type="request-redirect-filterparam" value="editMergeForms" allowed-params="mergeFormId" allowed-attributes="mergeFormId"/>
+        <response name="error" type="view" value="editMergeForms"/>
+    </request-map>
+    <request-map uri="updateAndCloseMergeForm">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="mailer.updateMergeForm"/>
+        <response name="success" type="request-redirect-noparam" value="manageMergeForms"/>
         <response name="error" type="view" value="editMergeForms"/>
     </request-map>
 	

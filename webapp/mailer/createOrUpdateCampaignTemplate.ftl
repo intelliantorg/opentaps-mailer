@@ -47,35 +47,59 @@
     <div id="headerFooterImageContainer" <#if MailerMergeForm.mergeFormTypeId?if_exists != "PRINT"> style="display:none"</#if>>
 	    <div class="formRow">
 			<span class="formLabel">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
-			<span class="formInputSpan">
-				<input type="hidden" id="headerImageLocationRemove" name="headerImageLocationRemove" value="N" />
-				<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "">
-	      			<#assign headerLink = MailerMergeForm.headerImageLocation>
-	      			<div id="headerImageControl">
-	      				<a href="javascript:void()" onclick="preview('${headerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
-	      			</div>
-		      		<div id="headerImageLocationCont" style="display:none">
+			<div class="fieldContainer">
+				<span class="formInputSpan">
+					<input type="hidden" id="headerImageLocationRemove" name="headerImageLocationRemove" value="N" />
+					<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "">
+		      			<#assign headerLink = MailerMergeForm.headerImageLocation>
+		      			<div id="headerImageControl">
+		      				<a href="javascript:void()" onclick="preview('${headerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('headerImageControl', 'headerImageLocationCont', 'headerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
+		      			</div>
+			      		<div id="headerImageLocationCont" style="display:none">
+			      			<@inputFile name="headerImageLocation" class="inputBox" />
+			      		</div>
+		      		<#else>
 		      			<@inputFile name="headerImageLocation" class="inputBox" />
-		      		</div>
-	      		<#else>
-	      			<@inputFile name="headerImageLocation" class="inputBox" />
-	      		</#if>
-	      	</span>
+		      		</#if>
+		      	</span>
+		    </div>
+		    <div id="topMarginContainer">
+				<div class="labelRequired">${uiLabelMap.LabelTopMargin}</div>
+				<div class="fieldContainer">
+					<span class="formInputSpan">
+				  		<input title="${uiLabelMap.TooltipTopMargin}" type="text" class="inputBox smallTextfield required number" name="topMargin" size="50" value="${(MailerMergeForm.topMargin)?if_exists}"/>
+				  		<span>${uiLabelMap.LabelInches}</span>
+				  		<label for="topMargin" generated="true" class="error" style="display:none;">Please enter a valid number.</label>
+					</span>	
+				</div>
+			</div>
 	    </div>
 	    <div class="formRow">
 			<span class="formLabel">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
-			<span class="formInputSpan">
-				<input type="hidden" id="footerImageLocationRemove" name="footerImageLocationRemove" value="N" />
-				<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "">
-	      			<#assign footerLink = MailerMergeForm.footerImageLocation>	      		
-	      			<div id="footerImageControl">
-	      				<a href="javascript:void()" onclick="preview('${footerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
-	      			</div>
-	      			<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox" /></div>
-	      		<#else>
-	      			<@inputFile name="footerImageLocation" class="inputBox" />
-	      		</#if>	      	
-	      	</span>
+			<div class="fieldContainer">
+				<span class="formInputSpan">
+					<input type="hidden" id="footerImageLocationRemove" name="footerImageLocationRemove" value="N" />
+					<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "">
+		      			<#assign footerLink = MailerMergeForm.footerImageLocation>	      		
+		      			<div id="footerImageControl">
+		      				<a href="javascript:void()" onclick="preview('${footerLink}')">${uiLabelMap.LabelPreview}</a> <a href="javascript:void()" onclick="hideShowUploadImage('footerImageControl', 'footerImageLocationCont', 'footerImageLocationRemove')">${uiLabelMap.LabelRemove}</a>
+		      			</div>
+		      			<div id="footerImageLocationCont" style="display:none"><@inputFile name="footerImageLocation" class="inputBox" /></div>
+		      		<#else>
+		      			<@inputFile name="footerImageLocation" class="inputBox" />
+		      		</#if>	      	
+		      	</span>
+			</div>
+			<div id="bottomMarginContainer">
+				<div class="labelRequired">${uiLabelMap.LabelBottomMargin}</div>
+				<div class="fieldContainer">
+					<span class="formInputSpan">
+				  		<input title="${uiLabelMap.TooltipTopMargin}" type="text" class="inputBox smallTextfield required number" name="bottomMargin" size="50" value="${(MailerMergeForm.bottomMargin)?if_exists}"/>
+				  		<span>${uiLabelMap.LabelInches}</span>
+				  		<label for="topMargin" generated="true" class="error" style="display:none;">Please enter a valid number.</label>
+					</span>	
+				</div>
+			</div>
 	    </div>
     </div>
 
@@ -105,6 +129,7 @@
 		<span class="formInputSpan">
 			<input type="text" class="inputBox smallTextfield required digits" name="scheduleAt" size="50" value="${(MailerMergeForm.scheduleAt)?if_exists}" maxlength="255"/>
 			<span>${uiLabelMap.LabelNoOfDays}</span>
+			<label for="scheduleAt" generated="true" class="error" style="display:none;">Please enter only digits.</label>
 		</span>
 	</div>
 
@@ -117,7 +142,17 @@
 
     <div class="formRow">
 		<span class="formInputSpan">
+			<#if mergeFormId?has_content>
+				<input type="submit" class="smallSubmit" name="submitButton" value="${uiLabelMap.ButtonCommonSaveAndClose}" onClick="this.form.action='<@ofbizUrl>updateAndCloseMergeForm</@ofbizUrl>'" />
+			</#if>
 			<input type="submit" class="smallSubmit" name="submitButton" value="${formSubmit}" onClick="" />
+			<#if mergeFormId?has_content>
+				<#assign displayStyle = "" />
+				<#if MailerMergeForm.mergeFormTypeId?if_exists != "PRINT">
+					<#assign displayStyle="display:none;" />	
+				</#if>
+				<a id="previewTemplateContainer" style="${displayStyle}" class='subMenuButton' href='previewPdfTemplate?mergeFormId=${mergeFormId}'>${uiLabelMap.ButtonPreviewPdfTemplate}</a>
+			</#if>
 		</span>
 	</div>
 
