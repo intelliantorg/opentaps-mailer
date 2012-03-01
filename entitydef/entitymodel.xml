@@ -74,6 +74,9 @@
     	<field name="salesOrServiceDate" type="date" not-null="true">
     		<description>Sales/Service date</description>
     	</field>
+    	<field name="salutation" type="name">
+    		<description>Salutation</description>
+    	</field>
     	<field name="firstName" type="name" not-null="true">
     		<description>First Name</description>
     	</field>
@@ -93,14 +96,20 @@
     	 	<description>Mobile No</description>
     	</field>   	
     	<field name="organisationName" type="name">
-    	 	<description>Organisation Name</description>
+    	 	<description>Organization Name</description>
     	</field>
     	<field name="address1" type="name" not-null="true">
     	 	<description>Address line 1</description>
     	</field>
     	<field name="address2" type="name">
     	 	<description>Address line 2</description>
-    	</field>	
+    	</field>
+    	<field name="address3" type="name">
+    	 	<description>Address line 3</description>
+    	</field>
+    	<field name="city" type="name" not-null="true">
+    	 	<description>City</description>
+    	</field>		
     	<field name="postalCode" type="very-short">
     	 	<description>Postal code</description>
     	</field>	
