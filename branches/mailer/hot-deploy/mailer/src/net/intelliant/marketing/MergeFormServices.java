@@ -62,7 +62,7 @@ public class MergeFormServices {
 		try {
 			if (UtilValidate.areEqual(mergeFormTypeId, "PRINT")) {
 				String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
-				double topMargin = -1;
+				double topMargin = 0;
 				ByteWrapper binData = (ByteWrapper) context.get("headerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
 					topMargin = computeImageHeightInInches(binData);
@@ -73,7 +73,7 @@ public class MergeFormServices {
 				}
 				mergeForm.put("topMargin", topMargin);
 
-				double bottomMargin = -1;
+				double bottomMargin = 0;
 				binData = (ByteWrapper) context.get("footerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
 					bottomMargin = computeImageHeightInInches(binData);
