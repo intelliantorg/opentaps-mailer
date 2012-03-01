@@ -18,7 +18,7 @@
 				<#list mailerCampaignStatusList as mailerCampaignStatusListItem>
 					<td><span class="tableheadtext">${mailerCampaignStatusListItem.description}</span></td>
 				</#list>
-				<td><span class="tableheadtext">${uiLabelMap.ButtonExecute}</span></td>
+				<td><span class="tableheadtext">${uiLabelMap.ActionHeader}</span></td>
 			</tr>
 			<#assign contactListId = "" />
 			<#list campaignsListIt as campaignsListItem>
