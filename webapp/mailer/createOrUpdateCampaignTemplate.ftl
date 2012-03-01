@@ -63,16 +63,18 @@
 		      		</#if>
 		      	</span>
 		    </div>
-		    <div id="topMarginContainer">
-				<div class="labelRequired">${uiLabelMap.LabelTopMargin}</div>
-				<div class="fieldContainer">
-					<span class="formInputSpan">
-				  		<input title="${uiLabelMap.TooltipTopMargin}" type="text" class="inputBox smallTextfield required number" name="topMargin" size="50" value="${(MailerMergeForm.topMargin)?if_exists}"/>
-				  		<span>${uiLabelMap.LabelInches}</span>
-				  		<label for="topMargin" generated="true" class="error" style="display:none;">Please enter a valid number.</label>
-					</span>	
+		    <#if mergeFormId?exists>
+			    <div id="topMarginContainer">
+					<div class="labelRequired">${uiLabelMap.LabelTopMargin}</div>
+					<div class="fieldContainer">
+						<span class="formInputSpan">
+					  		<input title="${uiLabelMap.TooltipTopMargin}" type="text" class="inputBox smallTextfield required number" name="topMargin" size="50" value="${(MailerMergeForm.topMargin)?if_exists}"/>
+					  		<span>${uiLabelMap.LabelInches}</span>
+					  		<label for="topMargin" generated="true" class="error" style="display:none;">Please enter a valid number.</label>
+						</span>	
+					</div>
 				</div>
-			</div>
+			</#if>
 	    </div>
 	    <div class="formRow">
 			<span class="formLabel">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
@@ -90,16 +92,18 @@
 		      		</#if>	      	
 		      	</span>
 			</div>
-			<div id="bottomMarginContainer">
-				<div class="labelRequired">${uiLabelMap.LabelBottomMargin}</div>
-				<div class="fieldContainer">
-					<span class="formInputSpan">
-				  		<input title="${uiLabelMap.TooltipTopMargin}" type="text" class="inputBox smallTextfield required number" name="bottomMargin" size="50" value="${(MailerMergeForm.bottomMargin)?if_exists}"/>
-				  		<span>${uiLabelMap.LabelInches}</span>
-				  		<label for="topMargin" generated="true" class="error" style="display:none;">Please enter a valid number.</label>
-					</span>	
+			<#if mergeFormId?exists>
+				<div id="bottomMarginContainer">
+					<div class="labelRequired">${uiLabelMap.LabelBottomMargin}</div>
+					<div class="fieldContainer">
+						<span class="formInputSpan">
+					  		<input title="${uiLabelMap.TooltipTopMargin}" type="text" class="inputBox smallTextfield required number" name="bottomMargin" size="50" value="${(MailerMergeForm.bottomMargin)?if_exists}"/>
+					  		<span>${uiLabelMap.LabelInches}</span>
+					  		<label for="topMargin" generated="true" class="error" style="display:none;">Please enter a valid number.</label>
+						</span>	
+					</div>
 				</div>
-			</div>
+			</#if>
 	    </div>
     </div>
 
