@@ -62,25 +62,27 @@ public class MergeFormServices {
 		try {
 			if (UtilValidate.areEqual(mergeFormTypeId, "PRINT")) {
 				String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
+				double topMargin = -1;
 				ByteWrapper binData = (ByteWrapper) context.get("headerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
-					double topMargin = computeImageHeightInInches(binData);
+					topMargin = computeImageHeightInInches(binData);
 					fileName = (String) context.get("_headerImageLocation_fileName");
 					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
 					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
 					mergeForm.put("headerImageLocation", previewURL);
-					mergeForm.put("topMargin", topMargin);
 				}
+				mergeForm.put("topMargin", topMargin);
 
+				double bottomMargin = -1;
 				binData = (ByteWrapper) context.get("footerImageLocation");
 				if (binData != null && binData.getLength() > 0) {
-					double bottomMargin = computeImageHeightInInches(binData);
+					bottomMargin = computeImageHeightInInches(binData);
 					fileName = (String) context.get("_footerImageLocation_fileName");
 					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
 					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
 					mergeForm.put("footerImageLocation", previewURL);
-					mergeForm.put("bottomMargin", bottomMargin);
 				}
+				mergeForm.put("bottomMargin", bottomMargin);
 			} else if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
 				mergeForm.put("fromEmailAddress", mergeFormEmailAddress);
 			}
