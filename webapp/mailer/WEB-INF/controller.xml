@@ -124,7 +124,7 @@
     <request-map uri="createMergeForm">
         <security https="true" auth="true"/>
         <event type="service" invoke="mailer.createMergeForm"/>
-        <response name="success" type="view" value="manageMergeForms"/>
+        <response name="success" type="request-redirect-noparam" value="manageMergeForms"/>
         <response name="error" type="view" value="editMergeForms"/>
     </request-map>
 	<request-map uri="updateMergeForm">
