@@ -53,13 +53,13 @@ public final class UtilCommon {
 	static {
 		try {
 			imageUploadLocation = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
-			if (Debug.infoOn()) {
-				Debug.logInfo("[parseHtmlAndGenerateCompressedImages] imageUploadLocation >> " + imageUploadLocation, module);
-				Debug.logInfo("[parseHtmlAndGenerateCompressedImages] campaignBaseURL >> " + campaignBaseURL, module);
-				Debug.logInfo("[parseHtmlAndGenerateCompressedImages] imageUploadWebApp >> " + imageUploadWebApp, module);
-				Debug.logInfo("[parseHtmlAndGenerateCompressedImages] imageCompressionQuality >> " + imageCompressionQuality, module);
-			}
 		} catch (MalformedURLException e) {}
+		if (Debug.infoOn()) {
+			Debug.logInfo("[UtilCommon] campaignBaseURL >> " + campaignBaseURL, module);
+			Debug.logInfo("[UtilCommon] imageUploadLocation >> " + imageUploadLocation, module);
+			Debug.logInfo("[UtilCommon] imageUploadWebApp >> " + imageUploadWebApp, module);
+			Debug.logInfo("[UtilCommon] imageCompressionQuality >> " + imageCompressionQuality, module);
+		}
 	}
 	
 	private UtilCommon() {}
