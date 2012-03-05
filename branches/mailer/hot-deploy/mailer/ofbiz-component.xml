@@ -20,11 +20,18 @@
     <service-resource type="model" loader="main" location="servicedef/services.xml"/>
     
     <test-suite loader="main" location="testdef/tests.xml"/>
-    <webapp 
+    <webapp
     	name="mailer"
         title="Mailer"
         server="default-server"
         location="webapp/mailer"
         mount-point="/mailer"
-        app-bar-display="true"/>    
+        app-bar-display="true"/>
+    <webapp
+    	name="mailer"
+        title="Mailer"
+        server="default-server"
+        location="webapp/campaign"
+        mount-point="/campaign"
+        app-bar-display="true"/>
 </ofbiz-component>
