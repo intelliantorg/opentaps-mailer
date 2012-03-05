@@ -27,11 +27,4 @@
         location="webapp/mailer"
         mount-point="/mailer"
         app-bar-display="true"/>
-    <webapp
-    	name="mailer"
-        title="Mailer"
-        server="default-server"
-        location="webapp/campaign"
-        mount-point="/campaign"
-        app-bar-display="true"/>
 </ofbiz-component>
