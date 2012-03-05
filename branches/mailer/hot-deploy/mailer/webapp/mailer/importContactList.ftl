@@ -38,13 +38,13 @@
 						<tr>
 							<th align="left" width="60px">${uiLabelMap.LabelSNo}</th>
 							<th align="left" width="130px">${uiLabelMap.LabelRow}</th>
-							<th align="left">${uiLabelMap.LabelFailureReason}</th>						
+							<th align="left">${uiLabelMap.LabelFailureReason}</th>
 						</tr>
 						<#list keys as key>
-							<tr>							
+							<tr>
 								<td align="left" x='key'>${key_index+1}</td>
 								<td align="left" x='key'>${key}</td>
-								<td align="left" y='value'>${report(key)}</td>						
+								<td align="left" y='value'>${report(key)?default("")}</td>
 							</tr>
 						</#list>
 					</table>
