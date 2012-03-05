@@ -248,10 +248,11 @@ public class CampaignExecutionEvents {
 		String fileName = marketingCampaignId+".pdf";		
 		File outputFile = new File(file.getAbsoluteFile() + File.separator + fileName);
 
-		if(!outputFile.exists()){
-			FileOutputStream fos = new FileOutputStream(outputFile);
-			fos.write(baos.toByteArray());
+		if(outputFile.exists()){
+			outputFile.delete();
 		}
+		FileOutputStream fos = new FileOutputStream(outputFile);
+		fos.write(baos.toByteArray());
 	}
 
 	/**
