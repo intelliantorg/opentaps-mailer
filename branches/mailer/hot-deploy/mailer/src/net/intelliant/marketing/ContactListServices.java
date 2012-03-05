@@ -102,14 +102,16 @@ public class ContactListServices {
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
+		
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
-
+		
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
 				excelRowIterator.next();
 				rowIndex++;
 			}
 		}
+		
 		while (excelRowIterator.hasNext()) {
 			try {
 				transaction = TransactionUtil.begin();
@@ -168,6 +170,7 @@ public class ContactListServices {
 				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
 				excelCell = excelRowData.getCell(columnIndex);
 				cellValue = (excelCell != null) ? excelCell.toString() : "";
+				System.out.println("########## Excel type : "+excelCell.getCellType());
 			} catch (NumberFormatException nfe) {
 				cellValue = "";
 			}

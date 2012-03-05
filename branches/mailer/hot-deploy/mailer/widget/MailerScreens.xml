@@ -397,6 +397,7 @@
 	        <actions>
 	            <set field="pageTitleLabel" value="ConfigureMappingHeader"/>
 	            <entity-condition entity-name="MailerImportMapper" list="listOfMappings" list-name="listOfMappings">
+	            	<condition-expr field-name="thruDate" operator="equals" value=""/>
 					<order-by field-name="importMapperName"/>
 				</entity-condition>
 	        </actions>

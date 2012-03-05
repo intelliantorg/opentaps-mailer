@@ -11,9 +11,12 @@
         <field name="fromDate" title="${uiLabelMap.CommonFrom}" position="1"><display description="${marketingCampaign.fromDate}"/></field>
         <field name="thruDate" title="${uiLabelMap.CommonThru}" position="2"><display description="${marketingCampaign.thruDate}"/></field>
         <field name="templateId" title="${uiLabelMap.LabelTemplateId}" position="1" widget-style="linktext">
-			<hyperlink target="editMergeForms?mergeFormId=${marketingCampaign.templateId}" description="${templateName}" />
-        </field>      
-        <field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display description="${marketingCampaign.description}"/></field>
+			<hyperlink target="editMergeForms?mergeFormId=${marketingCampaign.templateId}" description="${templateName}"/>
+        </field>
+		<field use-when="marketingCampaign != null &amp;&amp; downloadPdf != null" name="downloadPdf" title="${uiLabelMap.LabelLastRun}" position="2" widget-style="linktext">        
+			<hyperlink target="${marketingCampaign.downloadPdf}" description="${uiLabelMap.LabelDownloadPdf}" target-type="plain" target-window="_blank"/>
+		</field>
+		<field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display description="${marketingCampaign.description}"/></field>
     </form>
     
     <form name="FindMarketingCampaign" type="single" target="${findMarketingCampaignsTarget}"
