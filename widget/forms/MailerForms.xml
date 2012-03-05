@@ -13,7 +13,7 @@
         <field name="templateId" title="${uiLabelMap.LabelTemplateId}" position="1" widget-style="linktext">
 			<hyperlink target="editMergeForms?mergeFormId=${marketingCampaign.templateId}" description="${templateName}"/>
         </field>
-		<field use-when="marketingCampaign != null &amp;&amp; downloadPdf != null" name="downloadPdf" title="${uiLabelMap.LabelLastRun}" position="2" widget-style="linktext">        
+		<field use-when="marketingCampaign.get(&quot;downloadPdf&quot;) != null" name="downloadPdf" title="${uiLabelMap.LabelLastRun}" position="2" widget-style="linktext">        
 			<hyperlink target="${marketingCampaign.downloadPdf}" description="${uiLabelMap.LabelDownloadPdf}" target-type="plain" target-window="_blank"/>
 		</field>
 		<field name="campaignSummary" title="${uiLabelMap.CommonDescription}"><display description="${marketingCampaign.description}"/></field>
