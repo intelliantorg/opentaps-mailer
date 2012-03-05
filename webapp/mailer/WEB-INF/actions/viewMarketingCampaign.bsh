@@ -3,6 +3,8 @@ import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.base.util.UtilMisc;
 import org.opentaps.common.util.UtilCommon;
+import org.ofbiz.base.util.UtilProperties;
+import org.ofbiz.base.location.FlexibleLocation;
 
 marketingCampaignId = UtilCommon.getParameter(request, "marketingCampaignId");
 
@@ -18,11 +20,11 @@ if (UtilValidate.isNotEmpty(templateId)) {
 	context.put("templateName", template.getString("mergeFormName"));
 }
 
+marketingCampaignMap = marketingCampaign.getAllFields();
+
 statusId = marketingCampaign.get("statusId");
 currentStatus =  delegator.findByPrimaryKey("StatusItem", UtilMisc.toMap("statusId", statusId));
 context.put("currentStatus", currentStatus); 
-
-context.put("marketingCampaign", marketingCampaign);
 
 //put to history
 context{"history"} = UtilCommon.makeHistoryEntry(marketingCampaign.get("campaignName"), "viewMarketingCampaign", UtilMisc.toList("marketingCampaignId"));
@@ -38,3 +40,13 @@ if (security.hasEntityPermission("CRMSFA_CAMP", "_UPDATE", userLogin)) {
 conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId), EntityUtil.getFilterByDateExpr()), EntityOperator.AND);
 marketingCampaignContactLists = delegator.findByCondition("MailerMarketingCampaignContactListDetailsView", conditions, null, UtilMisc.toList("fromDate"));
 context.put("marketingCampaignContactLists", marketingCampaignContactLists);
+
+absoluteBasePdfPath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.pdfSaveLocation")).getPath();
+file = new File(absoluteBasePdfPath + File.separator + marketingCampaignId + ".pdf");
+if(file.exists()) {
+	marketingCampaignMap.put("downloadPdf", UtilProperties.getPropertyValue("mailer", "mailer.pdfSaveBaseLocation") + "/" + marketingCampaignId + ".pdf");
+}else{
+	marketingCampaignMap.put("downloadPdf", null);
+}
+
+context.put("marketingCampaign", marketingCampaignMap);

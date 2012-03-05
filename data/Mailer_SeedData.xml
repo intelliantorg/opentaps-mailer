@@ -38,8 +38,10 @@
 	
 	<SecurityGroupPermission groupId="SALES_MANAGER" permissionId="MAILER_MAP_CREATE"/>
 	<SecurityGroupPermission groupId="SALES_MANAGER" permissionId="MAILER_MAP_UPDATE"/>
+	<SecurityGroupPermission groupId="SALES_MANAGER" permissionId="MAILER_MAP_DELETE"/>
 	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_CREATE"/>
 	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_UPDATE"/>
+	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_DELETE"/>
 	<SecurityPermission description="Create mapping in mailer application." permissionId="MAILER_MAP_CREATE"/>
 	<SecurityPermission description="Update mapping in mailer application." permissionId="MAILER_MAP_UPDATE"/>
 </entity-engine-xml>
