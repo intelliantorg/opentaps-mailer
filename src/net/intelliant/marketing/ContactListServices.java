@@ -170,7 +170,6 @@ public class ContactListServices {
 				columnIndex = Short.parseShort(String.valueOf(entry.getValue()));
 				excelCell = excelRowData.getCell(columnIndex);
 				cellValue = (excelCell != null) ? excelCell.toString() : "";
-				System.out.println("########## Excel type : "+excelCell.getCellType());
 			} catch (NumberFormatException nfe) {
 				cellValue = "";
 			}
