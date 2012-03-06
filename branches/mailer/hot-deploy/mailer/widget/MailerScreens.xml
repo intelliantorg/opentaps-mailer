@@ -479,6 +479,7 @@
                 <set field="sectionHeaderUiLabel" value="ImportContactListHeader"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
 	        	<entity-condition entity-name="MailerImportMapper" list="mailerImportMapperList" list-name="mailerImportMapperList" use-cache="true">
+	        		<condition-expr field-name="thruDate" operator="equals" value=""/>
                 	<order-by field-name="importMapperName"/>
                 </entity-condition>
             </actions>
