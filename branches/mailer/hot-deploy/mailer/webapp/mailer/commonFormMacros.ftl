@@ -159,3 +159,30 @@
         <br class="clear"/>
     </div>
 </#macro>
+
+<#macro htmlTextArea textAreaId name="" value="" tagFileLocation="" rows=20 cols=80 class="" style="">
+  <textarea name="${name?has_content?string(name, textAreaId)}" id="${textAreaId}" class="${class}" rows="${rows}" cols="${cols}" style="${style}">${value}</textarea>
+  <#if tagFileLocation?has_content>
+    <@import location = tagFileLocation/>
+  </#if>
+  <script type="text/javascript" src="/mailer/js/fckeditor/fckeditor.js"></script>
+	<script type="text/javascript">
+    opentaps.addOnLoad(function() {
+      <#if tagFileLocation?has_content>
+        tags = [];
+        <#list getTags()?default([]) as tagMap>
+          <#list tagMap?default({})?keys as tag>
+            tags.push({ 'tag' : '${tag}' , 'description' : '${tagMap[tag]?js_string}' });
+          </#list>
+        </#list>
+        insertTagsLabel = '${uiLabelMap.OpentapsHtmlEditorInsertTagsLabel?js_string}';
+      </#if>
+      insertTags = ${tagFileLocation?has_content?string};
+      var oFCKeditor = new FCKeditor( '${textAreaId}' ) ;
+      oFCKeditor.BasePath = '/mailer/js/fckeditor/' ;
+      oFCKeditor.Height	= 400 ;
+      oFCKeditor.ToolbarSet = '${tagFileLocation?has_content?string("OpentapsFormMerge", "OpentapsBasic")}';
+      oFCKeditor.ReplaceTextarea() ;
+    });
+	</script>
+</#macro>
