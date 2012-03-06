@@ -45,9 +45,9 @@
       </span>
     </div>
     <div id="headerFooterImageContainer" <#if MailerMergeForm.mergeFormTypeId?if_exists != "PRINT"> style="display:none"</#if>>
-	    <div class="formRow">
+	    <div class="rowContainer formRow">
 			<span class="formLabel">${uiLabelMap.LabelTemplateHeaderImageLocation}</span>
-			<div class="fieldContainer">
+			<div class="fieldContainer" style="width:35%; text-align:left;">
 				<span class="formInputSpan">
 					<input type="hidden" id="headerImageLocationRemove" name="headerImageLocationRemove" value="N" />
 					<#if MailerMergeForm.headerImageLocation?exists && MailerMergeForm.headerImageLocation != "">
@@ -76,9 +76,9 @@
 				</div>
 			</#if>
 	    </div>
-	    <div class="formRow">
+	    <div class="rowContainer formRow">
 			<span class="formLabel">${uiLabelMap.LabelTemplateFooterImageLocation}</span>
-			<div class="fieldContainer">
+			<div class="fieldContainer" style="width:35%; text-align:left;">
 				<span class="formInputSpan">
 					<input type="hidden" id="footerImageLocationRemove" name="footerImageLocationRemove" value="N" />
 					<#if MailerMergeForm.footerImageLocation?exists  && MailerMergeForm.footerImageLocation != "">
