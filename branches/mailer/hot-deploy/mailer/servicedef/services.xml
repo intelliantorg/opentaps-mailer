@@ -53,6 +53,11 @@
         <attribute name="importFileColIdx" type="Map" string-map-prefix="importFileColIdx_" mode="IN" optional="false"/>
     </service>
     
+    <service name="mailer.deleteImportMapping" engine="java" location="net.intelliant.imports.ImportServices" invoke="deleteImportMapping" auth="true">
+        <description>Delete multiple import mapper</description>
+        <attribute name="importMapperId" type="String" mode="IN" optional="false"/>
+    </service>
+    
     <service name="mailer.createContactList" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="createContactList" auth="true">
         <description>Create a ContactList record</description>
         <implements service="createContactList"></implements>
@@ -180,7 +185,7 @@
     	<description>Will be used to mark mailer as executed.</description>
         <attribute name="campaignStatusIds" type="List" mode="IN" optional="false"/>
     </service>
-        
+    
 	<service name="mailer.removeRecipientFromContactList" engine="java" location="net.intelliant.marketing.ContactListServices" invoke="removeRecipientFromContactList" auth="true">
     	<description>Will be used remove recipients from contact list, and cancel associated mailers.</description>
         <attribute name="recipientListId" type="String" mode="IN" optional="false"/>

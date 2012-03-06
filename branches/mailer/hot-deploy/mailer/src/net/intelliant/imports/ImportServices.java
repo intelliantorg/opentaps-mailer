@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.ofbiz.base.util.Debug;
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
@@ -12,6 +12,7 @@ import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.util.EntityUtil;
+import org.ofbiz.security.Security;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.GenericServiceException;
 import org.ofbiz.service.ModelService;
@@ -21,7 +22,7 @@ import org.opentaps.common.util.UtilMessage;
 public class ImportServices {
 	private static final String MODULE = ImportServices.class.getName();
 	private static final String errorResource = "ErrorLabels";
-	
+
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> configureImportMapping(DispatchContext dctx, Map<String, Object> context) {
 		Map<String, Object> serviceResults = ServiceUtil.returnSuccess();
@@ -41,6 +42,7 @@ public class ImportServices {
 		inputs.put("createdByUserLogin", userLogin.getString("userLoginId"));
 		inputs.put("lastModifiedByUserLogin", userLogin.getString("userLoginId"));
 		inputs.put("isFirstRowHeader", isFirstRowHeader ? "Y" : "N");
+		inputs.put("fromDate", UtilDateTime.nowTimestamp());
 		try {
 			dctx.getDelegator().makeValue("MailerImportMapper", inputs).create();
 			ModelService service = dctx.getModelService("mailer.configureImportColumnsMapping");
@@ -48,10 +50,8 @@ public class ImportServices {
 			inputs.put("importMapperId", importMapperId);
 			dctx.getDispatcher().runSync(service.name, inputs);
 		} catch (GenericEntityException e) {
-			Debug.log(e.toString());
 			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), locale, MODULE);
 		} catch (GenericServiceException e) {
-			Debug.log(e.toString());
 			return UtilMessage.createAndLogServiceError(e, UtilProperties.getMessage(errorResource, "errorConfigImportMapper", locale), locale, MODULE);
 		}
 		serviceResults.put("importMapperId", importMapperId);
@@ -112,10 +112,7 @@ public class ImportServices {
 
 	private static void updateMailerImportMapping(GenericDelegator delegator, String importMapperId, String importMapperName, String description, String isFirstRowHeader, String userLoginId) throws GenericEntityException {
 		GenericValue mailerImportMapper = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
-		if (!(UtilValidate.areEqual(mailerImportMapper.getString("importMapperName"), importMapperName) 
-				&& UtilValidate.areEqual(mailerImportMapper.getString("description"), description) 
-				&& UtilValidate.areEqual(mailerImportMapper.getString("isFirstRowHeader"), isFirstRowHeader)
-			)) {
+		if (!(UtilValidate.areEqual(mailerImportMapper.getString("importMapperName"), importMapperName) && UtilValidate.areEqual(mailerImportMapper.getString("description"), description) && UtilValidate.areEqual(mailerImportMapper.getString("isFirstRowHeader"), isFirstRowHeader))) {
 			mailerImportMapper.set("importMapperName", importMapperName);
 			mailerImportMapper.set("description", description);
 			mailerImportMapper.set("isFirstRowHeader", isFirstRowHeader);
@@ -152,5 +149,27 @@ public class ImportServices {
 				delegator.makeValue("MailerImportColumnMapper", inputs).create();
 			}
 		}
+	}
+
+	public static Map<String, Object> deleteImportMapping(DispatchContext dctx, Map<String, Object> context) throws GenericEntityException {
+		GenericDelegator delegator = dctx.getDelegator();
+		Locale locale = (Locale) context.get("locale");
+		Security security = dctx.getSecurity();
+		GenericValue userLogin = (GenericValue) context.get("userLogin");
+		String userLoginId = userLogin.getString("userLoginId");
+
+		String importMapperId = (String) context.get("importMapperId");
+		GenericValue importMapperGV = null;
+
+		if (security.hasPermission("MAILER_MAP_DELETE", userLogin)) {
+			importMapperId = String.valueOf(importMapperId);
+			importMapperGV = delegator.findByPrimaryKey("MailerImportMapper", UtilMisc.toMap("importMapperId", importMapperId));
+			importMapperGV.put("thruDate", UtilDateTime.nowTimestamp());
+			importMapperGV.put("deletedByUserLogin", userLoginId);
+			importMapperGV.store();
+		} else {
+			return UtilMessage.createAndLogServiceError("Do not have permission to delete imprt mapper", MODULE);
+		}
+		return ServiceUtil.returnSuccess();
 	}
 }
