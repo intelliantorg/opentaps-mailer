@@ -86,7 +86,7 @@ public class CampaignExecutionEvents {
 		} else {
 			try {
 				GenericValue mailerMarketingCampaign = delegator.findByPrimaryKey("MailerMarketingCampaign", UtilMisc.toMap("marketingCampaignId", marketingCampaignId));
-				//mailerMarketingCampaign.getAllFields()
+				// mailerMarketingCampaign.getAllFields()
 				if (Debug.infoOn()) {
 					Debug.logError("[executeCampaign] Found this campaign >> " + mailerMarketingCampaign, module);
 				}
@@ -241,14 +241,14 @@ public class CampaignExecutionEvents {
 
 	private static void writeToPhysicalLoc(GenericDelegator delegator, ByteArrayOutputStream baos, String marketingCampaignId) throws Exception {
 		String basePath = UtilProperties.getPropertyValue("mailer", "mailer.pdfSaveLocation");
-		
+
 		String dirPath = (FlexibleLocation.resolveLocation(basePath)).getPath();
 		File file = new File(dirPath);
-		
-		String fileName = marketingCampaignId+".pdf";		
+
+		String fileName = marketingCampaignId + ".pdf";
 		File outputFile = new File(file.getAbsoluteFile() + File.separator + fileName);
 
-		if(outputFile.exists()){
+		if (outputFile.exists()) {
 			outputFile.delete();
 		}
 		FileOutputStream fos = new FileOutputStream(outputFile);

@@ -213,8 +213,8 @@
 	
 	<request-map uri="deleteImportMapping">
     	<security https="true" auth="true"/>
-    	<event type="service" invoke="mailer.deleteImportMapping"/>
-        <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params="na"/>
+    	<event type="service-multi" invoke="mailer.deleteImportMapping"/>
+        <response name="success" type="request-redirect-filterparam" value="viewImportMappings" allowed-params="na"/>        
 	</request-map>
 
 	<request-map uri="createConfiguredMapping">
