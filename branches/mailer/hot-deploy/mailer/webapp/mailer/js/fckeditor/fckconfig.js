@@ -24,7 +24,7 @@
  * http://docs.fckeditor.net/FCKeditor_2.x/Developers_Guide/Configuration/Configuration_Options
  */
 
-FCKConfig.CustomConfigurationsPath = '' ;
+FCKConfig.CustomConfigurationsPath = '../../customFCKConfig.js' ;
 
 FCKConfig.EditorAreaCSS = FCKConfig.BasePath + 'css/fck_editorarea.css' ;
 FCKConfig.EditorAreaStyles = '' ;
@@ -42,7 +42,7 @@ FCKConfig.StartupShowBlocks = false ;
 FCKConfig.Debug = false ;
 FCKConfig.AllowQueryStringDebug = true ;
 
-FCKConfig.SkinPath = FCKConfig.BasePath + 'skins/default/' ;
+FCKConfig.SkinPath = FCKConfig.BasePath + 'skins/silver/' ;
 FCKConfig.SkinEditorCSS = '' ;	// FCKConfig.SkinPath + "|<minified css>" ;
 FCKConfig.SkinDialogCSS = '' ;	// FCKConfig.SkinPath + "|<minified css>" ;
 
@@ -112,6 +112,40 @@ FCKConfig.ToolbarSets["Default"] = [
 	'/',
 	['Style','FontFormat','FontName','FontSize'],
 	['TextColor','BGColor'],
+	['FitWindow','ShowBlocks','-','About']		// No comma for the last row.
+] ;
+
+FCKConfig.ToolbarSets["OpentapsBasic"] = [
+	['Source','DocProps','-','Save','NewPage','Preview','-','Templates'],
+	['Cut','Copy','Paste','PasteText','PasteWord','-','Print','SpellCheck'],
+	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+	['Form','Checkbox','Radio','TextField','Textarea','Select','Button','ImageButton','HiddenField'],
+	'/',
+	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'],
+	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote','CreateDiv'],
+	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
+	['Link','Unlink','Anchor'],
+	['Image','Flash','Table','Rule','Smiley','SpecialChar','PageBreak'],
+	'/',
+	['Style','FontFormat','FontName','FontSize'],
+	['TextColor','BGColor'],
+	['FitWindow','ShowBlocks','-','About']		// No comma for the last row.
+] ;
+
+FCKConfig.ToolbarSets["OpentapsFormMerge"] = [
+	['Source','DocProps','-','Save','NewPage','Preview','-','Templates'],
+	['Cut','Copy','Paste','PasteText','PasteWord','-','Print','SpellCheck'],
+	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+	['Form','Checkbox','Radio','TextField','Textarea','Select','Button','ImageButton','HiddenField'],
+	'/',
+	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'],
+	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote','CreateDiv'],
+	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
+	['Link','Unlink','Anchor'],
+	['Image','Flash','Table','Rule','Smiley','SpecialChar','PageBreak'],
+	'/',
+	['Style','FontFormat','FontName','FontSize'],
+	['TextColor','BGColor','InsertTag'],
 	['FitWindow','ShowBlocks','-','About']		// No comma for the last row.
 ] ;
 
