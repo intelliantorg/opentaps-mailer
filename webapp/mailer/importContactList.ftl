@@ -41,10 +41,18 @@
 							<th align="left">${uiLabelMap.LabelFailureReason}</th>
 						</tr>
 						<#list keys as key>
-							<tr>
+							<tr class="${tableRowClass(key_index)}">
 								<td align="left" x='key'>${key_index+1}</td>
 								<td align="left" x='key'>${key}</td>
-								<td align="left" y='value'>${report(key)?default("")}</td>
+								<td align="left" y='value'>
+								<#assign errorReportDetails = report(key)>
+								<#assign errorReportDetailsKeys = errorReportDetails.keySet()>
+									<ul>
+										<#list errorReportDetailsKeys as errorReportDetailsKey>
+											<li>${errorReportDetails(errorReportDetailsKey)?default("")}</li>									
+										</#list>
+									</ul>
+								</td>
 							</tr>
 						</#list>
 					</table>
