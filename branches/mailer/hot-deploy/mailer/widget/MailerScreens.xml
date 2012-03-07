@@ -367,7 +367,7 @@
                 <set field="partyId" value="${userLogin.partyId}"/>
                 
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
-                <script location="component://mailer/webapp/mailer/WEB-INF/actions/getEntityColumnList.groovy"/>   	        	
+                <script location="component://mailer/webapp/mailer/WEB-INF/actions/getEntityColumnList.bsh"/>   	        	
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/getMergeForm.bsh"/>
             </actions>
             <widgets>
