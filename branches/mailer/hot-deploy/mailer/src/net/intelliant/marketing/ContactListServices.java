@@ -150,6 +150,7 @@ public class ContactListServices {
 		results.put("totalCount", totalCount);
 		results.put("failureCount", failureCount);
 		results.put("failureReport", failureReport);
+		
 		return results;
 	}
 
@@ -245,7 +246,6 @@ public class ContactListServices {
 			rowToInsertGV.put(columnName, cellValue);
 		}
 		if (isErrorFound) {
-			Debug.log("Error map : "+UtilMisc.printMap(errorDetails));
 			throw new GenericEntityException("Errors found in spread sheet data");
 		}else{
 			delegator.storeAll(UtilMisc.toList(rowToInsertGV));
