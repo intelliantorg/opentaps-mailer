@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -97,44 +98,47 @@ public class ContactListServices {
 		String ofbizEntityName = mailerImportMapper.getString("ofbizEntityName");
 		String importMapperId = mailerImportMapper.getString("importMapperId");
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
-		Map<String, String> failureReport = new LinkedHashMap<String, String>();
-
+		Map<String, Map<Integer, String>> failureReport = new LinkedHashMap<String, Map<Integer,String>>();
+		Map<Integer, String> failureReportDetails = new HashMap<Integer, String>();
 		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
-		
+
 		Iterator<HSSFRow> excelRowIterator = excelSheet.rowIterator();
-		
+
 		if (isFirstRowHeader.equalsIgnoreCase("Y")) {
 			if (excelRowIterator.hasNext()) {
 				excelRowIterator.next();
 				rowIndex++;
 			}
 		}
-		
+
 		while (excelRowIterator.hasNext()) {
 			try {
 				transaction = TransactionUtil.begin();
 				rowIndex++;
 				totalCount++;
-
-				GenericValue customEntityObj = insertIntoConfiguredCustomEntity(delegator, locale, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings);
+				
+				failureReportDetails = new HashMap<Integer, String>();
+				GenericValue customEntityObj = insertIntoConfiguredCustomEntity(delegator, locale, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings, failureReportDetails);
+				Debug.log("Error map : "+UtilMisc.printMap(failureReportDetails));
 				String recipientId = customEntityObj.getString("recipientId");
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createCampaignLines(delegator, contactListId, recipientId, customEntityObj.getDate(dateOfOperationColumnName));
+
 			} catch (GenericEntityException gee) {
 				Debug.logError(gee, MODULE);
 				if (transaction) {
 					TransactionUtil.rollback();
 				}
-				failureReport.put(String.valueOf(rowIndex - 1), gee.getMessage());
+				failureReport.put(String.valueOf(rowIndex - 1), failureReportDetails);
 				failureCount++;
 			} catch (Exception e) {
 				Debug.logError(e, MODULE);
 				if (transaction) {
 					TransactionUtil.rollback();
 				}
-				failureReport.put(String.valueOf(rowIndex - 1), e.getMessage());
+				failureReport.put(String.valueOf(rowIndex - 1), failureReportDetails);
 				failureCount++;
 			} finally {
 				if (transaction) {
@@ -150,7 +154,7 @@ public class ContactListServices {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static GenericValue insertIntoConfiguredCustomEntity(GenericDelegator delegator, Locale locale, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper) throws GenericEntityException, ParseException {
+	private static GenericValue insertIntoConfiguredCustomEntity(GenericDelegator delegator, Locale locale, String userLoginId, String entityName, HSSFRow excelRowData, Map<String, Object> columnMapper, Map<Integer, String> errorDetails) throws GenericEntityException, ParseException {
 		ModelEntity modelEntity = delegator.getModelEntity(entityName);
 		String entityPrimaryKeyField = modelEntity.getFirstPkFieldName();
 		String entityPrimaryKey = delegator.getNextSeqId(entityName);
@@ -158,6 +162,8 @@ public class ContactListServices {
 		rowToInsertGV.put(entityPrimaryKeyField, entityPrimaryKey);
 		rowToInsertGV.put("importedOnDateTime", UtilDateTime.nowTimestamp());
 		rowToInsertGV.put("importedByUserLogin", userLoginId);
+
+		boolean isErrorFound = false;
 
 		Set<Entry<String, Object>> entries = columnMapper.entrySet();
 		for (Map.Entry<String, Object> entry : entries) {
@@ -187,13 +193,16 @@ public class ContactListServices {
 			if (modelField.getIsNotNull()) {
 				if (!UtilValidate.isNotEmpty(cellValue)) {
 					Map<String, Object> messageMap = UtilMisc.toMap("columnName", modelField.getDescription());
-					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperIsEmpty", messageMap, locale));
+					errorDetails.put((int) columnIndex, UtilProperties.getMessage(resource, "ErrorImportMapperIsEmpty", messageMap, locale));
+					isErrorFound = true;
 				}
 			}
+
 			if (modelField.getType().equals("email")) {
 				if (!(UtilValidate.isNotEmpty(cellValue) && UtilCommon.isValidEmailAddress(String.valueOf(cellValue)))) {
 					Map<String, Object> messageMap = UtilMisc.toMap("columnName", cellValue);
-					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidEmail", messageMap, locale));
+					errorDetails.put((int) columnIndex, UtilProperties.getMessage(resource, "ErrorImportMapperNotValidEmail", messageMap, locale));
+					isErrorFound = true;
 				}
 			} else if (modelField.getType().equals("tel-number")) {
 				if (UtilValidate.isNotEmpty(cellValue)) {
@@ -205,12 +214,14 @@ public class ContactListServices {
 						NumberFormat testNumberFormat = NumberFormat.getNumberInstance();
 						try {
 							cellValue = (pattern.parse(testNumberFormat.format(excelCell.getNumericCellValue()))).longValue();
-						} catch(ParseException e) {
-							throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
-						}					
+						} catch (ParseException e) {
+							errorDetails.put((int) columnIndex, UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
+							isErrorFound = true;
+						}
 					}
-					if (! UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue))) {
-						throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
+					if (!UtilValidate.isInternationalPhoneNumber(String.valueOf(cellValue))) {
+						errorDetails.put((int) columnIndex, UtilProperties.getMessage(resource, "ErrorImportMapperNotValidPhoneNO", messageMap, locale));
+						isErrorFound = true;
 					}
 				}
 			} else if (modelField.getType().equals("date")) {
@@ -219,11 +230,13 @@ public class ContactListServices {
 				} catch (Exception e) {
 					cellValue = excelCell.toString();
 					Map<String, Object> messageMap = UtilMisc.toMap("columnName", cellValue);
-					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", messageMap, locale));
+					errorDetails.put((int) columnIndex, UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", messageMap, locale));
+					isErrorFound = true;
 				}
 				if (!UtilValidate.isNotEmpty(cellValue)) {
 					Map<String, Object> messageMap = UtilMisc.toMap("columnName", cellValue);
-					throw new GenericEntityException(UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", messageMap, locale));
+					errorDetails.put((int) columnIndex, UtilProperties.getMessage(resource, "ErrorImportMapperNotValidDate", messageMap, locale));
+					isErrorFound = true;
 				}
 			}
 			if (Debug.infoOn()) {
@@ -231,7 +244,12 @@ public class ContactListServices {
 			}
 			rowToInsertGV.put(columnName, cellValue);
 		}
-		delegator.storeAll(UtilMisc.toList(rowToInsertGV));
+		if (isErrorFound) {
+			Debug.log("Error map : "+UtilMisc.printMap(errorDetails));
+			throw new GenericEntityException("Errors found in spread sheet data");
+		}else{
+			delegator.storeAll(UtilMisc.toList(rowToInsertGV));
+		}
 
 		return rowToInsertGV;
 	}

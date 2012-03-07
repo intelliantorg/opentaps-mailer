@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import net.intelliant.util.UtilCommon;
 
@@ -107,7 +109,7 @@ public class ContactListImportTest extends MailerTests {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void contactListImportTest(String excelFilePath, int totalCount, int failure, int failreReportSize, int successfullInsertion) throws GenericEntityException, IOException, FileNotFoundException {
+	private void contactListImportTest(String excelFilePath, int totalCount, int failure, int failureReportSize, int successfullInsertion) throws GenericEntityException, IOException, FileNotFoundException {
 		String importMapperId;
 		String contactListId;
 		Map<String, Object> inputData = UtilMisc.toMap("_uploadedFile_fileName", "import_sample4.xls");
@@ -124,11 +126,21 @@ public class ContactListImportTest extends MailerTests {
 
 		assertEquals(totalCount, result.get("totalCount"));
 		assertEquals(failure, result.get("failureCount"));
-		assertEquals(failreReportSize, ((Map<?, ?>) result.get("failureReport")).size());
+		assertEquals(failureReportSize, ((Map<?, ?>) result.get("failureReport")).size());
 		assertEquals(successfullInsertion, modifiedNoOfRecords - noOfRecords);
+		errorReportTest((Map<String, Object>)result.get("failureReport"), failureReportSize);
 
-		Debug.log("## - " + totalCount + " ^ " + failure + " ^ " + failreReportSize + " ^ " + successfullInsertion);
+		Debug.log("## - " + totalCount + " ^ " + failure + " ^ " + failureReportSize + " ^ " + successfullInsertion);
 		imortedDataTest(importMapperId, contactListId, excelFilePath);
+	}
+
+	private void errorReportTest(Map<String, Object> insertStatus, int failureReportSize) {
+		Set<Entry<String, Object>> listInsertStatus = insertStatus.entrySet();
+
+		for (Entry<String, Object> entry : listInsertStatus) {
+			Debug.log("Instance of report : "+entry.getValue());
+			assertEquals(true, entry.getValue() instanceof java.util.HashMap<?, ?>);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
