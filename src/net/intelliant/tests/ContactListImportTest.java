@@ -137,8 +137,41 @@ public class ContactListImportTest extends MailerTests {
 	private void errorReportTest(Map<String, Object> insertStatus, int failureReportSize) {
 		Set<Entry<String, Object>> listInsertStatus = insertStatus.entrySet();
 
+		// first element of each array is rowIndex, from 2nd element are the column indexes consists error.
+		String[][] expectedErrorReport = new String[][] { { "1", "12" }, 
+														  { "3", "3" }, 
+														  { "5", "0" }, 
+														  { "6", "12" }, 
+														  { "7", "3", "5" }, 
+														  { "8", "7" },
+														  { "9", "3" }, 
+														  { "10", "2" }, 
+														  { "12", "3" }, 
+														  { "13", "3" }, 
+														  { "14", "3" }, 
+														  { "15", "3" } };
+
+		int index = 0, itr = 1;
+		int coloumnIndex = 1;
+		int totalNoOfColoumnConsistsError = 0;
 		for (Entry<String, Object> entry : listInsertStatus) {
-			assertEquals(true, entry.getValue() instanceof java.util.Map<?, ?>);
+			Object value = entry.getValue();			
+			assertEquals(true, value instanceof java.util.Map<?, ?>);
+
+			Map<Integer, String> report = (Map<Integer, String>) value;
+			totalNoOfColoumnConsistsError = expectedErrorReport[index].length - 1; 
+			assertEquals(totalNoOfColoumnConsistsError, report.size());
+			assertEquals(entry.getKey(), expectedErrorReport[index][0]);
+
+			Debug.log("### : check : "+expectedErrorReport[index][0] + " # " + entry.getKey() + " [" + totalNoOfColoumnConsistsError + "]" );
+
+			Set<Entry<Integer, String>> entriesOfReportColoumnWise = report.entrySet();
+			coloumnIndex = 1;
+			for(Entry<Integer, String> coloumnEntry : entriesOfReportColoumnWise){
+				assertEquals(expectedErrorReport[index][coloumnIndex], String.valueOf(coloumnEntry.getKey()));
+				Debug.log("### : "+expectedErrorReport[index][coloumnIndex++] + " # " + coloumnEntry.getKey());
+			}
+			index++;
 		}
 	}
 
