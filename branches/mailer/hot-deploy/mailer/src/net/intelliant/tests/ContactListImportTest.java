@@ -138,8 +138,7 @@ public class ContactListImportTest extends MailerTests {
 		Set<Entry<String, Object>> listInsertStatus = insertStatus.entrySet();
 
 		for (Entry<String, Object> entry : listInsertStatus) {
-			Debug.log("Instance of report : "+entry.getValue());
-			assertEquals(true, entry.getValue() instanceof java.util.HashMap<?, ?>);
+			assertEquals(true, entry.getValue() instanceof java.util.Map<?, ?>);
 		}
 	}
 
