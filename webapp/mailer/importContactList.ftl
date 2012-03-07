@@ -33,7 +33,7 @@
 		<#assign keys = report.keySet()>
 		<#if (keys?size > 0) >
 			<div style="margin-top:10px;">
-				<div><strong>${uiLabelMap.FullReport}</strong></div>
+				<div><strong>${uiLabelMap.LabelImportFailureReport}</strong></div>
 					<table class="listTable">
 						<tr>
 							<th align="left" width="60px">${uiLabelMap.LabelSNo}</th>
@@ -47,7 +47,7 @@
 								<td align="left" y='value'>
 								<#assign errorReportDetails = report(key)>
 								<#assign errorReportDetailsKeys = errorReportDetails.keySet()>
-									<ul>
+									<ul style="padding:0px; margin:0px; list-style:none;">
 										<#list errorReportDetailsKeys as errorReportDetailsKey>
 											<li>${errorReportDetails(errorReportDetailsKey)?default("")}</li>									
 										</#list>
