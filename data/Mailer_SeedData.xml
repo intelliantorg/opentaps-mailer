@@ -42,6 +42,8 @@
 	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_CREATE"/>
 	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_UPDATE"/>
 	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="MAILER_MAP_DELETE"/>
+	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="CRMSFA_CAMP_CREATE"/>
+	<SecurityGroupPermission groupId="PHA_SALES_MANAGER" permissionId="CRMSFA_CAMP_UPDATE"/>
 	<SecurityPermission description="Create mapping in mailer application." permissionId="MAILER_MAP_CREATE"/>
 	<SecurityPermission description="Update mapping in mailer application." permissionId="MAILER_MAP_UPDATE"/>
 </entity-engine-xml>
