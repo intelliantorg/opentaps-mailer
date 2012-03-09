@@ -68,7 +68,7 @@ public class MergeFormServices {
 					topMargin = computeImageHeightInInches(binData);
 					fileName = (String) context.get("_headerImageLocation_fileName");
 					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
-					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+					String previewURL = previewBasePath + "/" + dataResourceId + "/" + fileName;
 					mergeForm.put("headerImageLocation", previewURL);
 				}
 				mergeForm.put("topMargin", topMargin);
@@ -79,7 +79,7 @@ public class MergeFormServices {
 					bottomMargin = computeImageHeightInInches(binData);
 					fileName = (String) context.get("_footerImageLocation_fileName");
 					dataResourceId = uploadFile(dctx, filePath, fileName, binData);
-					String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+					String previewURL = previewBasePath + "/" + dataResourceId + "/" + fileName;
 					mergeForm.put("footerImageLocation", previewURL);
 				}
 				mergeForm.put("bottomMargin", bottomMargin);
@@ -113,7 +113,7 @@ public class MergeFormServices {
 		}
 		return heightInInches;
 	}
-	
+
 	private static void printImageInfo(ImageInfo info) {
 		if (Debug.infoOn()) {
 			Debug.logInfo("[mailer.createMergeForm] Sanselan bpp >> " + info.getBitsPerPixel(), module);
@@ -124,7 +124,7 @@ public class MergeFormServices {
 			Debug.logInfo("[mailer.createMergeForm] Sanselan width dpi >> " + info.getPhysicalWidthDpi(), module);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static String uploadFile(DispatchContext dctx, String parentPath, String uploadedFileName, ByteWrapper binaryDataOfFile) throws GenericServiceException {
 		String dataResourceId = dctx.getDelegator().getNextSeqId("DataResource");
@@ -159,7 +159,7 @@ public class MergeFormServices {
 			mergeForm.setNonPKFields(context);
 			mergeForm.remove("headerImageLocation");
 			mergeForm.remove("footerImageLocation");
-			
+
 			String filePath = FlexibleLocation.resolveLocation(UtilProperties.getPropertyValue("mailer", "mailer.imageUploadLocation")).getPath();
 
 			if (UtilValidate.areEqual(mergeFormTypeId, "EMAIL")) {
@@ -172,7 +172,7 @@ public class MergeFormServices {
 				double topMargin = computeImageHeightInInches(binData);
 				fileName = (String) context.get("_headerImageLocation_fileName");
 				dataResourceId = uploadFile(dctx, filePath, fileName, binData);
-				String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+				String previewURL = previewBasePath + "/" + dataResourceId + "/" + fileName;
 				mergeForm.put("headerImageLocation", previewURL);
 				mergeForm.put("topMargin", topMargin);
 			} else if (UtilValidate.areEqual(headerImageLocationRemove, "Y")) {
@@ -184,7 +184,7 @@ public class MergeFormServices {
 				double bottomMargin = computeImageHeightInInches(binData);
 				fileName = (String) context.get("_footerImageLocation_fileName");
 				dataResourceId = uploadFile(dctx, filePath, fileName, binData);
-				String previewURL = previewBasePath + File.separator + dataResourceId + File.separator + fileName;
+				String previewURL = previewBasePath + "/" + dataResourceId + "/" + fileName;
 				mergeForm.put("footerImageLocation", previewURL);
 				mergeForm.put("bottomMargin", bottomMargin);
 			} else if (UtilValidate.areEqual(footerImageLocationRemove, "Y")) {
@@ -202,7 +202,7 @@ public class MergeFormServices {
 					for (GenericValue relatedCampaign : relatedCampaigns) {
 						inputs.put("marketingCampaignId", relatedCampaign.getString("marketingCampaignId"));
 						if (Debug.infoOn()) {
-							Debug.logInfo("[mailer.updateMergeForm] calling mailer.reScheduleMailers with inputs >> " + inputs, module);	
+							Debug.logInfo("[mailer.updateMergeForm] calling mailer.reScheduleMailers with inputs >> " + inputs, module);
 						}
 						results = dctx.getDispatcher().runSync("mailer.reScheduleMailers", inputs);
 						if (ServiceUtil.isError(results)) {
