@@ -10,7 +10,7 @@
 
     <#assign appName = Static["org.ofbiz.base.util.UtilHttp"].getApplicationName(request)/>
   	<#assign nowAsString = Static["org.ofbiz.base.util.UtilDateTime"].nowAsString() />
-  	<#assign versionSuffix = "?v=" + nowAsString />
+  	<#assign versionSuffix = versionSuffix!"" />
   	<#assign favico = Static["org.ofbiz.base.util.UtilProperties"].getPropertyValue("mailer.properties", "mailer.favico")>
     <#if favico?exists && favico?has_content>
     	<link rel="shortcut icon" href="<@ofbizContentUrl>${favico + versionSuffix}</@ofbizContentUrl>" />
