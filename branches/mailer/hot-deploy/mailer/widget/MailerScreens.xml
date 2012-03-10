@@ -355,6 +355,13 @@
                     </decorator-section>
                 </decorator-screen>
             </widgets>
+            <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">${uiLabelMap.CrmErrorPermissionDenied}</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
         </section>
     </screen>
     <screen name="editMergeForms">
@@ -389,6 +396,13 @@
                     </decorator-section>
                 </decorator-screen>
             </widgets>
+            <fail-widgets>
+                <decorator-screen name="main-section-decorator">
+                    <decorator-section name="section-body">
+                        <label style="head2">${uiLabelMap.CrmErrorPermissionDenied}</label>
+                    </decorator-section>
+                </decorator-screen>
+            </fail-widgets>
         </section>
     </screen>    
 
