@@ -17,6 +17,17 @@
   <xsl:copy-of select="@id|@color|@height|@width|@xml:lang"/>
   <xsl:if test="@align"><xsl:attribute name="text-align"><xsl:value-of select="@align"/></xsl:attribute></xsl:if>
   <xsl:if test="@nowrap"><xsl:attribute name="wrap-option">no-wrap</xsl:attribute></xsl:if>
+  <xsl:choose>
+    <xsl:when test="@style='font-size: smaller;'"><xsl:attribute name="font-size">smaller</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: larger;'"><xsl:attribute name="font-size">larger</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: xx-small;'"><xsl:attribute name="font-size">xx-small</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: x-small;'"><xsl:attribute name="font-size">x-small</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: small;'"><xsl:attribute name="font-size">small</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: medium;'"><xsl:attribute name="font-size">medium</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: large;'"><xsl:attribute name="font-size">x-large</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: x-large;'"><xsl:attribute name="font-size">xx-large</xsl:attribute></xsl:when>
+    <xsl:when test="@style='font-size: xx-large;'"><xsl:attribute name="font-size">xx-large</xsl:attribute></xsl:when>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="xhtml:htmls|htmls">
@@ -477,7 +488,7 @@
 </xsl:template>
 
 <xsl:template match="xhtml:p|p">
-  <fo:block space-before=".6em" space-after=".6em"><xsl:call-template name="common-atts"/>
+  <fo:block space-before=".3em" space-after=".3em"><xsl:call-template name="common-atts"/>
     <xsl:apply-templates/>
   </fo:block>
 </xsl:template>
