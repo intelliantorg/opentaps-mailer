@@ -7,6 +7,7 @@
             <actions>
             	<property-map resource="UILabels" map-name="uiLabelMapExt" global="true"/>
                 <set field="sectionName" value="marketing" global="true"/>
+                <set field="versionSuffix" value="?v=550" global="true"/>
                 <set field="sectionStyle" value="twoColumn"/>
                 <set field="leftBarScreen" value="component://mailer/widget/CommonScreens.xml#leftBarScreen"/>
             </actions>
