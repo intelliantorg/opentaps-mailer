@@ -164,7 +164,7 @@ public class CampaignExecutionEvents {
 							if (UtilValidate.isNotEmpty(campaignStatusIds)) {
 								String reportType = "application/pdf";
 								xhtmls.append("</htmls>");
-								Document xslfo = conversion.convertXHtml2XslFo(xhtmls.toString(), stylesheetLocation);
+								Document xslfo = conversion.convertXHtml2XslFo(UtilCommon.getModifiedHtmlWithAbsoluteImagePath(xhtmls.toString()), stylesheetLocation);
 								String xslfoAsString = UtilXml.writeXmlDocument(xslfo);
 
 								ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -306,7 +306,7 @@ public class CampaignExecutionEvents {
 
 						String reportType = "application/pdf";
 						xhtmls.append("</htmls>");
-						Document xslfo = conversion.convertXHtml2XslFo(xhtmls.toString(), stylesheetLocation);
+						Document xslfo = conversion.convertXHtml2XslFo(UtilCommon.getModifiedHtmlWithAbsoluteImagePath(xhtmls.toString()), stylesheetLocation);
 						String xslfoAsString = UtilXml.writeXmlDocument(xslfo);
 
 						ByteArrayOutputStream out = new ByteArrayOutputStream();
