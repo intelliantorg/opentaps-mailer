@@ -492,7 +492,7 @@
                 <set field="pageTitleLabel" value="ImportContactListHeader"/>
                 <set field="sectionHeaderUiLabel" value="ImportContactListHeader"/>
 	        	<set field="nameOfEntity" value="MailerRecipient"/>
-	        	<entity-condition filter-by-date="true" entity-name="MailerImportMapper" list="mailerImportMapperList" list-name="mailerImportMapperList" use-cache="true">
+	        	<entity-condition filter-by-date="true" entity-name="MailerImportMapper" list="mailerImportMapperList" list-name="mailerImportMapperList">
 	        		<order-by field-name="importMapperName"/>
                 </entity-condition>
             </actions>
