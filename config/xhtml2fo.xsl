@@ -155,8 +155,9 @@
 </xsl:template>
 
 <xsl:template match="xhtml:img|img|xhtml:input[@type='image']|input[@type='image']">
-  <fo:external-graphic content-type="{@type}" src="{concat(//base/@href,@src)}">
-    <xsl:call-template name="common-atts"/>
+  <fo:external-graphic content-type="{@type}" src="{concat(//base/@href,@src)}" content-height="{@height}" content-width="{@width}">
+    <!-- This interferes with generated image dimension -->
+    <!-- <xsl:call-template name="common-atts"/> -->
   </fo:external-graphic>
 </xsl:template>
 

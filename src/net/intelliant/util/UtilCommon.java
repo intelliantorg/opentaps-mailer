@@ -123,6 +123,31 @@ public final class UtilCommon {
 		return html;
 	}
 
+	public static String getModifiedHtmlWithAbsoluteImagePath(String html){
+		if (UtilValidate.isEmpty(html)) {
+			return html;
+		}
+		org.jsoup.nodes.Document doc = Jsoup.parse(html);
+		Elements images = doc.select("img[src~=(?i)\\.(jpg|jpeg|png|gif)]");
+		if (images != null && images.size() > 0) {
+			for (Element image : images) {
+				String srcAttributeValue = image.attr("src");
+				int separatorIndex = srcAttributeValue.lastIndexOf("/");
+				if (separatorIndex == -1) {
+					separatorIndex = srcAttributeValue.lastIndexOf("\\"); /** just in case some one plays with html source. */
+				}
+				String outputFileName = null;
+				if (separatorIndex != -1) {
+					String originalFileName = srcAttributeValue.substring(separatorIndex + 1);
+					outputFileName = originalFileName;
+				}
+				StringBuilder finalLocation = new StringBuilder(imageUploadLocation);
+				html = StringUtil.replaceString(html, srcAttributeValue, finalLocation.append(outputFileName).toString());	
+			}
+		}
+		return html;
+	}
+	
 	private static String generateCompressedImageForInputFile(String locationInFileSystem, String srcFileName) throws NoSuchAlgorithmException, IOException {
 		String outputFileName = srcFileName;
 		File srcFile = new File(locationInFileSystem, srcFileName);
