@@ -100,7 +100,7 @@ public class ContactListServices {
 		String isFirstRowHeader = mailerImportMapper.getString("isFirstRowHeader");
 		Map<String, Map<Integer, String>> failureReport = new LinkedHashMap<String, Map<Integer,String>>();
 		Map<Integer, String> failureReportDetails = new LinkedHashMap<Integer, String>();
-		Map<String, Object> columnMappings = UtilImport.getColumnMappings(delegator, importMapperId);
+		Map<String, Object> columnMappings = UtilImport.getActiveColumnMappings(delegator, importMapperId);
 		HSSFWorkbook excelDocument = new HSSFWorkbook(new FileInputStream(excelFilePath));
 		HSSFSheet excelSheet = excelDocument.getSheetAt(0);
 

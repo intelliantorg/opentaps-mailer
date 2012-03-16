@@ -16,11 +16,16 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.GenericDelegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
+import org.ofbiz.entity.condition.EntityCondition;
+import org.ofbiz.entity.condition.EntityConditionList;
+import org.ofbiz.entity.condition.EntityExpr;
+import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.entity.model.ModelEntity;
 import org.ofbiz.entity.model.ModelField;
 import org.ofbiz.entity.model.ModelReader;
@@ -48,7 +53,7 @@ public final class UtilImport {
 				fieldDesc = field.getName();
 			}
 			if (!entityColumnsToIgnore.contains(field.getName()) && !field.getIsPk()) {
-				entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc,"entityColType",field.getType(), "isNotNull", field.getIsNotNull()));
+				entityColumns.add(UtilMisc.toMap("entityColName", field.getName(), "entityColDesc", fieldDesc, "entityColType", field.getType(), "isNotNull", field.getIsNotNull()));
 			}
 		}
 		return entityColumns;
@@ -73,7 +78,7 @@ public final class UtilImport {
 							if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
 								columnIndices.add(cell.toString());
 							} else {
-								columnIndices.add("N/A - " + cell.getCellNum()); 
+								columnIndices.add("N/A - " + cell.getCellNum());
 							}
 						} else {
 							columnIndices.add(String.valueOf(cell.getCellNum()));
@@ -81,10 +86,10 @@ public final class UtilImport {
 					}
 				}
 			}
-		}		
+		}
 		return columnIndices;
 	}
-	
+
 	public static List<String> readExcelHeaderIndices(String excelFilePath, int sheetIndex) throws FileNotFoundException, IOException {
 		return readExcelFirstRow(excelFilePath, false, sheetIndex);
 	}
@@ -97,6 +102,19 @@ public final class UtilImport {
 	public static Map<String, Object> getColumnMappings(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
 		Map<String, Object> data = FastMap.<String, Object> newInstance();
 		List<GenericValue> columnToIndexMappings = delegator.findByAnd("MailerImportColumnMapper", UtilMisc.toMap("importMapperId", columnMapperId));
+		for (GenericValue columnToIndexMapping : columnToIndexMappings) {
+			data.put(columnToIndexMapping.getString("entityColName"), columnToIndexMapping.getString("importFileColIdx"));
+		}
+		return data;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> getActiveColumnMappings(GenericDelegator delegator, String columnMapperId) throws GenericEntityException {
+		Map<String, Object> data = FastMap.<String, Object> newInstance();
+
+		EntityCondition conditions = new EntityConditionList(UtilMisc.toList(new EntityExpr("importMapperId", EntityOperator.EQUALS, columnMapperId), new EntityExpr("importFileColIdx", EntityOperator.NOT_EQUAL, "_NA_")), EntityOperator.AND);
+		List<GenericValue> columnToIndexMappings = delegator.findByCondition("MailerImportColumnMapper", conditions, null, null);
+
 		for (GenericValue columnToIndexMapping : columnToIndexMappings) {
 			data.put(columnToIndexMapping.getString("entityColName"), columnToIndexMapping.getString("importFileColIdx"));
 		}
