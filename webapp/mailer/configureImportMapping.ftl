@@ -41,7 +41,7 @@
 									<@display class="tableheadtext requiredField" text=uiLabelMap.CommonName />
 								</div>
 								<div class="fieldContainer">
-									<@inputText name="importMapperName" size=35 class="inputBox required"/>
+									<@inputText name="importMapperName" size=35 class="inputBox required" maxlength=60 />
 								</div>
 							</div>
 							<div class="rowContainer">
