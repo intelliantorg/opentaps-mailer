@@ -169,7 +169,7 @@
 
     <entity entity-name="MailerImportMapper" package-name="net.intelliant.mailer" title="Mailer import mapper">
     	<field name="importMapperId" type="id-ne"/>
-    	<field name="importMapperName" type="id-ne"/>
+    	<field name="importMapperName" type="id-long-ne"/>
     	<field name="ofbizEntityName" type="id-ne"/>
     	<field name="description" type="description"/>
     	<field name="contentId" type="id-ne"/>
