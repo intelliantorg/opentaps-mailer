@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-eca xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofbiz.org/dtds/entity-eca.xsd">
+
+    <!--  -->
+    <eca entity="MailerCampaignStatus" operation="create-store" event="return">
+        <condition field-name="statusId" operator="equals" value="MAILER_SCHEDULED"/>
+        <condition field-name="marketingCampaignId" operator="is-not-empty"/>
+        <action service="mailer.checkIfCompletedCampaignsCanBeMarkedInProgress" mode="sync"/>
+    </eca>
+
+</entity-eca>
