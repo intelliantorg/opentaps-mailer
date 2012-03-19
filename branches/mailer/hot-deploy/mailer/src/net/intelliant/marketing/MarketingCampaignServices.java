@@ -166,6 +166,13 @@ public class MarketingCampaignServices {
 				if (ServiceUtil.isError(serviceResults)) {
 					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
 				}
+			} else if (UtilValidate.isNotEmpty(statusId) && statusId.equals("MKTG_CAMP_COMPLETED")) {
+				service = dctx.getModelService("mailer.checkIfCompletedCampaignsCanBeMarkedInProgress");
+				inputs = service.makeValid(context, ModelService.IN_PARAM);
+				serviceResults = dctx.getDispatcher().runSync(service.name, inputs);
+				if (ServiceUtil.isError(serviceResults)) {
+					return UtilMessage.createAndLogServiceError(UtilProperties.getMessage(errorResource, "errorUpdatingCampaign", locale), MODULE);
+				}
 			}
 			/** No point executing this campaign was cancelled. */
 			if (UtilValidate.isNotEmpty(templateId) && !UtilValidate.areEqual(oldTemplateId, templateId) && !isCampaignCancelled) {
