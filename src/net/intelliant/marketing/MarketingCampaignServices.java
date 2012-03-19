@@ -702,18 +702,24 @@ public class MarketingCampaignServices {
 	public static Map<String, Object> checkIfCompletedCampaignsCanBeMarkedInProgress(DispatchContext dctx, Map<String, Object> context) {
 		GenericDelegator delegator = dctx.getDelegator();
 		EntityListIterator iterator = null;
+		String marketingCampaignId = (String) context.get("marketingCampaignId");
 		try {
-			/** get all in progress campaigns. */
-            EntityCondition condition = new EntityExpr("statusId", EntityOperator.EQUALS, "MKTG_CAMP_COMPLETED");
+			/** get all in completed campaigns. */
+			List<EntityExpr> conditionsList = UtilMisc.toList(new EntityExpr("statusId", EntityOperator.EQUALS, "MKTG_CAMP_COMPLETED"), EntityUtil.getFilterByDateExpr());
+			/** Use this to check for a particular marketing campaign. */
+			if (UtilValidate.isNotEmpty(marketingCampaignId)) {
+				conditionsList.add(new EntityExpr("marketingCampaignId", EntityOperator.EQUALS, marketingCampaignId));
+			}
+			EntityCondition conditions = new EntityConditionList(conditionsList, EntityOperator.AND);
             if (Debug.infoOn()) {
-            	Debug.logInfo("[mailer.checkIfCompletedCampaignsCanBeMarkedInProgress] The conditions >> " + condition, MODULE);
+            	Debug.logInfo("[mailer.checkIfCompletedCampaignsCanBeMarkedInProgress] The conditions >> " + conditions, MODULE);
             }
 	        EntityFindOptions options = new EntityFindOptions(true, EntityFindOptions.TYPE_SCROLL_INSENSITIVE, EntityFindOptions.CONCUR_READ_ONLY, true);
-	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignDetailsView", condition, null, null, null, options);
+	        iterator = delegator.findListIteratorByCondition("MailerMarketingCampaignDetailsView", conditions, null, null, null, options);
 	        GenericValue marketingCampaignGV = null;
 	        while ((marketingCampaignGV = (GenericValue) iterator.next()) != null) {
 	        	boolean canBeMarkedInProgress = false;
-	        	String marketingCampaignId = marketingCampaignGV.getString("marketingCampaignId");
+	        	marketingCampaignId = marketingCampaignGV.getString("marketingCampaignId");
 	        	Timestamp thruDate = marketingCampaignGV.getTimestamp("thruDate");
 	        	Timestamp now = UtilDateTime.nowTimestamp();
         		long count = UtilCommon.countScheduledCampaignLines(delegator, null, marketingCampaignId);
