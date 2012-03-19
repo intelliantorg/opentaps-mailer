@@ -179,6 +179,8 @@
     
 	<service name="mailer.checkIfCompletedCampaignsCanBeMarkedInProgress" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="checkIfCompletedCampaignsCanBeMarkedInProgress" auth="true">
     	<description>Will be used to check if completed campaign can be set to in progress.</description>
+    	<!-- Use this to check for a particular marketing campaign. -->
+    	<attribute name="marketingCampaignId" type="String" mode="IN" optional="true"/>
     </service>
     
 	<service name="mailer.markMailersAsExecuted" engine="java" location="net.intelliant.marketing.MarketingCampaignServices" invoke="markMailersAsExecuted" auth="false">
