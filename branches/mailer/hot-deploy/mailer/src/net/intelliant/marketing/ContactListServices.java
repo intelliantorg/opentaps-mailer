@@ -121,7 +121,6 @@ public class ContactListServices {
 				
 				failureReportDetails = new HashMap<Integer, String>();
 				GenericValue customEntityObj = insertIntoConfiguredCustomEntity(delegator, locale, userLoginId, ofbizEntityName, excelRowIterator.next(), columnMappings, failureReportDetails);
-				Debug.log("Error map : "+UtilMisc.printMap(failureReportDetails));
 				String recipientId = customEntityObj.getString("recipientId");
 				createCLRecipientRelation(delegator, contactListId, recipientId);
 				createCampaignLines(delegator, contactListId, recipientId, customEntityObj.getDate(dateOfOperationColumnName));
