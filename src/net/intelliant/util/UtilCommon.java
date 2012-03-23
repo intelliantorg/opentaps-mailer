@@ -130,8 +130,10 @@ public final class UtilCommon {
 		org.jsoup.nodes.Document doc = Jsoup.parse(html);
 		Elements images = doc.select("img[src~=(?i)\\.(jpg|jpeg|png|gif)]");
 		if (images != null && images.size() > 0) {
+			String srcAttributeValue = "";
+			StringBuilder finalLocation = new StringBuilder();
 			for (Element image : images) {
-				String srcAttributeValue = image.attr("src");
+				srcAttributeValue = image.attr("src");
 				int separatorIndex = srcAttributeValue.lastIndexOf("/");
 				if (separatorIndex == -1) {
 					separatorIndex = srcAttributeValue.lastIndexOf("\\"); /** just in case some one plays with html source. */
@@ -141,9 +143,10 @@ public final class UtilCommon {
 					String originalFileName = srcAttributeValue.substring(separatorIndex + 1);
 					outputFileName = originalFileName;
 				}
-				StringBuilder finalLocation = new StringBuilder(imageUploadLocation);
-				html = StringUtil.replaceString(html, srcAttributeValue, finalLocation.append(outputFileName).toString());	
+				finalLocation = new StringBuilder(imageUploadLocation);
+				finalLocation = finalLocation.append(outputFileName);
 			}
+			html = StringUtil.replaceString(html, srcAttributeValue, finalLocation.toString());	
 		}
 		return html;
 	}
