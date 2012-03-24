@@ -129,24 +129,32 @@ public final class UtilCommon {
 		}
 		org.jsoup.nodes.Document doc = Jsoup.parse(html);
 		Elements images = doc.select("img[src~=(?i)\\.(jpg|jpeg|png|gif)]");
+		
 		if (images != null && images.size() > 0) {
 			String srcAttributeValue = "";
 			StringBuilder finalLocation = new StringBuilder();
+			Set<String> imageSrc = new HashSet<String>();
+			
 			for (Element image : images) {
 				srcAttributeValue = image.attr("src");
-				int separatorIndex = srcAttributeValue.lastIndexOf("/");
-				if (separatorIndex == -1) {
-					separatorIndex = srcAttributeValue.lastIndexOf("\\"); /** just in case some one plays with html source. */
+				
+				if(!imageSrc.contains(srcAttributeValue)){
+					int separatorIndex = srcAttributeValue.lastIndexOf("/");
+					if (separatorIndex == -1) {
+						separatorIndex = srcAttributeValue.lastIndexOf("\\"); /** just in case some one plays with html source. */
+					}
+					String outputFileName = null;
+					if (separatorIndex != -1) {
+						String originalFileName = srcAttributeValue.substring(separatorIndex + 1);
+						outputFileName = originalFileName;
+					}
+					finalLocation = new StringBuilder(imageUploadLocation);
+					finalLocation = finalLocation.append(outputFileName);
+					
+					imageSrc.add(srcAttributeValue);
+					html = StringUtil.replaceString(html, srcAttributeValue, finalLocation.toString());	
 				}
-				String outputFileName = null;
-				if (separatorIndex != -1) {
-					String originalFileName = srcAttributeValue.substring(separatorIndex + 1);
-					outputFileName = originalFileName;
-				}
-				finalLocation = new StringBuilder(imageUploadLocation);
-				finalLocation = finalLocation.append(outputFileName);
 			}
-			html = StringUtil.replaceString(html, srcAttributeValue, finalLocation.toString());	
 		}
 		return html;
 	}
