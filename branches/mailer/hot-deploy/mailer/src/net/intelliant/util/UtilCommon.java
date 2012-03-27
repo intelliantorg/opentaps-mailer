@@ -22,6 +22,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.validator.EmailValidator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -91,7 +92,9 @@ public final class UtilCommon {
 						}
 						if (separatorIndex != -1) {
 							String originalFileName = srcAttributeValue.substring(separatorIndex + 1);
-							String outputFileName = originalFileName;
+							
+							/* Handling spaces in file-name to make url friendly. */
+							String outputFileName = StringEscapeUtils.escapeHtml(originalFileName);
 							/** Compression works for jpeg's only. 
 							if (originalFileName.endsWith("jpg") || originalFileName.endsWith("jpeg")) {
 								try {
@@ -246,7 +249,7 @@ public final class UtilCommon {
 	public static String getUploadPath() {
 		return System.getProperty("user.dir") + File.separatorChar + "runtime" + File.separatorChar + "data" + File.separatorChar;
 	}
-	
+		
 	@SuppressWarnings("unchecked")
 	public static long countCampaignLines(GenericDelegator delegator, String statusId, String contactListId, String marketingCampaignId) throws GenericEntityException {
 		if (Debug.infoOn()) {
