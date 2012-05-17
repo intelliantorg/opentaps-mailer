@@ -145,6 +145,8 @@
     <div class="button-bar">
         <ul>
             <#if (viewIndex > 1)> 
+        		<li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=1</@ofbizUrl>' class="nav-previous">${uiLabelMap.LabelFirst}</a></li>
+                <li>|</li>
                 <li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=${viewIndexPrevious}</@ofbizUrl>' class="nav-previous">${uiLabelMap.CommonPrevious}</a></li>
                 <li>|</li>
             </#if>
@@ -154,7 +156,9 @@
             <#if (totalRecordsCount > highIndex)>
                 <li>|</li>
                 <li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=${viewIndexNext}</@ofbizUrl>' class="nav-next">${uiLabelMap.CommonNext}</a></li>
-            </#if>
+                <li>|</li>
+                <li><a href='<@ofbizUrl>viewContactList?${curFindString}VIEW_SIZE=${viewSize}&amp;VIEW_INDEX=${viewIndexLast}</@ofbizUrl>' class="nav-next">${uiLabelMap.LabelLast}</a></li>
+			</#if>
         </ul>
         <br class="clear"/>
     </div>

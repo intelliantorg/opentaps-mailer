@@ -100,6 +100,7 @@ if(viewIndex > 1) {
 if(totalRecordCount > (viewIndex+viewSize-1)) { 
 	viewIndexNext = viewIndex+viewSize;
 	context.put("viewIndexNext", viewIndexNext);
+	context.put("viewIndexLast", (totalRecordCount-(totalRecordCount%viewSize))+1);
 } 
 
 contactListMembers = contactListMembersItr.getPartialList(viewIndex, (highIndex-viewIndex+1));
