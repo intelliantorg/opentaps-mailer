@@ -14,19 +14,22 @@ import org.opentaps.common.util.UtilDate;
 public class CommonTests extends MailerTests {
 	
 	public void testEmailValidation() throws GenericEntityException {
-		assertEquals(true, UtilCommon.isValidEmailAddress("email.email@domain.com"));
-		assertEquals(true, UtilCommon.isValidEmailAddress("email_email@domain.com"));
-		assertEquals(true, UtilCommon.isValidEmailAddress("email@domain.com"));
-		assertEquals(true, UtilCommon.isValidEmailAddress("email@domain.co.in"));
-		assertEquals(false, UtilCommon.isValidEmailAddress("email@domain."));
-		assertEquals(false, UtilCommon.isValidEmailAddress("email@domain"));
-		assertEquals(false, UtilCommon.isValidEmailAddress("email@"));
-		assertEquals(false, UtilCommon.isValidEmailAddress("email"));
-		assertEquals(false, UtilCommon.isValidEmailAddress("@"));
-		assertEquals(false, UtilCommon.isValidEmailAddress("@."));
-		assertEquals(false, UtilCommon.isValidEmailAddress("."));
-		assertEquals(false, UtilCommon.isValidEmailAddress(".email@domain"));
-		assertEquals(false, UtilCommon.isValidEmailAddress(""));
+		assertTrue(UtilCommon.isValidEmailAddress("email.email@domain.com"));
+		assertTrue(UtilCommon.isValidEmailAddress("email_email@domain.com"));
+		assertTrue(UtilCommon.isValidEmailAddress("email@domain.com"));
+		assertTrue(UtilCommon.isValidEmailAddress("email@domain.co.in"));
+		assertTrue(UtilCommon.isValidEmailAddress("e4_sd_0@sd.com"));
+		assertFalse(UtilCommon.isValidEmailAddress("E4_SD_0@SD.com"));
+		assertFalse(UtilCommon.isValidEmailAddress("email@domain."));
+		assertFalse(UtilCommon.isValidEmailAddress("email@domain"));
+		assertFalse(UtilCommon.isValidEmailAddress("email@"));
+		assertFalse(UtilCommon.isValidEmailAddress("email"));
+		assertFalse(UtilCommon.isValidEmailAddress("@"));
+		assertFalse(UtilCommon.isValidEmailAddress("@."));
+		assertFalse(UtilCommon.isValidEmailAddress("."));
+		assertFalse(UtilCommon.isValidEmailAddress(".email@domain"));
+		assertFalse(UtilCommon.isValidEmailAddress(""));
+		assertFalse(UtilCommon.isValidEmailAddress("ho.security@allahabadbank.com/www.allahabadbank.in"));
 	}
 	
 	public void testContactListRecipientCount() throws GenericEntityException {
