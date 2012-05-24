@@ -19,7 +19,7 @@ public class CommonTests extends MailerTests {
 		assertTrue(UtilCommon.isValidEmailAddress("email@domain.com"));
 		assertTrue(UtilCommon.isValidEmailAddress("email@domain.co.in"));
 		assertTrue(UtilCommon.isValidEmailAddress("e4_sd_0@sd.com"));
-		assertFalse(UtilCommon.isValidEmailAddress("E4_SD_0@SD.com"));
+		assertTrue(UtilCommon.isValidEmailAddress("E4_SD_0@SD.com"));
 		assertFalse(UtilCommon.isValidEmailAddress("email@domain."));
 		assertFalse(UtilCommon.isValidEmailAddress("email@domain"));
 		assertFalse(UtilCommon.isValidEmailAddress("email@"));
