@@ -1,3 +1,22 @@
+<#--
+ * Copyright (c) Intelliant
+ *
+ * Opentaps is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Opentaps is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Opentaps.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  @author Intelliant (iaerp@intelliant.net)
+ *
+-->
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
 
 <#assign dateFormat=Static["org.ofbiz.base.util.UtilProperties"].getMessage("mailer", "mailer.importDataDateFormat", locale)/>
@@ -13,9 +32,9 @@
 	<@inputHidden name="_useRowSubmit" value="Y" />
 	<@inputHidden name="_rowCount" value="${contactListMembers?if_exists?size}" />	
 	<a name="ListContactListParties"></a>
-	<div class="subSectionHeader">
-		<div class="subSectionTitle">${uiLabelMap.CrmContactListParties}</div>
-		<div class="subMenuBar">
+	<div class="subSectionHeader" style="padding:11px;" >
+		<div style="width:70%; float:left;">${uiLabelMap.CrmContactListParties}</div>
+		<div class="subMenuBar" style="width:30%;float:left; margin-top: -5px;">
 			<a class="subMenuButton" href="importContactListForm?contactListId=${contactList.contactListId}">${uiLabelMap.ButtonImportContacts}</a>${removeLink?if_exists}
 		</div>
 	</div>
@@ -23,15 +42,15 @@
 	<#if (totalRecordsCount > 0)>
 	    <@tableNav/>
 	</#if>
-	<table class="listTable">
-		<tr class="listTableHeader" style="border:none">
+	<table class="crmsfaListTable">
+		<tr class="crmsfaListTableHeader" >
 			<#list contactListHeaders as contactListHeader>
-				<th align="left">${contactListHeader}</th>
+				<td align="left"><span class="tableheadtext">${contactListHeader}</span></td>
 			</#list>
-			<th align="left">${uiLabelMap.ImportByHeader}</th>
-			<th align="left">${uiLabelMap.ImportOnHeader}</th>
-			<th align="right">
-				<input name="selectAll" value="Y" onclick="javascript:toggleAll(this, 'removeMembersFromList');" type="checkbox">
+			<td align="left"><span class="tableheadtext">${uiLabelMap.ImportByHeader}</span></td>
+			<td align="left"><span class="tableheadtext">${uiLabelMap.ImportOnHeader}</span></td>
+			<td align="right"><span class="tableheadtext">
+				<input name="selectAll" value="Y" onclick="javascript:toggleAll(this, 'removeMembersFromList');" type="checkbox"></span>
 			</th>
 		</tr>
 		<#list contactListMembers as contactListMember>
@@ -41,16 +60,16 @@
 			<tr class="${tableRowClass(contactListMember_index)}">
 				<#list contactListFields as contactListField>
 					<td>
-						<#if contactListFieldType.get(contactListField_index)?if_exists == "date" || contactListFieldType.get(contactListField_index)?if_exists == "date-time">
+						<span class="tabletext"><#if contactListFieldType.get(contactListField_index)?if_exists == "date" || contactListFieldType.get(contactListField_index)?if_exists == "date-time">
 							${contactListMember.get(contactListField)?if_exists?string(dateFormat)}
 						<#else>
 							${contactListMember.get(contactListField)?if_exists}
 						</#if>
-					</td>
+					</span></td>
 				</#list>
-				<td>${contactListMember.importedByUserLogin?if_exists}</td>
-				<td>${contactListMember.importedOnDateTime?if_exists?string(dateFormat)}</td>
-				<td align="right"><input type="checkbox" name="_rowSubmit_o_${contactListMember_index}" value="Y"/></td>
+				<td><span class="tabletext">${contactListMember.importedByUserLogin?if_exists}</span></td>
+				<td><span class="tabletext">${contactListMember.importedOnDateTime?if_exists?string(dateFormat)}</span></td>
+				<td align="right"><span class="tabletext"><input type="checkbox" name="_rowSubmit_o_${contactListMember_index}" value="Y"/></span></td>
 			</tr>
 		</#list>
 	</table>
