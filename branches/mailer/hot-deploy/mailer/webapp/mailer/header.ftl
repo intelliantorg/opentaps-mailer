@@ -1,3 +1,22 @@
+<#--
+ * Copyright (c) Intelliant
+ *
+ * Opentaps is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Opentaps is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Opentaps.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  @author Intelliant (iaerp@intelliant.net)
+ *
+-->
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <@import location="component://mailer/webapp/mailer/commonFormMacros.ftl"/>
@@ -85,7 +104,7 @@ div.sectionTabBorder, ul.sectionTabBar li.sectionTabButtonSelected a {color: ${f
     </script>
   </#if>
 
-  <div style="float: left;">
+  <div style="float: left; margin-left:20px">
     <img alt="${configProperties.get(opentapsApplicationName+".title")}" src="<@ofbizContentUrl>${configProperties.get("mailer.logo") + versionSuffix}</@ofbizContentUrl>"/>
   </div>
   <div align="right" style="margin-left: 300px; margin-right: 10px; margin-top: 10px;">

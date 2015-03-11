@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!--
+ * Copyright (c) Intelliant
+ *
+ * Opentaps is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Opentaps is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Opentaps.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  @author Intelliant (iaerp@intelliant.net)
+-->
 <screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
 
 	<screen name="main-section-decorator">
@@ -70,7 +87,7 @@
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
                         <container style="subSectionBlock">
-                            <container style="form">
+                            <container style="form findcampaign">
                                 <include-form name="FindMarketingCampaign" location="component://mailer/widget/forms/MailerForms.xml"/>
                             </container>
                         </container>
@@ -165,7 +182,7 @@
                 <decorator-screen name="main-section-decorator">
                     <decorator-section name="section-body">
                         <container style="subSectionBlock">
-                            <container style="form">
+                            <container style="form findcampaign">
                                 <include-form name="FindContactList" location="component://mailer/widget/forms/MailerForms.xml"/>
                             </container>
                         </container>
@@ -182,7 +199,7 @@
         <section>
             <actions>
                 <set field="pageTitleLabel" value="ViewContactListHeader"/>
-                <set field="sectionHeaderUiLabel" value="ViewContactListHeader"/>
+                <!-- <set field="sectionHeaderUiLabel" value="ViewContactListHeader"/> -->
                 <set field="parameters.listIteratorNameToUse" value="contactListParties"/> <!-- iterator for list of parties -->
                 <set field="listSortTarget" value="viewContactList"/>
                 <set field="findContactListPartiesTarget" value="viewContactList"/>
@@ -201,12 +218,12 @@
                     		<widgets>
                     			<container style="subSectionBlock">
 	                            	<platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/viewContactListMenu.ftl"/></html></platform-specific>
-    	                        	<container style="form">
+    	                        	<container style="form findcampaign">
                                 		<include-form name="viewContactList" location="component://mailer/widget/forms/MailerForms.xml"/>
                             		</container>
                         		</container>
                         		<container style="subSectionBlock">
-                            		<container style="subSectionHeader"><label style="subSectionTitle">${uiLabelMap.FindListMembersHeader}</label></container>
+                            		<container style="subSectionHeader"><label style="">${uiLabelMap.FindListMembersHeader}</label></container>
 	                          		<platform-specific><html><html-template location="component://mailer/webapp/mailer/findContactListMembers.ftl"/></html></platform-specific>                            
 		                            <!-- 
 		                            	<container style="form">                            
@@ -245,7 +262,7 @@
                     <decorator-section name="section-body">
                         <container style="subSectionBlock">
                             <!-- <platform-specific><html><html-template location="component://crmsfa/webapp/crmsfa/marketing/submenus/addContactListPartiesMenu.ftl"/></html></platform-specific> -->
-                            <container style="form">
+                            <container style="form findcampaign">
                                 <include-form name="FindContactListParties" location="component://crmsfa/widget/crmsfa/forms/marketing/ContactListForms.xml"/>
                             </container>
                         </container>
@@ -275,7 +292,7 @@
                     			<not><if-empty field-name="contactList"/></not>
                     		</condition>
                     		<widgets>
-                    			<container style="form">
+                    			<container style="form findcampaign">
                             		<include-form name="updateContactListForm" location="component://mailer/widget/forms/MailerForms.xml"/>
                         		</container>
                     		</widgets>
@@ -300,7 +317,7 @@
         <section>
             <actions>
                 <set field="pageTitleLabel" value="ViewCampaignHeader"/>
-                <set field="sectionHeaderUiLabel" value="ViewCampaignHeader"/>
+               <!--  <set field="sectionHeaderUiLabel" value="ViewCampaignHeader"/> -->
                 <set field="listSortTarget" value="viewMarketingCampaign"/>
                 <script location="component://mailer/webapp/mailer/WEB-INF/actions/viewMarketingCampaign.bsh"/>
             </actions>
@@ -314,7 +331,7 @@
                     		<widgets>
 		                        <container style="subSectionBlock">
 		                            <platform-specific><html><html-template location="component://mailer/webapp/mailer/viewMarketingCampaign.ftl"/></html></platform-specific>                            
-		                            <container style="form">
+		                            <container style="form findcampaign">
 		                                <include-form name="viewMarketingCampaign" location="component://mailer/widget/forms/MailerForms.xml"/>
 		                            </container>
 		                        </container>

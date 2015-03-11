@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!--
+ * Copyright (c) Intelliant
+ *
+ * Opentaps is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Opentaps is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Opentaps.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  @author Intelliant (iaerp@intelliant.net)
+-->
 <forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-form.xsd">
 	<form name="viewMarketingCampaign" type="single" title="View Marketing Campaign" default-map-name="marketingCampaign"
         default-title-style="tableheadtext" default-widget-style="tabletext" default-tooltip-style="tabletext">
@@ -22,8 +39,8 @@
     <form name="FindMarketingCampaign" type="single" target="${findMarketingCampaignsTarget}"
         default-title-style="tableheadtext" default-widget-style="inputBox" default-tooltip-style="tabletext">
 
-        <field name="campaignName" title="${uiLabelMap.CommonName}"><text/></field>
-        <field name="statusId" title="${uiLabelMap.CommonStatus}" position="1">
+        <field name="campaignName" title="${uiLabelMap.CommonName}" position="1"><text/></field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}" position="2">
             <drop-down allow-empty="true">
                 <entity-options entity-name="StatusItem" description="${description}">
                     <entity-constraint name="statusTypeId" value="MKTG_CAMP_STATUS"/>
@@ -31,7 +48,7 @@
                 </entity-options>
             </drop-down>
         </field>
-        <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit"><submit/></field>
+        <field name="submitButton" title="${uiLabelMap.CrmFindMarketingCampaigns}" widget-style="smallSubmit" position="3"><submit/></field>
     </form>
         
     <form name="createContactListForm" type="single" title="${uiLabelMap.CreateContactListHeader}" target="createContactList"
@@ -64,8 +81,8 @@
 
         <field name="lookup"><hidden value="Y"/></field>
         <field name="contactListId"><hidden/></field>
-        <field name="contactListName" title="${uiLabelMap.CommonName}"><text/></field>
-        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" position="1">
+        <field name="contactListName" title="${uiLabelMap.CommonName}" position="1"><text/></field>
+        <field name="contactMechTypeId" title="${uiLabelMap.CrmContactType}" position="2">
             <drop-down allow-empty="true">
                 <option key="EMAIL_ADDRESS" description="Email Address"/>
                 <option key="POSTAL_ADDRESS" description="Postal Address"/>
@@ -73,7 +90,7 @@
             </drop-down>
         </field>
 
-        <field name="submitButton" title="${uiLabelMap.CrmFindContactLists}" widget-style="smallSubmit"><submit/></field>
+        <field name="submitButton" title="${uiLabelMap.CrmFindContactLists}" widget-style="smallSubmit" position="3"><submit/></field>
     </form>
     
     <form name="updateContactListForm" type="single" title="${uiLabelMap.UpdateContactListHeader}" default-map-name="contactList" target="updateContactList"
