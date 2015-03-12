@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) Intelliant
+ *
+ *  @author Intelliant (open.ant@intelliant.net)
+ */
+
 ** getter/ setter added to fetch description, this change will not be required when mailer is used with later versions.
 framework/entity/src/org/ofbiz/entity/model/ModelField.java
 r91, r178
