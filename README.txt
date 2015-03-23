@@ -1,35 +1,26 @@
-Welcome to opentaps-mailer!!
+Welcome to opentaps-mailer - A scheduled follow-up marketing campaign mailer (based on Opentaps/OFBiz)!!
 
 Description:
-            opentaps-mailer is a highly customizable email campaigning / marketing service. You can easily create a
-campaign as you need and schedule to send mail to a huge list of members in just one click. The email template is
-customizable as well. Populated the contact list with a huge members can be easily done by just importing the .xls file.
+    opentaps-mailer provides a flexible email and print follow-up marketing campaign managament service built atop the Opentaps/OFBiz framework. One can easily create a campaign and schedule to send the mails to an externally imported set of contacts in a few clicks. The email templates associated with a campaign are highly customizable and can be done so via a rich WYSIWYG editor. Custom mapping of contacts files to be imported is possible. An information rich campaign management screen is available to track, execute and administer the campaigns.  
+
+Pre-requisite:
+    To run the opentaps-mailer you need to have a base installation of Opentaps 1.0. If you don't have Opentaps you can download from here - http://www.opentaps.org/products/download and follow the installation instructions on its site.
 
 Installation:
-            1. To run the opentaps-mailer you need Opentaps. If you don't have Opentaps you can download from here http://www.opentaps.org/products/download
-and follow the installation instruction.
-
-            2. After installing of Opentaps, download opentaps-mailer, rename it opentaps-mailer to mailer and put it in the hot-deploy folder.
-
-            3. Please note the core-diff.txt file in the /hot-deploy/mailer/docs/core-diff.txt. Make sure the following library are added.
-
-            4. Now simply run ant run
-
-            5. opentaps-mailer will be accessible in http://localhost:8080/control/main/mailer
-
-            6. The username and password is "admin" and "opentaps" respectively.
+    1. After installing Opentaps, checkout the code to hot-deploy/mailer directory.
+    2. Check the contents of the file hot-deploy/mailer/docs/core-diff.txt. Ensure that the files in lines starting with D are deleted and those in lines starting with A are added to the respective paths.
+    Replace the file at framework/entity/src/org/ofbiz/entity/model/ModelField.java with the file provided herein.
+    The requisite files are present in the docs/externallib directory.  
+    3. Next to build the module execute ./ant
+    4. After the build is successful, execute ./startofbiz.sh and access the application at http://localhost:8080/mailer.
+    5. To login use the following credentials - username / password - "admin" / "opentaps" respectively.
 
 Quick tutorial:
-             1. To create your contact list click on Create contact list on the Shortcut menu. Fill the necessary details with submit the form.
-
-             2. You can create your template form Campaign Templates option and click on New template. You can schedule the template by entering in
-the value in the Schedule At N + filed in Campaign Templates form. Here N is the sale date.
-
-             3. Now you can create your campaign by click on Create Campaign option. In this form choose the template and contact list that you
-created earlier.
-
-             4. After submitting the Create Campaign form go to find Campaign option in the shortcut option. You are now able to see your campaign.
-
+    1. First and foremost you are required to define a mapping based on your contact list import format. The same can be done from the Configure Mappings section.
+    2. To create your contact list click on Create contact list on the Shortcut menu. Fill the necessary details, submit the form, and thereafter import your contact list.
+    3. Next, to create your template go to Campaign Templates click on New template. You can schedule the template by entering a value in the Schedule At N + field in Campaign Templates form, where N is the sale/service date.
+    4. Eventually, create your campaign by clicking on Create Campaign option. In this form choose the appropriate template and contact list that you created earlier.
+    5. After submitting the Create Campaign form go to find Campaign option in the shortcut option where you shall be able to see your campaign.
 
  NOTE:
-      The current release is tested on Opentaps 1.0.
+    The current release has only been tested on Opentaps 1.0.
